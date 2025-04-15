@@ -18,6 +18,8 @@ builder.Services.AddSingleton(_config!);
 builder.Services.AddDbContext<AppDbContext>(opt =>
             opt.UseSqlServer(_config!.ConnectionStrings.MSSQLServerDb,
                         x => x.MigrationsAssembly("HongPet.Migrators.MSSQL")));
+// Seeidng data
+builder.Services.AddHostedService<DataSeeder>();
 
 var app = builder.Build();
 

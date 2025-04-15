@@ -10,4 +10,10 @@
     <ProjectReference Include="..\HongPet.Infrastructure\HongPet.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="SeedingData\products.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
