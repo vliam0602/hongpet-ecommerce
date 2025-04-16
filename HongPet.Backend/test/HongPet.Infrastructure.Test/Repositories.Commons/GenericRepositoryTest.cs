@@ -136,8 +136,8 @@ public class GenericRepositoryTest : SetupTest
     [Theory]
     [InlineData(2, 2, 2)]
     [InlineData(3, 2, 1)]
-    public async Task GetPagedAsync_ShouldReturnPagedEntities(int pageIndex, int pageSize, 
-        int expected)
+    public async Task GetPagedAsync_ShouldReturnPagedEntities(int pageIndex, 
+        int pageSize, int expected)
     {
         // Arrange
         using var context = new AppDbContext(_dbContextOptions);

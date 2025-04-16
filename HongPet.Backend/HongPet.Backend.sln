@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HongPet.Infrastructure.Test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HongPet.Domain.Test", "test\HongPet.Domain.Test\HongPet.Domain.Test.csproj", "{86C139B9-693C-45DA-8932-07ACC49576C2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HongPet.Application.Test", "test\HongPet.Application.Test\HongPet.Application.Test.csproj", "{B1AC11E4-5A8D-496D-9EE7-18D6D8B9EAC2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,10 @@ Global
 		{86C139B9-693C-45DA-8932-07ACC49576C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{86C139B9-693C-45DA-8932-07ACC49576C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{86C139B9-693C-45DA-8932-07ACC49576C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1AC11E4-5A8D-496D-9EE7-18D6D8B9EAC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1AC11E4-5A8D-496D-9EE7-18D6D8B9EAC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1AC11E4-5A8D-496D-9EE7-18D6D8B9EAC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1AC11E4-5A8D-496D-9EE7-18D6D8B9EAC2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -67,5 +73,6 @@ Global
 		{B27485B6-CFE8-4B03-A86E-4D44E4F1E444} = {432E0374-06EC-4D32-B9A9-247431DB3E3F}
 		{D4596175-8AC1-4CD0-867D-DAB35D98821A} = {AA019535-925F-4FBD-8423-5941C39A40AF}
 		{86C139B9-693C-45DA-8932-07ACC49576C2} = {AA019535-925F-4FBD-8423-5941C39A40AF}
+		{B1AC11E4-5A8D-496D-9EE7-18D6D8B9EAC2} = {AA019535-925F-4FBD-8423-5941C39A40AF}
 	EndGlobalSection
 EndGlobal
