@@ -10,4 +10,12 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Services.Abstractions\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\HongPet.Domain\HongPet.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

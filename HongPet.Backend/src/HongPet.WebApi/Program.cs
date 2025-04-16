@@ -1,5 +1,8 @@
 using HongPet.Application.Commons;
+using HongPet.Application.Services.Commons;
+using HongPet.Domain.Repositories.Abstractions.Commons;
 using HongPet.Infrastructure.Database;
+using HongPet.Infrastructure.Repositories.Commons;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,8 +21,13 @@ builder.Services.AddSingleton(_config!);
 builder.Services.AddDbContext<AppDbContext>(opt =>
             opt.UseSqlServer(_config!.ConnectionStrings.MSSQLServerDb,
                         x => x.MigrationsAssembly("HongPet.Migrators.MSSQL")));
-// Seeidng data
+// Seeding data
 builder.Services.AddHostedService<DataSeeder>();
+
+// Add unit of work (lazy load repositories inside)
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+builder.Services.AddScoped(typeof(IGenericService<>), typeof(GenericService<>));
 
 var app = builder.Build();
 
