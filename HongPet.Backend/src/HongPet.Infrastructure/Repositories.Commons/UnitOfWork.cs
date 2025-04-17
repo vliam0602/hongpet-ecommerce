@@ -1,5 +1,6 @@
 ﻿using Domain.Entities.Commons;
 using HongPet.Domain.Repositories.Abstraction.Commons;
+using HongPet.Domain.Repositories.Abstractions;
 using HongPet.Domain.Repositories.Abstractions.Commons;
 using HongPet.Infrastructure.Database;
 
@@ -8,11 +9,15 @@ public class UnitOfWork : IUnitOfWork
 {
     private readonly AppDbContext _context;
     private readonly Dictionary<Type, object> _repositories = new();
+    private readonly IProductRepository _productRepository;
 
-    public UnitOfWork(AppDbContext context)
+
+    public UnitOfWork(AppDbContext context, IProductRepository productRepository)
     {
         _context = context;
+        _productRepository = productRepository;
     }
+    public IProductRepository ProductRepository => _productRepository;
 
     /// <summary>
     /// Gets the repository for the specified entity type.
