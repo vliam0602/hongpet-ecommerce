@@ -3,6 +3,7 @@ using HongPet.Application.Services.Commons;
 using HongPet.Domain.Repositories.Abstractions.Commons;
 using HongPet.Infrastructure.Database;
 using HongPet.Infrastructure.Repositories.Commons;
+using HongPet.WebApi;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,7 +28,10 @@ builder.Services.AddHostedService<DataSeeder>();
 // Add unit of work (lazy load repositories inside)
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-builder.Services.AddScoped(typeof(IGenericService<>), typeof(GenericService<>));
+builder.Services.AddScoped(typeof(IGenericService<,>), typeof(GenericService<,>));
+
+// Add auto mapper
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 var app = builder.Build();
 

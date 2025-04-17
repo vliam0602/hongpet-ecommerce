@@ -1,9 +1,11 @@
 ﻿using AutoFixture;
 using AutoFixture.AutoMoq;
+using AutoMapper;
 using HongPet.Application.Commons;
 using HongPet.Domain.Entities;
 using HongPet.Domain.Repositories.Abstractions.Commons;
 using HongPet.Infrastructure.Database;
+using HongPet.WebApi;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 
@@ -14,6 +16,7 @@ public class SetupTest
     protected readonly Mock<IUnitOfWork> _unitOfWorkMock;
     protected readonly IFixture _fixture;
     protected readonly DbContextOptions<AppDbContext> _dbContextOptions;
+    protected readonly IMapper _mapper;
 
     public SetupTest()
     {
@@ -31,6 +34,12 @@ public class SetupTest
         _dbContextOptions = new DbContextOptionsBuilder<AppDbContext>()
             .UseInMemoryDatabase(databaseName: "HongPetDbTest")
             .Options;
+        // set up auto mapper
+        var mappingConfig = new MapperConfiguration(mc =>
+        {
+            mc.AddProfile(new MappingProfile());
+        });
+        _mapper = mappingConfig.CreateMapper();
     }
     protected List<User> UsersMockData(int count)
     {

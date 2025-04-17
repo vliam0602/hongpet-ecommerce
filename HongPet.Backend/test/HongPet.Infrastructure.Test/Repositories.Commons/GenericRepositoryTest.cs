@@ -147,10 +147,13 @@ public class GenericRepositoryTest : SetupTest
         await context.SaveChangesAsync();
 
         // Act
-        var (items, totalCount) = await repository.GetPagedAsync(pageIndex, pageSize);
+        var pagedResult = await repository.GetPagedAsync(pageIndex, pageSize);
 
         // Assert
-        Assert.Equal(5, totalCount);
-        Assert.Equal(expected, items.Count());
+        Assert.NotNull(pagedResult);
+        Assert.Equal(entities.Count, pagedResult.TotalCount);
+        Assert.Equal(expected, pagedResult.Items.Count);
+        Assert.Equal(pageIndex, pagedResult.CurrentPage);
+        Assert.Equal((int)Math.Ceiling((double)entities.Count / pageSize), pagedResult.TotalPages);
     }
 }

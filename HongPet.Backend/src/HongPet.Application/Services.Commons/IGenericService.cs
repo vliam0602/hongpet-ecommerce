@@ -3,14 +3,14 @@ using System.Linq.Expressions;
 
 namespace HongPet.Application.Commons
 {
-    public interface IGenericService<TEntity> where TEntity : BaseEntity
+    public interface IGenericService<TEntity, TEntityVM> where TEntity: BaseEntity
     {
-        Task<TEntity?> GetByIdAsync(Guid id);
-        Task<IEnumerable<TEntity>> GetAllAsync();
+        Task<TEntityVM?> GetByIdAsync(Guid id);
+        Task<IEnumerable<TEntityVM>> GetAllAsync();
         Task AddAsync(TEntity entity);
         Task UpdateAsync(TEntity entity);
         Task DeleteAsync(Guid id);
-        Task<IEnumerable<TEntity>> GetAsync(Expression<Func<TEntity, bool>> query);
-        Task<(IEnumerable<TEntity> Items, int TotalCount)> GetPagedAsync(int pageIndex, int pageSize);
+        Task<IEnumerable<TEntityVM>> GetAsync(Expression<Func<TEntity, bool>> query);
+        Task<PagedList<TEntityVM>> GetPagedAsync(int pageIndex, int pageSize);
     }
 }
