@@ -1,6 +1,5 @@
-﻿using Domain.Entities.Commons;
-using HongPet.Application.Commons;
-using HongPet.Domain.Entities;
+﻿using HongPet.Application.Commons;
+using HongPet.Application.Services.Abstractions;
 using HongPet.SharedViewModels.Response;
 using HongPet.SharedViewModels.ViewModels;
 using Microsoft.AspNetCore.Http;
@@ -12,9 +11,9 @@ namespace HongPet.WebApi.Controllers;
 public class ProductsController : ControllerBase
 {
     private readonly ILogger<ProductsController> _logger;
-    private readonly IGenericService<Product, ProductVM> _productService;
+    private readonly IProductService _productService;
     public ProductsController(ILogger<ProductsController> logger,
-        IGenericService<Product, ProductVM> productService)
+        IProductService productService)
     {
         _logger = logger;
         _productService = productService;

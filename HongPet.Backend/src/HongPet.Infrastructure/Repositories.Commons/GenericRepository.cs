@@ -11,8 +11,8 @@ namespace HongPet.Infrastructure.Repositories.Commons;
 public class GenericRepository<TEntity> : IGenericRepository<TEntity> 
     where TEntity : BaseEntity
 {
-    private readonly AppDbContext _context;
-    private readonly DbSet<TEntity> _dbSet;
+    protected readonly AppDbContext _context;
+    protected readonly DbSet<TEntity> _dbSet;
 
     public GenericRepository(AppDbContext context)
     {
@@ -20,12 +20,12 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity>
         _dbSet = _context.Set<TEntity>();
     }
 
-    public async Task<TEntity?> GetByIdAsync(Guid id)
+    public virtual async Task<TEntity?> GetByIdAsync(Guid id)
     {
         return await _dbSet.FindAsync(id);
     }
 
-    public async Task<IEnumerable<TEntity>> GetAllAsync()
+    public virtual async Task<IEnumerable<TEntity>> GetAllAsync()
     {
         return await _dbSet.ToListAsync();
     }
@@ -52,13 +52,13 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity>
         _dbSet.Remove(entity);
     }
 
-    public async Task<IEnumerable<TEntity>> GetAsync
+    public virtual async Task<IEnumerable<TEntity>> GetAsync
         (Expression<Func<TEntity, bool>> query)
     {
         return await _dbSet.Where(query).ToListAsync();
     }
 
-    public async Task<IPagedList<TEntity>> GetPagedAsync
+    public virtual async Task<IPagedList<TEntity>> GetPagedAsync
         (int pageIndex, int pageSize)
     {
         var totalCount = await _dbSet.CountAsync();

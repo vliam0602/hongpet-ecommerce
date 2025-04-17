@@ -10,9 +10,9 @@ namespace HongPet.Application.Services.Commons;
 public class GenericService<TEntity, TEntityVM>
     : IGenericService<TEntity, TEntityVM> where TEntity : BaseEntity
 {
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IGenericRepository<TEntity> _repository;
-    private readonly IMapper _mapper;
+    protected readonly IUnitOfWork _unitOfWork;
+    protected IGenericRepository<TEntity> _repository;
+    protected readonly IMapper _mapper;
 
     public GenericService(IUnitOfWork unitOfWork, IMapper mapper)
     {
@@ -21,43 +21,43 @@ public class GenericService<TEntity, TEntityVM>
         _mapper = mapper;
     }
 
-    public async Task<TEntityVM?> GetByIdAsync(Guid id)
+    public virtual async Task<TEntityVM?> GetByIdAsync(Guid id)
     {
         var entity = await _repository.GetByIdAsync(id);
         return entity != null ? _mapper.Map<TEntityVM>(entity) : default;
     }
 
-    public async Task<IEnumerable<TEntityVM>> GetAllAsync()
+    public virtual async Task<IEnumerable<TEntityVM>> GetAllAsync()
     {
         var entities = await _repository.GetAllAsync();
         return _mapper.Map<IEnumerable<TEntityVM>>(entities);
     }
 
-    public async Task AddAsync(TEntity entity)
+    public virtual async Task AddAsync(TEntity entity)
     {
         await _repository.AddAsync(entity);
         await _unitOfWork.SaveChangesAsync();
     }
 
-    public async Task UpdateAsync(TEntity entity)
+    public virtual async Task UpdateAsync(TEntity entity)
     {
         _repository.Update(entity);
         await _unitOfWork.SaveChangesAsync();
     }
 
-    public async Task DeleteAsync(Guid id)
+    public virtual async Task DeleteAsync(Guid id)
     {
         await _repository.DeleteAsync(id);
         await _unitOfWork.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<TEntityVM>> GetAsync(Expression<Func<TEntity, bool>> query)
+    public virtual async Task<IEnumerable<TEntityVM>> GetAsync(Expression<Func<TEntity, bool>> query)
     {
         var entities = await _repository.GetAsync(query);
         return _mapper.Map<IEnumerable<TEntityVM>>(entities);
     }
 
-    public async Task<PagedList<TEntityVM>> GetPagedAsync(int pageIndex, int pageSize)
+    public virtual async Task<PagedList<TEntityVM>> GetPagedAsync(int pageIndex, int pageSize)
     {
         var pagedItems = await _repository.GetPagedAsync(pageIndex, pageSize);
         return _mapper.Map<PagedList<TEntityVM>>(pagedItems);        
