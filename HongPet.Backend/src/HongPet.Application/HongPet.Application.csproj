@@ -7,14 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="14.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Services.Abstractions\" />
+    <Folder Include="Services\" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\HongPet.SharedViewModels\HongPet.SharedViewModels.csproj" />
     <ProjectReference Include="..\HongPet.Domain\HongPet.Domain.csproj" />
   </ItemGroup>
 

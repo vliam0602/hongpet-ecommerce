@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="14.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.4">
@@ -17,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\HongPet.Application\HongPet.Application.csproj" />
     <ProjectReference Include="..\HongPet.Infrastructure\HongPet.Infrastructure.csproj" />
     <ProjectReference Include="..\HongPet.Migrators.MSSQL\HongPet.Migrators.MSSQL.csproj" />
   </ItemGroup>

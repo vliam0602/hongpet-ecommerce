@@ -10,3 +10,6 @@
     ```
     dotnet ef migrations add MigrationName -s HongPet.WebApi -p HongPet.Migrators.MSSQL
     ```
+## Tech stack
+- Src: ASP.Net Api 9, EF Core, MSSQL Server, Swagger/OpenApi,
+- Test: xUnit, Moq, AutoFixture,

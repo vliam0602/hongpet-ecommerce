@@ -11,5 +11,5 @@ public interface IGenericRepository<TEntity> where TEntity : BaseEntity
     void Update(TEntity entity);
     Task DeleteAsync(Guid id);
     Task<IEnumerable<TEntity>> GetAsync(Expression<Func<TEntity, bool>> query);
-    Task<(IEnumerable<TEntity> Items, int TotalCount)> GetPagedAsync(int pageIndex, int pageSize);
+    Task<IPagedList<TEntity>> GetPagedAsync(int pageIndex, int pageSize);
 }

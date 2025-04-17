@@ -1,4 +1,5 @@
-﻿using HongPet.Application.Services.Commons;
+﻿using HongPet.Application.Commons;
+using HongPet.Application.Services.Commons;
 using HongPet.Domain.Entities;
 using HongPet.Domain.Repositories.Abstraction.Commons;
 using HongPet.Domain.Test;
@@ -9,7 +10,7 @@ namespace HongPet.Application.Test.Services.Commons;
 public class GenericServiceTest : SetupTest
 {
     private readonly Mock<IGenericRepository<User>> _repositoryMock;
-    private readonly GenericService<User> _service;
+    private readonly GenericService<User, User> _service;
 
     // set up test data for each test
     public GenericServiceTest()
@@ -17,7 +18,7 @@ public class GenericServiceTest : SetupTest
         _repositoryMock = new Mock<IGenericRepository<User>>();
         _unitOfWorkMock.Setup(u => u.Repository<User>())
                        .Returns(_repositoryMock.Object);
-        _service = new GenericService<User>(_unitOfWorkMock.Object);
+        _service = new GenericService<User, User>(_unitOfWorkMock.Object, _mapper);
     }
 
     [Fact]
@@ -112,21 +113,28 @@ public class GenericServiceTest : SetupTest
     [Theory]
     [InlineData(2, 2, 2)]
     [InlineData(3, 2, 1)]
-    public async Task GetPagedAsync_ShouldReturnPagedEntities(int pageIndex, int pageSize, int expected)
+    public async Task GetPagedAsync_ShouldReturnPagedEntities(int pageIndex, int pageSize, int expectedCount)
     {
         // Arrange
         var entities = UsersMockData(5);
+        var pagedList = new PagedList<User>(
+            entities.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList(),
+            entities.Count,
+            pageIndex,
+            pageSize
+        );
+
         _repositoryMock.Setup(r => r.GetPagedAsync(pageIndex, pageSize))
-                       .ReturnsAsync((entities.Skip((pageIndex - 1) * pageSize)
-                                              .Take(pageSize)
-                                              .ToList(),
-                                      entities.Count));
+                       .ReturnsAsync(pagedList);
 
         // Act
-        var (items, totalCount) = await _service.GetPagedAsync(pageIndex, pageSize);
+        var result = await _service.GetPagedAsync(pageIndex, pageSize);
 
         // Assert
-        Assert.Equal(5, totalCount);
-        Assert.Equal(expected, items.Count());
+        Assert.NotNull(result);
+        Assert.Equal(entities.Count, result.TotalCount);
+        Assert.Equal(expectedCount, result.Items.Count);
+        Assert.Equal(pageIndex, result.CurrentPage);
+        Assert.Equal((int)Math.Ceiling((double)entities.Count / pageSize), result.TotalPages);
     }
 }
