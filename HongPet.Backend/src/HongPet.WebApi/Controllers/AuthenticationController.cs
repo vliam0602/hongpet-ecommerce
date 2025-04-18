@@ -80,4 +80,20 @@ public class AuthenticationController(
             }
         });
     }
+
+    [HttpGet]
+    [AllowAnonymous]
+    public IActionResult Get()
+    {
+        var passwordHashed = "P@ss123".Hash();
+        return Ok(new ApiResponse
+        {
+            IsSuccess = true,
+            Data = new
+            {
+                Password = "P@ss123",
+                PasswordHash = passwordHashed
+            }
+        });
+    }
 }

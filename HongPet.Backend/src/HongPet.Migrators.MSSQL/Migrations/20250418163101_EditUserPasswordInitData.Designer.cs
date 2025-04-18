@@ -4,6 +4,7 @@ using HongPet.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HongPet.Migrators.MSSQL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250418163101_EditUserPasswordInitData")]
+    partial class EditUserPasswordInitData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -636,7 +639,8 @@ namespace HongPet.Migrators.MSSQL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("UserTokens");
                 });
@@ -805,8 +809,8 @@ namespace HongPet.Migrators.MSSQL.Migrations
             modelBuilder.Entity("HongPet.Domain.Entities.UserToken", b =>
                 {
                     b.HasOne("HongPet.Domain.Entities.User", "User")
-                        .WithMany("UserToken")
-                        .HasForeignKey("UserId")
+                        .WithOne("UserToken")
+                        .HasForeignKey("HongPet.Domain.Entities.UserToken", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

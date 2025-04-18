@@ -15,5 +15,5 @@ public class User : BaseEntity
 
     public virtual IEnumerable<Order> Orders { get; set; } = new List<Order>();
     public virtual IEnumerable<Review> Reviews { get; set; } = new List<Review>();
-    public virtual UserToken? UserToken { get; set; }
+    public virtual IEnumerable<UserToken> UserToken { get; set; } = new List<UserToken>();
 }

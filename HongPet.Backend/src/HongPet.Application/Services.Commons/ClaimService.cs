@@ -34,7 +34,7 @@ public class ClaimService : IClaimService
     {
         get
         {
-            var userRoleClaim = GetClaimValue(ClaimTypes.Role);
+            string userRoleClaim = GetClaimValue(ClaimTypes.Role);
             return string.IsNullOrEmpty(userRoleClaim) ?
                             string.Empty : userRoleClaim;
         }
