@@ -1,6 +1,7 @@
 ﻿using HongPet.Application.Commons;
 using HongPet.Application.Services;
 using HongPet.Application.Services.Abstractions;
+using HongPet.Application.Services.Authentication;
 using HongPet.Application.Services.Commons;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -14,6 +15,8 @@ public static class ServiceInjection
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IUserTokenService, UserTokenService>();
+
+        services.AddScoped<ITokenHandler, TokenHandler>();
         return services;
     }
 }
