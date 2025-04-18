@@ -34,6 +34,10 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddApplicationServices();
 builder.Services.AddRepositories();
 
+// Add IHttpContextAccessor for claim service
+builder.Services.AddHttpContextAccessor();
+
+
 // Add auto mapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 

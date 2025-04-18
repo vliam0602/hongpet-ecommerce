@@ -19,6 +19,7 @@ public class AppDbContext : DbContext
     public DbSet<ProductAttributeValue> ProductAttributeValues { get; set; }
     public DbSet<Review> Reviews { get; set; }
     public DbSet<User> Users { get; set; }
+    public DbSet<UserToken> UserTokens { get; set; }
     public DbSet<Variant> Variants { get; set; }
     #endregion
 

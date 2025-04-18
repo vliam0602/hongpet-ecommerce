@@ -1,8 +1,10 @@
 ﻿using HongPet.Domain.Entities;
+using HongPet.Domain.Repositories.Abstractions;
 using HongPet.Domain.Test;
 using HongPet.Infrastructure.Database;
 using HongPet.Infrastructure.Repositories.Commons;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 
 namespace HongPet.Infrastructure.Test.Repositories.Commons;
 public class UnitOfWorkTest : SetupTest
@@ -15,8 +17,9 @@ public class UnitOfWorkTest : SetupTest
         var options = new DbContextOptionsBuilder<AppDbContext>()
             .UseInMemoryDatabase(databaseName: "TestDatabase")
             .Options;
+        var projectRepositoryMock = new Mock<IProductRepository>();
         _context = new AppDbContext(_dbContextOptions);
-        _unitOfWork = new UnitOfWork(_context);
+        _unitOfWork = new UnitOfWork(_context, projectRepositoryMock.Object);
     }
 
     [Fact]

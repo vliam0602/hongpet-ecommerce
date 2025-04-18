@@ -1,5 +1,4 @@
-﻿
-namespace HongPet.SharedViewModels.Response
+﻿namespace HongPet.SharedViewModels.ResponseModel
 {
     public class ApiResponse
     {

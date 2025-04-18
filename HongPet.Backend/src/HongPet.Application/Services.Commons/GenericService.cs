@@ -7,30 +7,26 @@ using System.Linq.Expressions;
 
 namespace HongPet.Application.Services.Commons;
 
-public class GenericService<TEntity, TEntityVM>
-    : IGenericService<TEntity, TEntityVM> where TEntity : BaseEntity
+public class GenericService<TEntity>
+    : IGenericService<TEntity> where TEntity : BaseEntity
 {
     protected readonly IUnitOfWork _unitOfWork;
     protected IGenericRepository<TEntity> _repository;
-    protected readonly IMapper _mapper;
 
-    public GenericService(IUnitOfWork unitOfWork, IMapper mapper)
+    public GenericService(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
         _repository = _unitOfWork.Repository<TEntity>();
-        _mapper = mapper;
     }
 
-    public virtual async Task<TEntityVM?> GetByIdAsync(Guid id)
+    public virtual async Task<TEntity?> GetByIdAsync(Guid id)
     {
-        var entity = await _repository.GetByIdAsync(id);
-        return entity != null ? _mapper.Map<TEntityVM>(entity) : default;
+        return await _repository.GetByIdAsync(id);
     }
 
-    public virtual async Task<IEnumerable<TEntityVM>> GetAllAsync()
+    public virtual async Task<IEnumerable<TEntity>> GetAllAsync()
     {
-        var entities = await _repository.GetAllAsync();
-        return _mapper.Map<IEnumerable<TEntityVM>>(entities);
+       return await _repository.GetAllAsync();
     }
 
     public virtual async Task AddAsync(TEntity entity)
@@ -51,15 +47,13 @@ public class GenericService<TEntity, TEntityVM>
         await _unitOfWork.SaveChangesAsync();
     }
 
-    public virtual async Task<IEnumerable<TEntityVM>> GetAsync(Expression<Func<TEntity, bool>> query)
+    public virtual async Task<IEnumerable<TEntity>> GetAsync(Expression<Func<TEntity, bool>> query)
     {
-        var entities = await _repository.GetAsync(query);
-        return _mapper.Map<IEnumerable<TEntityVM>>(entities);
+        return await _repository.GetAsync(query);
     }
 
-    public virtual async Task<PagedList<TEntityVM>> GetPagedAsync(int pageIndex, int pageSize)
+    public virtual async Task<IPagedList<TEntity>> GetPagedAsync(int pageIndex, int pageSize)
     {
-        var pagedItems = await _repository.GetPagedAsync(pageIndex, pageSize);
-        return _mapper.Map<PagedList<TEntityVM>>(pagedItems);        
+        return await _repository.GetPagedAsync(pageIndex, pageSize);    
     }
 }

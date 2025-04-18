@@ -1,6 +1,6 @@
 ﻿using HongPet.Application.Commons;
 using HongPet.Application.Services.Abstractions;
-using HongPet.SharedViewModels.Response;
+using HongPet.SharedViewModels.ResponseModel;
 using HongPet.SharedViewModels.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

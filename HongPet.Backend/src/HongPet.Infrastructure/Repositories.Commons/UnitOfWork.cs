@@ -5,19 +5,14 @@ using HongPet.Domain.Repositories.Abstractions.Commons;
 using HongPet.Infrastructure.Database;
 
 namespace HongPet.Infrastructure.Repositories.Commons;
-public class UnitOfWork : IUnitOfWork
+public class UnitOfWork(AppDbContext context, 
+    IProductRepository productRepository,
+    IUserTokenRepository userTokenRepository) : IUnitOfWork
 {
-    private readonly AppDbContext _context;
     private readonly Dictionary<Type, object> _repositories = new();
-    private readonly IProductRepository _productRepository;
 
-
-    public UnitOfWork(AppDbContext context, IProductRepository productRepository)
-    {
-        _context = context;
-        _productRepository = productRepository;
-    }
-    public IProductRepository ProductRepository => _productRepository;
+    public IProductRepository ProductRepository => productRepository;
+    public IUserTokenRepository UserTokenRepository => userTokenRepository;
 
     /// <summary>
     /// Gets the repository for the specified entity type.
@@ -33,18 +28,18 @@ public class UnitOfWork : IUnitOfWork
             return (IGenericRepository<TEntity>)repository;
         }
 
-        var newRepository = new GenericRepository<TEntity>(_context);
+        var newRepository = new GenericRepository<TEntity>(context);
         _repositories[typeof(TEntity)] = newRepository;
         return newRepository;
     }
 
     public async Task<int> SaveChangesAsync()
     {
-        return await _context.SaveChangesAsync();
+        return await context.SaveChangesAsync();
     }
 
     public void Dispose()
     {
-        _context.Dispose();
+        context.Dispose();
     }
 }

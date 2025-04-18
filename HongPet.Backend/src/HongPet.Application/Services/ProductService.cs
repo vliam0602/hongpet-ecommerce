@@ -6,10 +6,10 @@ using HongPet.Domain.Repositories.Abstractions.Commons;
 using HongPet.SharedViewModels.ViewModels;
 
 namespace HongPet.Application.Services;
-public class ProductService : GenericService<Product, ProductVM>, IProductService
+public class ProductService : GenericService<Product>, IProductService
 {
-    public ProductService(IUnitOfWork unitOfWork, IMapper mapper) 
-        : base(unitOfWork, mapper)
+    public ProductService(IUnitOfWork unitOfWork) 
+        : base(unitOfWork)
     {
         _repository = _unitOfWork.ProductRepository;
     }

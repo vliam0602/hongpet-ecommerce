@@ -9,8 +9,11 @@ public static class ServiceInjection
 {
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
-        services.AddScoped(typeof(IGenericService<,>), typeof(GenericService<,>));
+        services.AddScoped(typeof(IGenericService<>), typeof(GenericService<>));
+        services.AddScoped<IClaimService, ClaimService>();
         services.AddScoped<IProductService, ProductService>();
+        services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IUserTokenService, UserTokenService>();
         return services;
     }
 }
