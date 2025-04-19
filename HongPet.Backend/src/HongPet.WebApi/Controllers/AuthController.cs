@@ -1,5 +1,6 @@
 ﻿using HongPet.Application.AppConfigurations;
 using HongPet.Application.Commons;
+using HongPet.Application.Services.Commons;
 using HongPet.Domain.Entities;
 using HongPet.SharedViewModels.Response;
 using Microsoft.AspNetCore.Authorization;
@@ -10,7 +11,8 @@ namespace HongPet.WebApi.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 public class AuthController(
-    AppConfiguration _appConfig) : ControllerBase
+    AppConfiguration _appConfig,
+    IClaimService claimService) : ControllerBase
 {
     private readonly JwtConfiguration _jwtConfig = _appConfig.JwtConfiguration;
     [HttpGet("login")]
@@ -21,7 +23,7 @@ public class AuthController(
             Email = "Liam@example.com",
             
         };
-        var token = user.GenerateJsonWebToken(_jwtConfig.SecretKey, CurrentTime.GetCurrentTime);
+        var token = user.GenerateJsonWebToken(_jwtConfig.SecretKey, CurrentTime.GetCurrentTime.AddMinutes(2));
 
         return Ok(new ApiResponse
         {
@@ -34,6 +36,7 @@ public class AuthController(
     [Authorize]
     public IActionResult RefreshToken()
     {
-        return Ok("Refresh successful");
+        return Ok($"Refresh successful" +
+            $"\\n {claimService.GetCurrentEmail}");
     }
 }

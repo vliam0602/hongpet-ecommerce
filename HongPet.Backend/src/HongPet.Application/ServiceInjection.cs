@@ -11,6 +11,8 @@ public static class ServiceInjection
     {
         services.AddScoped(typeof(IGenericService<,>), typeof(GenericService<,>));
         services.AddScoped<IProductService, ProductService>();
+        
+        services.AddScoped<IClaimService, ClaimService>();
         return services;
     }
 }

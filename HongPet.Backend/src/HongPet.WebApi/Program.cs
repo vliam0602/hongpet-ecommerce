@@ -35,8 +35,11 @@ builder.Services.AddJwtConfiguration(_config!);
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 // Add application services & repositories
-builder.Services.AddApplicationServices();
 builder.Services.AddRepositories();
+builder.Services.AddApplicationServices();
+
+// IHttpContextAccessor (for claim service)
+builder.Services.AddHttpContextAccessor();
 
 // Add auto mapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));

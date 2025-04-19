@@ -11,7 +11,7 @@ public static class SwaggerConfig
             opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
                 In = ParameterLocation.Header,
-                Description = "Please enter token",
+                Description = "Enter only token string (do not need 'Bearer')",
                 Name = "Authorization",
                 Type = SecuritySchemeType.Http,
                 BearerFormat = "JWT",
