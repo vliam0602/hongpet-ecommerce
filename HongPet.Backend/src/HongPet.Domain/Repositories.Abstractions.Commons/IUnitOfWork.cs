@@ -8,5 +8,6 @@ public interface IUnitOfWork : IDisposable
     IGenericRepository<TEntity> Repository<TEntity>() where TEntity : BaseEntity;
     // repository that have specific logic
     IProductRepository ProductRepository { get; }
+    IUserRepository UserRepository { get; }
     Task<int> SaveChangesAsync();
 }

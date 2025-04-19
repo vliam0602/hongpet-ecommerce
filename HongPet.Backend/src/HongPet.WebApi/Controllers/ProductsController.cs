@@ -2,6 +2,7 @@
 using HongPet.Application.Services.Abstractions;
 using HongPet.SharedViewModels.Response;
 using HongPet.SharedViewModels.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,6 +20,7 @@ public class ProductsController : ControllerBase
         _productService = productService;
     }
     [HttpGet]
+    [Authorize]
     public async Task<ActionResult<PagedList<ProductVM>>> GetProducts([FromQuery] int pageIndex,int pageSize)
     {
         var products = await _productService.GetPagedAsync(pageIndex, pageSize);        

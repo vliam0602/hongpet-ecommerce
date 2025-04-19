@@ -206,8 +206,8 @@ namespace HongPet.Migrators.MSSQL.Migrations
                 columns: new[] { "Id", "Address", "AvatarUrl", "CreatedBy", "CreatedDate", "DeletedBy", "DeletedDate", "Email", "Fullname", "LastModificatedBy", "LastModificatedDate", "Password", "PhoneNumber", "Role" },
                 values: new object[,]
                 {
-                    { new Guid("00000000-0000-0000-0000-000000000001"), null, null, null, new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, "admin@example.com", "Admin", null, new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "P@ss123", null, 2 },
-                    { new Guid("00000000-0000-0000-0000-000000000002"), null, null, null, new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, "liam@example.com", "Lam Lam", null, new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "P@ss123", null, 1 }
+                    { new Guid("00000000-0000-0000-0000-000000000001"), null, null, null, new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, "admin@example.com", "Admin", null, new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "t3sQhtkqtj41Row1AsEIUURPf5NAt7dh+gIKNLpMhxmZ9sHs", null, 2 },
+                    { new Guid("00000000-0000-0000-0000-000000000002"), null, null, null, new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, "liam@example.com", "Lam Lam", null, new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "t3sQhtkqtj41Row1AsEIUURPf5NAt7dh+gIKNLpMhxmZ9sHs", null, 1 }
                 });
 
             migrationBuilder.CreateIndex(

@@ -576,7 +576,7 @@ namespace HongPet.Migrators.MSSQL.Migrations
                             Email = "admin@example.com",
                             Fullname = "Admin",
                             LastModificatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Password = "P@ss123",
+                            Password = "t3sQhtkqtj41Row1AsEIUURPf5NAt7dh+gIKNLpMhxmZ9sHs",
                             Role = 2
                         },
                         new
@@ -586,7 +586,7 @@ namespace HongPet.Migrators.MSSQL.Migrations
                             Email = "liam@example.com",
                             Fullname = "Lam Lam",
                             LastModificatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Password = "P@ss123",
+                            Password = "t3sQhtkqtj41Row1AsEIUURPf5NAt7dh+gIKNLpMhxmZ9sHs",
                             Role = 1
                         });
                 });
