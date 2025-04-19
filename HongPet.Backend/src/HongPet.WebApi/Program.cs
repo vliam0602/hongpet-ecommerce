@@ -6,6 +6,7 @@ using HongPet.Infrastructure;
 using HongPet.Infrastructure.Database;
 using HongPet.Infrastructure.Repositories.Commons;
 using HongPet.WebApi;
+using HongPet.WebApi.ServiceEnxtensions;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,7 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 builder.Services.AddOpenApi();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerConfig();
 
 // Bind AppConfiguration from configuration
 var _config = builder.Configuration.Get<AppConfiguration>();
@@ -26,6 +27,9 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
                         x => x.MigrationsAssembly("HongPet.Migrators.MSSQL")));
 // Seeding data
 builder.Services.AddHostedService<DataSeeder>();
+
+// Add jwt authentication
+builder.Services.AddJwtConfiguration(_config!);
 
 // Add unit of work (lazy load repositories inside)
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -48,6 +52,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
