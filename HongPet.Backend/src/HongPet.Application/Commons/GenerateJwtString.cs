@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace HongPet.Application.Commons;
 public static class GenerateJwtString
 {
-    public static string GenerateJsonWebToken(this User user, string secretKey, DateTime expDate)
+    public static string GenerateJwt(this User user, string secretKey, DateTime expDate)
     {
         var securityKey = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(secretKey));

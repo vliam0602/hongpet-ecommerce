@@ -6,6 +6,8 @@ public static class SwaggerConfig
 {
     public static IServiceCollection AddSwaggerConfig(this IServiceCollection services)
     {
+        services.AddRouting(options => options.LowercaseUrls = true);
+
         services.AddSwaggerGen(opt =>
         {
             opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme

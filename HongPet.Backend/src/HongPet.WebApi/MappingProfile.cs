@@ -15,5 +15,6 @@ public class MappingProfile : Profile
         CreateMap<Variant, VariantVM>().ReverseMap();
         CreateMap<ProductAttributeValue, ProductAttributeValueVM>().ReverseMap();
         CreateMap<ProductAttribute, ProductAttributeVM>().ReverseMap();
+
     }
 }

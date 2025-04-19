@@ -11,18 +11,19 @@ public static class AuthenticationConfig
         (this IServiceCollection services, AppConfiguration config)
     {
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
-                {
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = false,
-                        ValidateAudience = false,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(
-                            Encoding.UTF8.GetBytes(config.JwtConfiguration.SecretKey))
-                    };
-                });
+        .AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(
+                    Encoding.UTF8.GetBytes(config.JwtConfiguration.SecretKey)),
+                ClockSkew = TimeSpan.Zero // Remove delay - for test token exp =((
+            };
+        });
         return services;
     }
 }
