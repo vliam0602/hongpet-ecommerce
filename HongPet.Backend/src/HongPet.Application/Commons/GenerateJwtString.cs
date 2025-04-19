@@ -13,9 +13,11 @@ using System.Threading.Tasks;
 namespace HongPet.Application.Commons;
 public static class GenerateJwtString
 {
-    public static string GenerateJsonWebToken(this User user, string secretKey, DateTime now)
+    public static string GenerateJsonWebToken(this User user, string secretKey, DateTime expDate)
     {
-        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
+        var securityKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(secretKey));
+
         var credentials = new SigningCredentials(
                 securityKey, SecurityAlgorithms.HmacSha256);
 
@@ -28,7 +30,7 @@ public static class GenerateJwtString
 
         var token = new JwtSecurityToken(
             claims: claims,
-            expires: now.AddMinutes(2),
+            expires: expDate,
             signingCredentials: credentials);
 
 
