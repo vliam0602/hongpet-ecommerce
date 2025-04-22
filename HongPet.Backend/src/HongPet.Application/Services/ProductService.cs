@@ -10,13 +10,15 @@ using HongPet.SharedViewModels.ViewModels;
 namespace HongPet.Application.Services;
 public class ProductService : GenericService<Product>, IProductService
 {
-    private readonly IProductRepository _productRepository;
+    private readonly IProductRepository _productRepository;    
+    private readonly IReviewRepository _reviewRepository;    
     private readonly IMapper _mapper;
 
     public ProductService(IUnitOfWork unitOfWork,
         IMapper mapper) : base(unitOfWork)
     {
         _productRepository = unitOfWork.ProductRepository;
+        _reviewRepository = unitOfWork.ReviewRepository;
         _repository = _productRepository; // for resuse the GenericService
         _mapper = mapper;
     }
@@ -36,5 +38,14 @@ public class ProductService : GenericService<Product>, IProductService
             throw new KeyNotFoundException("Sản phẩm không tồn tại hoặc đã bị xóa.");
 
         return _mapper.Map<ProductDetailVM>(product);
+    }
+
+    public async Task<IPagedList<ReviewVM>> GetProductReviewsAsync(Guid productId, 
+        int pageIndex = 1, int pageSize = 10)
+    {
+        var pagedReviews = await _reviewRepository
+            .GetReviewsByProductIdAsync(productId, pageIndex, pageSize);
+
+        return _mapper.Map<PagedList<ReviewVM>>(pagedReviews);
     }
 }

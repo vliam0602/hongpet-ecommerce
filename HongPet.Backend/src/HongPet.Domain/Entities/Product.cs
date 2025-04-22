@@ -9,7 +9,8 @@ public class Product : BaseEntity
     public string? Brief { get; set; }
     public double Price { get; set; } // product price is min price of variants
     public string? ThumbnailUrl { get; set; }
-   
+    public bool IsActive { get; set; } = true;
+
     public virtual IEnumerable<Category> Categories { get; set; } = new List<Category>();
     public virtual IEnumerable<Variant> Variants { get; set; } = new List<Variant>();
     public virtual IEnumerable<Image> Images { get; set; } = new List<Image>();

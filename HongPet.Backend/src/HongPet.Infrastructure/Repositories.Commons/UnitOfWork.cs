@@ -6,13 +6,16 @@ namespace HongPet.Infrastructure.Repositories.Commons;
 public class UnitOfWork(
     AppDbContext context, 
     IProductRepository productRepository,
-    IUserRepository userRepository) : IUnitOfWork
+    IUserRepository userRepository,
+    IReviewRepository reviewRepository) : IUnitOfWork
 {
     private readonly Dictionary<Type, object> _repositories = new();
 
     public IProductRepository ProductRepository => productRepository;
 
     public IUserRepository UserRepository => userRepository;
+
+    public IReviewRepository ReviewRepository => reviewRepository;
 
     /// <summary>
     /// Gets the repository for the specified entity type.

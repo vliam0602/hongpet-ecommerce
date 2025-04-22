@@ -8,5 +8,6 @@ public interface IUnitOfWork : IDisposable
     // repository that have specific logic
     IProductRepository ProductRepository { get; }
     IUserRepository UserRepository { get; }
+    IReviewRepository ReviewRepository { get; }
     Task<int> SaveChangesAsync();
 }

@@ -23,6 +23,7 @@ public class UserConfig : IEntityTypeConfiguration<User>
             {
                 Id = Guid.Parse("00000000-0000-0000-0000-000000000001"),
                 Email = "admin@example.com",
+                Username = "admin",
                 Password = "t3sQhtkqtj41Row1AsEIUURPf5NAt7dh+gIKNLpMhxmZ9sHs", // hash password of "P@ss123"
                 Fullname = "Admin",
                 Role = RoleEnum.Admin,
@@ -34,6 +35,7 @@ public class UserConfig : IEntityTypeConfiguration<User>
             {
                 Id = Guid.Parse("00000000-0000-0000-0000-000000000002"),
                 Email = "liam@example.com",
+                Username = "liam",
                 Password = "t3sQhtkqtj41Row1AsEIUURPf5NAt7dh+gIKNLpMhxmZ9sHs", // hash password of "P@ss123"
                 Fullname = "Lam Lam",
                 Role = RoleEnum.Customer,
