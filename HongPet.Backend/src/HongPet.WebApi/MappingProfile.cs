@@ -11,10 +11,16 @@ public class MappingProfile : Profile
     {
         CreateMap(typeof(PagedList<>), typeof(PagedList<>));
 
-        CreateMap<Product, ProductVM>().ReverseMap();
-        CreateMap<Variant, VariantVM>().ReverseMap();
-        CreateMap<ProductAttributeValue, ProductAttributeValueVM>().ReverseMap();
-        CreateMap<ProductAttribute, ProductAttributeVM>().ReverseMap();
+        CreateMap<Product, ProductGeneralVM>();
 
+        CreateMap<Product, ProductDetailVM>()
+            .ForMember(model => model.CountOfReviews, 
+                opt => opt.MapFrom(x => x.Reviews.Count()));
+
+        CreateMap<Variant, VariantVM>();
+
+        CreateMap<ProductAttributeValue, AttributeValueVM>()
+            .ForMember(model => model.AttributeName, 
+                opt => opt.MapFrom(x => x.Attribute.Name));
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace HongPet.SharedViewModels.ViewModels
+namespace HongPet.SharedViewModels.Models
 {
     public class TokenModel
     {

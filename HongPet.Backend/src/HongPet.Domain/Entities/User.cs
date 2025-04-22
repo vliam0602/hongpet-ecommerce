@@ -4,10 +4,10 @@ using HongPet.Domain.Enums;
 namespace HongPet.Domain.Entities;
 
 public class User : BaseEntity
-{    
-    public string Email { get; set; } = string.Empty;
-    public string Password { get; set; } = string.Empty;
-    public string Fullname { get; set; } = string.Empty;
+{
+    public string Email { get; set; } = default!;
+    public string Password { get; set; } = default!;
+    public string Fullname { get; set; } = default!;
     public string? Address { get; set; }
     public string? PhoneNumber { get; set; }
     public string? AvatarUrl { get; set; }

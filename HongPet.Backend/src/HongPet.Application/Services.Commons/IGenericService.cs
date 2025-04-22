@@ -11,6 +11,6 @@ namespace HongPet.Application.Commons
         Task UpdateAsync(TEntity entity);
         Task DeleteAsync(Guid id);
         Task<IEnumerable<TEntity>> GetAsync(Expression<Func<TEntity, bool>> query);
-        Task<IPagedList<TEntity>> GetPagedAsync(int pageIndex, int pageSize);
+        Task<IPagedList<TEntity>> GetPagedAsync(int pageIndex = 1, int pageSize = 10, string? keyword="");
     }
 }

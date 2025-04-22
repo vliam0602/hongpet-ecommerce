@@ -4,6 +4,7 @@ using HongPet.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HongPet.Migrators.MSSQL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250422022136_AddProductPriceAndThumbnail")]
+    partial class AddProductPriceAndThumbnail
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -111,7 +114,7 @@ namespace HongPet.Migrators.MSSQL.Migrations
                             Id = new Guid("00000000-0000-0000-0000-000000000005"),
                             CreatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LastModificatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Thức ăn cho hamster",
+                            Name = "Thức ăn",
                             ParrentCategoryId = new Guid("00000000-0000-0000-0000-000000000002")
                         },
                         new
@@ -119,7 +122,7 @@ namespace HongPet.Migrators.MSSQL.Migrations
                             Id = new Guid("00000000-0000-0000-0000-000000000006"),
                             CreatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LastModificatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Lồng - Chuồng cho hamster",
+                            Name = "Lồng - Chuồng",
                             ParrentCategoryId = new Guid("00000000-0000-0000-0000-000000000002")
                         },
                         new
@@ -127,7 +130,7 @@ namespace HongPet.Migrators.MSSQL.Migrations
                             Id = new Guid("00000000-0000-0000-0000-000000000007"),
                             CreatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LastModificatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Đồ chơi - Phụ kiện cho hamster",
+                            Name = "Đồ chơi - Phụ kiện",
                             ParrentCategoryId = new Guid("00000000-0000-0000-0000-000000000002")
                         },
                         new
@@ -135,7 +138,7 @@ namespace HongPet.Migrators.MSSQL.Migrations
                             Id = new Guid("00000000-0000-0000-0000-000000000008"),
                             CreatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LastModificatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Vệ sinh cho hamster",
+                            Name = "Vệ sinh",
                             ParrentCategoryId = new Guid("00000000-0000-0000-0000-000000000002")
                         },
                         new
@@ -143,7 +146,7 @@ namespace HongPet.Migrators.MSSQL.Migrations
                             Id = new Guid("00000000-0000-0000-0000-000000000009"),
                             CreatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LastModificatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Chăm sóc sức khỏe cho hamster",
+                            Name = "Chăm sóc sức khỏe",
                             ParrentCategoryId = new Guid("00000000-0000-0000-0000-000000000002")
                         },
                         new
@@ -151,7 +154,7 @@ namespace HongPet.Migrators.MSSQL.Migrations
                             Id = new Guid("00000000-0000-0000-0000-000000000010"),
                             CreatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LastModificatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Thức ăn cho chó",
+                            Name = "Thức ăn",
                             ParrentCategoryId = new Guid("00000000-0000-0000-0000-000000000003")
                         },
                         new
@@ -159,7 +162,7 @@ namespace HongPet.Migrators.MSSQL.Migrations
                             Id = new Guid("00000000-0000-0000-0000-000000000011"),
                             CreatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LastModificatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Bánh thưởng cho chó",
+                            Name = "Bánh thưởng",
                             ParrentCategoryId = new Guid("00000000-0000-0000-0000-000000000003")
                         },
                         new
@@ -167,7 +170,7 @@ namespace HongPet.Migrators.MSSQL.Migrations
                             Id = new Guid("00000000-0000-0000-0000-000000000012"),
                             CreatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LastModificatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Đồ chơi - Phụ kiện cho chó",
+                            Name = "Đồ chơi - Phụ kiện",
                             ParrentCategoryId = new Guid("00000000-0000-0000-0000-000000000003")
                         },
                         new
@@ -175,7 +178,7 @@ namespace HongPet.Migrators.MSSQL.Migrations
                             Id = new Guid("00000000-0000-0000-0000-000000000013"),
                             CreatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LastModificatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Vệ sinh cho chó",
+                            Name = "Vệ sinh",
                             ParrentCategoryId = new Guid("00000000-0000-0000-0000-000000000003")
                         },
                         new
@@ -183,7 +186,7 @@ namespace HongPet.Migrators.MSSQL.Migrations
                             Id = new Guid("00000000-0000-0000-0000-000000000014"),
                             CreatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LastModificatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Chăm sóc sức khỏe cho chó",
+                            Name = "Chăm sóc sức khỏe",
                             ParrentCategoryId = new Guid("00000000-0000-0000-0000-000000000003")
                         },
                         new
@@ -191,7 +194,7 @@ namespace HongPet.Migrators.MSSQL.Migrations
                             Id = new Guid("00000000-0000-0000-0000-000000000015"),
                             CreatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LastModificatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Thức ăn cho mèo",
+                            Name = "Thức ăn",
                             ParrentCategoryId = new Guid("00000000-0000-0000-0000-000000000004")
                         },
                         new
@@ -199,7 +202,7 @@ namespace HongPet.Migrators.MSSQL.Migrations
                             Id = new Guid("00000000-0000-0000-0000-000000000016"),
                             CreatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LastModificatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Bánh thưởng cho mèo",
+                            Name = "Bánh thưởng",
                             ParrentCategoryId = new Guid("00000000-0000-0000-0000-000000000004")
                         },
                         new
@@ -207,7 +210,7 @@ namespace HongPet.Migrators.MSSQL.Migrations
                             Id = new Guid("00000000-0000-0000-0000-000000000017"),
                             CreatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LastModificatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Đồ chơi - Phụ kiện cho mèo",
+                            Name = "Đồ chơi - Phụ kiện",
                             ParrentCategoryId = new Guid("00000000-0000-0000-0000-000000000004")
                         },
                         new
@@ -215,7 +218,7 @@ namespace HongPet.Migrators.MSSQL.Migrations
                             Id = new Guid("00000000-0000-0000-0000-000000000018"),
                             CreatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LastModificatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Vệ sinh cho mèo",
+                            Name = "Vệ sinh",
                             ParrentCategoryId = new Guid("00000000-0000-0000-0000-000000000004")
                         },
                         new
@@ -223,7 +226,7 @@ namespace HongPet.Migrators.MSSQL.Migrations
                             Id = new Guid("00000000-0000-0000-0000-000000000019"),
                             CreatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LastModificatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Chăm sóc sức khỏe cho mèo",
+                            Name = "Chăm sóc sức khỏe",
                             ParrentCategoryId = new Guid("00000000-0000-0000-0000-000000000004")
                         });
                 });

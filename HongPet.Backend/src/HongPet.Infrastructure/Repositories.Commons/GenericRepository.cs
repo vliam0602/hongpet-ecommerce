@@ -1,7 +1,7 @@
 ﻿
 using Domain.Entities.Commons;
 using HongPet.Application.Commons;
-using HongPet.Domain.Repositories.Abstraction.Commons;
+using HongPet.Domain.Repositories.Abstractions;
 using HongPet.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
@@ -59,12 +59,25 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity>
     }
 
     public virtual async Task<IPagedList<TEntity>> GetPagedAsync
-        (int pageIndex, int pageSize)
+        (int pageIndex = 1, int pageSize = 10, string? keyword = "")
     {
         var totalCount = await _dbSet.CountAsync();
+
         var items = await _dbSet.Skip((pageIndex - 1) * pageSize)
                                 .Take(pageSize)
                                 .ToListAsync();
+
+        return new PagedList<TEntity>(items, totalCount, pageIndex, pageSize);
+    }
+
+    public async Task<IPagedList<TEntity>> ToPaginationAsync(IQueryable<TEntity> entities, int pageIndex = 1, int pageSize = 10, string? keyword = "")
+    {
+        var totalCount = entities.Count();
+
+        var items = await entities.Skip((pageIndex - 1) * pageSize)
+                            .Take(pageSize)
+                            .ToListAsync();
+
         return new PagedList<TEntity>(items, totalCount, pageIndex, pageSize);
     }
 }

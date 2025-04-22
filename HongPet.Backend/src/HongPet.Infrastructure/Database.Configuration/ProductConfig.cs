@@ -13,8 +13,7 @@ public class ProductConfig : IEntityTypeConfiguration<Product>
         builder.Property(x => x.CreatedDate).HasDefaultValueSql("getutcdate()");
         builder.Property(x => x.LastModificatedDate).HasDefaultValueSql("getutcdate()");
 
-        #region init pets data
-        
-        #endregion
+        // add index in name column
+        builder.HasIndex(x => x.Name);       
     }
 }

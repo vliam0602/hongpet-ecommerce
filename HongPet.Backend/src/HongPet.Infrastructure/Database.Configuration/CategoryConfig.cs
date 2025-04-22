@@ -12,6 +12,9 @@ public class CategoryConfig : IEntityTypeConfiguration<Category>
         builder.Property(x => x.CreatedDate).HasDefaultValueSql("getutcdate()");
         builder.Property(x => x.LastModificatedDate).HasDefaultValueSql("getutcdate()");
 
+        // add index in name column
+        builder.HasIndex(x => x.Name);
+
         #region init parent category data
         builder.HasData
         (
@@ -45,7 +48,7 @@ public class CategoryConfig : IEntityTypeConfiguration<Category>
             new Category
             {
                 Id = Guid.Parse("00000000-0000-0000-0000-000000000005"),
-                Name = "Thức ăn",
+                Name = "Thức ăn cho hamster",
                 ParrentCategoryId = Guid.Parse("00000000-0000-0000-0000-000000000002"),
                 CreatedDate = DateTime.Parse("2025-04-15"),
                 LastModificatedDate = DateTime.Parse("2025-04-15")
@@ -53,7 +56,7 @@ public class CategoryConfig : IEntityTypeConfiguration<Category>
             new Category
             {
                 Id = Guid.Parse("00000000-0000-0000-0000-000000000006"),
-                Name = "Lồng - Chuồng",
+                Name = "Lồng - Chuồng cho hamster",
                 ParrentCategoryId = Guid.Parse("00000000-0000-0000-0000-000000000002"),
                 CreatedDate = DateTime.Parse("2025-04-15"),
                 LastModificatedDate = DateTime.Parse("2025-04-15")
@@ -61,7 +64,7 @@ public class CategoryConfig : IEntityTypeConfiguration<Category>
             new Category
             {
                 Id = Guid.Parse("00000000-0000-0000-0000-000000000007"),
-                Name = "Đồ chơi - Phụ kiện",
+                Name = "Đồ chơi - Phụ kiện cho hamster",
                 ParrentCategoryId = Guid.Parse("00000000-0000-0000-0000-000000000002"),
                 CreatedDate = DateTime.Parse("2025-04-15"),
                 LastModificatedDate = DateTime.Parse("2025-04-15")
@@ -69,7 +72,7 @@ public class CategoryConfig : IEntityTypeConfiguration<Category>
             new Category
             {
                 Id = Guid.Parse("00000000-0000-0000-0000-000000000008"),
-                Name = "Vệ sinh",
+                Name = "Vệ sinh cho hamster",
                 ParrentCategoryId = Guid.Parse("00000000-0000-0000-0000-000000000002"),
                 CreatedDate = DateTime.Parse("2025-04-15"),
                 LastModificatedDate = DateTime.Parse("2025-04-15")
@@ -77,7 +80,7 @@ public class CategoryConfig : IEntityTypeConfiguration<Category>
             new Category
             {
                 Id = Guid.Parse("00000000-0000-0000-0000-000000000009"),
-                Name = "Chăm sóc sức khỏe",
+                Name = "Chăm sóc sức khỏe cho hamster",
                 ParrentCategoryId = Guid.Parse("00000000-0000-0000-0000-000000000002"),
                 CreatedDate = DateTime.Parse("2025-04-15"),
                 LastModificatedDate = DateTime.Parse("2025-04-15")
@@ -91,7 +94,7 @@ public class CategoryConfig : IEntityTypeConfiguration<Category>
             new Category
             {
                 Id = Guid.Parse("00000000-0000-0000-0000-000000000010"),
-                Name = "Thức ăn",
+                Name = "Thức ăn cho chó",
                 ParrentCategoryId = Guid.Parse("00000000-0000-0000-0000-000000000003"),
                 CreatedDate = DateTime.Parse("2025-04-15"),
                 LastModificatedDate = DateTime.Parse("2025-04-15")
@@ -99,7 +102,7 @@ public class CategoryConfig : IEntityTypeConfiguration<Category>
             new Category
             {
                 Id = Guid.Parse("00000000-0000-0000-0000-000000000011"),
-                Name = "Bánh thưởng",
+                Name = "Bánh thưởng cho chó",
                 ParrentCategoryId = Guid.Parse("00000000-0000-0000-0000-000000000003"),
                 CreatedDate = DateTime.Parse("2025-04-15"),
                 LastModificatedDate = DateTime.Parse("2025-04-15")
@@ -107,7 +110,7 @@ public class CategoryConfig : IEntityTypeConfiguration<Category>
             new Category
             {
                 Id = Guid.Parse("00000000-0000-0000-0000-000000000012"),
-                Name = "Đồ chơi - Phụ kiện",
+                Name = "Đồ chơi - Phụ kiện cho chó",
                 ParrentCategoryId = Guid.Parse("00000000-0000-0000-0000-000000000003"),
                 CreatedDate = DateTime.Parse("2025-04-15"),
                 LastModificatedDate = DateTime.Parse("2025-04-15")
@@ -115,7 +118,7 @@ public class CategoryConfig : IEntityTypeConfiguration<Category>
             new Category
             {
                 Id = Guid.Parse("00000000-0000-0000-0000-000000000013"),
-                Name = "Vệ sinh",
+                Name = "Vệ sinh cho chó",
                 ParrentCategoryId = Guid.Parse("00000000-0000-0000-0000-000000000003"),
                 CreatedDate = DateTime.Parse("2025-04-15"),
                 LastModificatedDate = DateTime.Parse("2025-04-15")
@@ -123,7 +126,7 @@ public class CategoryConfig : IEntityTypeConfiguration<Category>
             new Category
             {
                 Id = Guid.Parse("00000000-0000-0000-0000-000000000014"),
-                Name = "Chăm sóc sức khỏe",
+                Name = "Chăm sóc sức khỏe cho chó",
                 ParrentCategoryId = Guid.Parse("00000000-0000-0000-0000-000000000003"),
                 CreatedDate = DateTime.Parse("2025-04-15"),
                 LastModificatedDate = DateTime.Parse("2025-04-15")
@@ -137,7 +140,7 @@ public class CategoryConfig : IEntityTypeConfiguration<Category>
             new Category
             {
                 Id = Guid.Parse("00000000-0000-0000-0000-000000000015"),
-                Name = "Thức ăn",
+                Name = "Thức ăn cho mèo",
                 ParrentCategoryId = Guid.Parse("00000000-0000-0000-0000-000000000004"),
                 CreatedDate = DateTime.Parse("2025-04-15"),
                 LastModificatedDate = DateTime.Parse("2025-04-15")
@@ -145,7 +148,7 @@ public class CategoryConfig : IEntityTypeConfiguration<Category>
             new Category
             {
                 Id = Guid.Parse("00000000-0000-0000-0000-000000000016"),
-                Name = "Bánh thưởng",
+                Name = "Bánh thưởng cho mèo",
                 ParrentCategoryId = Guid.Parse("00000000-0000-0000-0000-000000000004"),
                 CreatedDate = DateTime.Parse("2025-04-15"),
                 LastModificatedDate = DateTime.Parse("2025-04-15")
@@ -153,7 +156,7 @@ public class CategoryConfig : IEntityTypeConfiguration<Category>
             new Category
             {
                 Id = Guid.Parse("00000000-0000-0000-0000-000000000017"),
-                Name = "Đồ chơi - Phụ kiện",
+                Name = "Đồ chơi - Phụ kiện cho mèo",
                 ParrentCategoryId = Guid.Parse("00000000-0000-0000-0000-000000000004"),
                 CreatedDate = DateTime.Parse("2025-04-15"),
                 LastModificatedDate = DateTime.Parse("2025-04-15")
@@ -161,7 +164,7 @@ public class CategoryConfig : IEntityTypeConfiguration<Category>
             new Category
             {
                 Id = Guid.Parse("00000000-0000-0000-0000-000000000018"),
-                Name = "Vệ sinh",
+                Name = "Vệ sinh cho mèo",
                 ParrentCategoryId = Guid.Parse("00000000-0000-0000-0000-000000000004"),
                 CreatedDate = DateTime.Parse("2025-04-15"),
                 LastModificatedDate = DateTime.Parse("2025-04-15")
@@ -169,12 +172,12 @@ public class CategoryConfig : IEntityTypeConfiguration<Category>
             new Category
             {
                 Id = Guid.Parse("00000000-0000-0000-0000-000000000019"),
-                Name = "Chăm sóc sức khỏe",
+                Name = "Chăm sóc sức khỏe cho mèo",
                 ParrentCategoryId = Guid.Parse("00000000-0000-0000-0000-000000000004"),
                 CreatedDate = DateTime.Parse("2025-04-15"),
                 LastModificatedDate = DateTime.Parse("2025-04-15")
             }
         );
-        #endregion        
+        #endregion
     }
 }

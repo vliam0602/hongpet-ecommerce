@@ -3,7 +3,7 @@ using AutoFixture.AutoMoq;
 using AutoMapper;
 using HongPet.Application.Commons;
 using HongPet.Domain.Entities;
-using HongPet.Domain.Repositories.Abstractions.Commons;
+using HongPet.Domain.Repositories.Abstractions;
 using HongPet.Infrastructure.Database;
 using HongPet.WebApi;
 using Microsoft.EntityFrameworkCore;
