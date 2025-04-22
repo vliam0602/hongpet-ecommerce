@@ -1,7 +1,5 @@
 ﻿using Domain.Entities.Commons;
-using HongPet.Domain.Repositories.Abstraction.Commons;
 using HongPet.Domain.Repositories.Abstractions;
-using HongPet.Domain.Repositories.Abstractions.Commons;
 using HongPet.Infrastructure.Database;
 
 namespace HongPet.Infrastructure.Repositories.Commons;

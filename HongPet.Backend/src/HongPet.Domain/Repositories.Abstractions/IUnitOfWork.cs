@@ -1,7 +1,6 @@
 ﻿using Domain.Entities.Commons;
-using HongPet.Domain.Repositories.Abstraction.Commons;
 
-namespace HongPet.Domain.Repositories.Abstractions.Commons;
+namespace HongPet.Domain.Repositories.Abstractions;
 public interface IUnitOfWork : IDisposable
 {
     // generic for all repositories

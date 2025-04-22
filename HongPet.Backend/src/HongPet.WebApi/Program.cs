@@ -1,6 +1,6 @@
 using HongPet.Application;
 using HongPet.Application.Commons;
-using HongPet.Domain.Repositories.Abstractions.Commons;
+using HongPet.Domain.Repositories.Abstractions;
 using HongPet.Infrastructure;
 using HongPet.Infrastructure.Database;
 using HongPet.Infrastructure.Repositories.Commons;

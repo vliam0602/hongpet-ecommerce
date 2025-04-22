@@ -1,7 +1,6 @@
 ﻿using Domain.Entities.Commons;
 using HongPet.Application.Commons;
-using HongPet.Domain.Repositories.Abstraction.Commons;
-using HongPet.Domain.Repositories.Abstractions.Commons;
+using HongPet.Domain.Repositories.Abstractions;
 using System.Linq.Expressions;
 
 namespace HongPet.Application.Services.Commons;
@@ -53,8 +52,8 @@ public class GenericService<TEntity>
     }
 
     public virtual async Task<IPagedList<TEntity>> GetPagedAsync(
-        int pageIndex, int pageSize)
+        int pageIndex = 1, int pageSize = 10, string? keyword = "")
     {
-        return await _repository.GetPagedAsync(pageIndex, pageSize);
+        return await _repository.GetPagedAsync(pageIndex, pageSize, keyword);
     }
 }

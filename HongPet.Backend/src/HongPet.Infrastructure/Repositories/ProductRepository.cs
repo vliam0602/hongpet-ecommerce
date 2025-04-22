@@ -20,14 +20,37 @@ public class ProductRepository : GenericRepository<Product>, IProductRepository
                         .ToListAsync();
     }
 
-    public override async Task<IPagedList<Product>> GetPagedAsync(int pageIndex, int pageSize)
+    public override async Task<IPagedList<Product>> GetPagedAsync
+        (int pageIndex = 1, int pageSize = 10, string? keyword = "")
     {
         var totalCount = await _dbSet.CountAsync();
+
         var items = await _dbSet
-                                .Include(x => x.Variants)
-                                .Skip((pageIndex - 1) * pageSize)
-                                .Take(pageSize)
-                                .ToListAsync();
+            .Where(x => string.IsNullOrEmpty(keyword)
+                        || x.Name.Contains(keyword)
+                        || x.Categories.Any(c => c.Name.Contains(keyword)))
+            .Skip((pageIndex - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
         return new PagedList<Product>(items, totalCount, pageIndex, pageSize);
+    }
+
+    public async Task<Product?> GetProductDetailAsync(Guid id)
+    {
+        return await _dbSet
+            .Include(x => x.Variants)
+            .ThenInclude(x => x.AttributeValues)
+            .ThenInclude(x => x.Attribute)
+            .Include(x => x.Images)
+            .FirstOrDefaultAsync(x => x.Id == id);
+    }
+
+    public async Task<IPagedList<Product>> GetProductsByCategoryAsync(string categoryName, int pageIndex = 1, int pageSize = 10, string? keyword = "")
+    {
+        var products = _dbSet
+            .Where(x => x.Categories.Any(c => c.Name == categoryName));
+
+        return await base.ToPaginationAsync(products, pageIndex, pageSize, keyword);
     }
 }
