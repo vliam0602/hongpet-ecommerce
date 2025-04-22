@@ -26,9 +26,10 @@ public class ProductRepository : GenericRepository<Product>, IProductRepository
         var totalCount = await _dbSet.CountAsync();
 
         var items = await _dbSet
-            .Where(x => string.IsNullOrEmpty(keyword)
+            .Where(x => (string.IsNullOrEmpty(keyword)
                         || x.Name.Contains(keyword)
                         || x.Categories.Any(c => c.Name.Contains(keyword)))
+                        && x.DeletedDate == null) // has not been deleted
             .Skip((pageIndex - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();
@@ -43,13 +44,15 @@ public class ProductRepository : GenericRepository<Product>, IProductRepository
             .ThenInclude(x => x.AttributeValues)
             .ThenInclude(x => x.Attribute)
             .Include(x => x.Images)
+            .Where(x => x.DeletedDate == null) // has not been deleted
             .FirstOrDefaultAsync(x => x.Id == id);
     }
 
     public async Task<IPagedList<Product>> GetProductsByCategoryAsync(string categoryName, int pageIndex = 1, int pageSize = 10, string? keyword = "")
     {
         var products = _dbSet
-            .Where(x => x.Categories.Any(c => c.Name == categoryName));
+            .Where(x => x.Categories.Any(c => c.Name == categoryName)
+                     && x.DeletedDate == null);
 
         return await base.ToPaginationAsync(products, pageIndex, pageSize, keyword);
     }

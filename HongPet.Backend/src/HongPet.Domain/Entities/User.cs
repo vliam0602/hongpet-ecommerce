@@ -6,6 +6,7 @@ namespace HongPet.Domain.Entities;
 public class User : BaseEntity
 {
     public string Email { get; set; } = default!;
+    public string Username { get; set; } = default!;
     public string Password { get; set; } = default!;
     public string Fullname { get; set; } = default!;
     public string? Address { get; set; }

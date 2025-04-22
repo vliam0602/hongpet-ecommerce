@@ -4,6 +4,7 @@ using HongPet.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HongPet.Migrators.MSSQL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250422074412_AddAttributeIndex")]
+    partial class AddAttributeIndex
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -274,16 +277,13 @@ namespace HongPet.Migrators.MSSQL.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("newid()");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("getutcdate()");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("CustomerEmail")
                         .IsRequired()
@@ -310,9 +310,7 @@ namespace HongPet.Migrators.MSSQL.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("LastModificatedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("getutcdate()");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("ShippingAddress")
                         .IsRequired()
@@ -378,9 +376,6 @@ namespace HongPet.Migrators.MSSQL.Migrations
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
 
                     b.Property<Guid?>("LastModificatedBy")
                         .HasColumnType("uniqueidentifier");
@@ -530,10 +525,6 @@ namespace HongPet.Migrators.MSSQL.Migrations
                     b.Property<int>("Rating")
                         .HasColumnType("int");
 
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
@@ -543,68 +534,6 @@ namespace HongPet.Migrators.MSSQL.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("Reviews");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Comment = "My hamster loves it!",
-                            CreatedDate = new DateTime(2025, 4, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CustomerId = new Guid("00000000-0000-0000-0000-000000000002"),
-                            LastModificatedDate = new DateTime(2025, 4, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            OrderId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            ProductId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Rating = 5,
-                            Title = "Great product!"
-                        },
-                        new
-                        {
-                            Id = new Guid("00000000-0000-0000-0000-000000000002"),
-                            Comment = "The product is good but delivery was slow.",
-                            CreatedDate = new DateTime(2025, 4, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CustomerId = new Guid("00000000-0000-0000-0000-000000000002"),
-                            LastModificatedDate = new DateTime(2025, 4, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            OrderId = new Guid("00000000-0000-0000-0000-000000000002"),
-                            ProductId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Rating = 4,
-                            Title = "Good quality"
-                        },
-                        new
-                        {
-                            Id = new Guid("00000000-0000-0000-0000-000000000003"),
-                            Comment = "It's okay, but I expected more.",
-                            CreatedDate = new DateTime(2025, 4, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CustomerId = new Guid("00000000-0000-0000-0000-000000000002"),
-                            LastModificatedDate = new DateTime(2025, 4, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            OrderId = new Guid("00000000-0000-0000-0000-000000000003"),
-                            ProductId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Rating = 3,
-                            Title = "Average"
-                        },
-                        new
-                        {
-                            Id = new Guid("00000000-0000-0000-0000-000000000004"),
-                            Comment = "Excellent product for the price.",
-                            CreatedDate = new DateTime(2025, 4, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CustomerId = new Guid("00000000-0000-0000-0000-000000000002"),
-                            LastModificatedDate = new DateTime(2025, 4, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            OrderId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            ProductId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Rating = 5,
-                            Title = "Highly recommend"
-                        },
-                        new
-                        {
-                            Id = new Guid("00000000-0000-0000-0000-000000000005"),
-                            Comment = "Worth the money.",
-                            CreatedDate = new DateTime(2025, 4, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CustomerId = new Guid("00000000-0000-0000-0000-000000000002"),
-                            LastModificatedDate = new DateTime(2025, 4, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            OrderId = new Guid("00000000-0000-0000-0000-000000000002"),
-                            ProductId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Rating = 4,
-                            Title = "Good value"
-                        });
                 });
 
             modelBuilder.Entity("HongPet.Domain.Entities.User", b =>
@@ -660,10 +589,6 @@ namespace HongPet.Migrators.MSSQL.Migrations
                     b.Property<int>("Role")
                         .HasColumnType("int");
 
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("Email")
@@ -680,8 +605,7 @@ namespace HongPet.Migrators.MSSQL.Migrations
                             Fullname = "Admin",
                             LastModificatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Password = "t3sQhtkqtj41Row1AsEIUURPf5NAt7dh+gIKNLpMhxmZ9sHs",
-                            Role = 2,
-                            Username = "admin"
+                            Role = 2
                         },
                         new
                         {
@@ -691,8 +615,7 @@ namespace HongPet.Migrators.MSSQL.Migrations
                             Fullname = "Lam Lam",
                             LastModificatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Password = "t3sQhtkqtj41Row1AsEIUURPf5NAt7dh+gIKNLpMhxmZ9sHs",
-                            Role = 1,
-                            Username = "liam"
+                            Role = 1
                         });
                 });
 

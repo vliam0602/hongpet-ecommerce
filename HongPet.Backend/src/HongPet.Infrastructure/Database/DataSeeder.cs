@@ -3,7 +3,6 @@ using HongPet.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace HongPet.Infrastructure.Database;
 
@@ -18,47 +17,57 @@ public class DataSeeder : IHostedService
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
+        var basePath = Path.Combine(AppContext.BaseDirectory, "SeedingData");
+        var productFilePath = Path.Combine(basePath, "productData.json");
+        var orderFilePath = Path.Combine(basePath, "orderData.json");
+
         using (var scope = _serviceProvider.CreateScope())
         {
             var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-            if (!dbContext.Products.Any())
-            {
-                // reset the attr, and attrValue data to seed product data
-                dbContext.ProductAttributeValues.RemoveRange(dbContext.ProductAttributeValues);
-                dbContext.ProductAttributes.RemoveRange(dbContext.ProductAttributes);
-                
-                // seed products data
-                var products = GetProductData();
+            await SeedProductDataAsync(productFilePath, dbContext, cancellationToken);
 
-                // handle the category os products
-                foreach (var product in products)
-                {
-                    var categories = product.Categories.ToList();
-                    for (int i = 0; i < categories.Count; i++)
-                    {
-                        var category = categories[i];
-                        var existedCategory = await dbContext.Categories
-                            .FirstOrDefaultAsync(c => c.Name == category.Name,
-                                                cancellationToken);
-                        if (existedCategory != null)
-                        {
-                            categories[i] = existedCategory;
-                        }
-                    }
-                }
-                // seed products data
-                dbContext.Products.AddRange(products);
-                await dbContext.SaveChangesAsync(cancellationToken);
-            }
+            await SeedOrderDataAsync(orderFilePath, dbContext, cancellationToken);
+
+            await dbContext.SaveChangesAsync(cancellationToken);
         }
     }
 
     public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
 
-    private List<Product> GetProductData()
+    private async Task SeedProductDataAsync(string filePath, AppDbContext dbContext, CancellationToken cancellationToken)
     {
-        var filePath = Path.Combine(AppContext.BaseDirectory, "SeedingData", "products.json");
+        if (!dbContext.Products.Any())
+        {
+            // reset the attr, and attrValue data to seed product data
+            dbContext.ProductAttributeValues.RemoveRange(dbContext.ProductAttributeValues);
+            dbContext.ProductAttributes.RemoveRange(dbContext.ProductAttributes);
+
+            // seed products data
+            var products = GetProductData(filePath);
+
+            // handle the category os products
+            foreach (var product in products)
+            {
+                var categories = product.Categories.ToList();
+                for (int i = 0; i < categories.Count; i++)
+                {
+                    var category = categories[i];
+                    var existedCategory = await dbContext.Categories
+                        .FirstOrDefaultAsync(c => c.Name == category.Name,
+                                            cancellationToken);
+                    if (existedCategory != null)
+                    {
+                        categories[i] = existedCategory;
+                    }
+                }
+            }
+            await dbContext.Products.AddRangeAsync(products);
+        }
+    }
+
+    private List<Product> GetProductData(string filePath)
+    {
         var products = JsonHelper.LoadDataFromJson<Product>(filePath);
         var attributeDict = new Dictionary<Guid, ProductAttribute>();
         var attributeValueDict = new Dictionary<Guid, ProductAttributeValue>();
@@ -106,5 +115,18 @@ public class DataSeeder : IHostedService
         return products;
     }
 
+
+    private async Task SeedOrderDataAsync(string filePath, AppDbContext dbContext, CancellationToken cancellationToken)
+    {
+        if (!dbContext.Orders.Any())
+        {
+            // reset the orderItem data to seed order data
+            dbContext.OrderItems.RemoveRange(dbContext.OrderItems);
+
+            // seed orders data
+            var orders = JsonHelper.LoadDataFromJson<Order>(filePath);
+            await dbContext.Orders.AddRangeAsync(orders);
+        }
+    }
 }
 

@@ -9,6 +9,7 @@ public static class RepositoryInjection
     {
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IReviewRepository, ReviewRepository>();
 
         return services;
     }

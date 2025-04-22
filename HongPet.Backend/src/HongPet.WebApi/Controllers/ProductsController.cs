@@ -60,7 +60,7 @@ public class ProductsController(
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "*** UNHANDLED EXCEPTION *** Error occurred while getting product with id {id}.", id);
+            _logger.LogError(ex, $"*** UNHANDLED EXCEPTION *** Error occurred while getting product with id {id}.");
             return BadRequest(new ApiResponse
             {
                 IsSuccess = false,
@@ -69,4 +69,26 @@ public class ProductsController(
         }
     }
 
+    [HttpGet("{productId}/reviews")]
+    public async Task<ActionResult<PagedList<ReviewVM>>> GetProductReviews(Guid productId, [FromQuery] QueryListCriteria criteria)
+    {
+        try
+        {
+            var reviews = await _productService.GetProductReviewsAsync(productId, criteria.PageIndex, criteria.PageSize);
+            return Ok(new ApiResponse
+            {
+                IsSuccess = true,
+                Data = reviews
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"*** UNHANDLED EXCEPTION *** Error occurred while getting product reviews with productId {productId}.");
+            return BadRequest(new ApiResponse
+            {
+                IsSuccess = false,
+                ErrorMessage = ex.Message
+            });
+        }
+    }
 }
