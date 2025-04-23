@@ -7,7 +7,8 @@ public class UnitOfWork(
     AppDbContext context, 
     IProductRepository productRepository,
     IUserRepository userRepository,
-    IReviewRepository reviewRepository) : IUnitOfWork
+    IReviewRepository reviewRepository,
+    IOrderRepository orderRepository) : IUnitOfWork
 {
     private readonly Dictionary<Type, object> _repositories = new();
 
@@ -16,6 +17,8 @@ public class UnitOfWork(
     public IUserRepository UserRepository => userRepository;
 
     public IReviewRepository ReviewRepository => reviewRepository;
+
+    public IOrderRepository OrderRepository => orderRepository;
 
     /// <summary>
     /// Gets the repository for the specified entity type.

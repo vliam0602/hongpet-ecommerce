@@ -16,8 +16,7 @@ public class ReviewRepository : GenericRepository<Review>, IReviewRepository
     {
         var reviews = _dbSet
             .Include(x => x.Customer)
-            .Where(x => x.ProductId == productId
-                     && x .DeletedDate == null);
+            .Where(x => x.ProductId == productId);
         return await base.ToPaginationAsync(reviews, pageIndex, pageSize);
     }
 }

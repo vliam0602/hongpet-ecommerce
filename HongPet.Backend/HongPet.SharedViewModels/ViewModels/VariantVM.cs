@@ -16,7 +16,7 @@ namespace HongPet.SharedViewModels.ViewModels
     public class AttributeValueVM
     {
         public Guid Id { get; set; }        
-        public string AttributeName { get; set; } = default!; // reference to Attribute.Name
+        public string Attribute { get; set; } = default!; // reference to Attribute.Name
         public string Value { get; set; } = default!;
     }
 }

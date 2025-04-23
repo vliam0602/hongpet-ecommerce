@@ -19,6 +19,9 @@ public class ReviewConfig : IEntityTypeConfiguration<Review>
             .HasForeignKey(x => x.ProductId)
             .OnDelete(DeleteBehavior.Cascade);
 
+        // add global query filter
+        builder.HasQueryFilter(x => x.DeletedDate == null);
+
         #region init review data
         builder.HasData(
             new Review

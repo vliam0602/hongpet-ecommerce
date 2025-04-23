@@ -20,11 +20,14 @@ public class ClaimService(
 
     public string? GetCurrentRole => GetClaimValue(ClaimTypes.Role);
 
-    public bool? IsAdmin()
+    public bool? IsAdmin
     {
-        var role = GetCurrentRole;
-        return string.IsNullOrEmpty(role) ?
-                            null : role.Equals(RoleEnum.Admin.ToString());
+        get
+        {
+            var role = GetCurrentRole;
+            return string.IsNullOrEmpty(role) ?
+                                null : role.Equals(RoleEnum.Admin.ToString());
+        }
     }
 
     private string? GetClaimValue(string claimType)
