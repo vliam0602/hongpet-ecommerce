@@ -19,7 +19,7 @@ public class ProductService : GenericService<Product>, IProductService
     {
         _productRepository = unitOfWork.ProductRepository;
         _reviewRepository = unitOfWork.ReviewRepository;
-        _repository = _productRepository; // for resuse the GenericService
+        _repository = _productRepository; // for reuse the GenericService
         _mapper = mapper;
     }
 

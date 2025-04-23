@@ -13,7 +13,10 @@ public class ProductConfig : IEntityTypeConfiguration<Product>
         builder.Property(x => x.CreatedDate).HasDefaultValueSql("getutcdate()");
         builder.Property(x => x.LastModificatedDate).HasDefaultValueSql("getutcdate()");
 
+        // add global query filter
+        builder.HasQueryFilter(x => x.DeletedDate == null);
+
         // add index in name column
-        builder.HasIndex(x => x.Name);       
+        builder.HasIndex(x => x.Name);        
     }
 }

@@ -29,11 +29,11 @@ public class ProductsController(
             });
         } catch (Exception ex)
         {
-            _logger.LogError(ex, "Error occurred while getting products list.");
-            return BadRequest(new ApiResponse
+            _logger.LogError(ex, "**Unexpected error** Error occurred while getting products list.");
+            return StatusCode(500, new ApiResponse
             {
                 IsSuccess = false,
-                ErrorMessage = ex.Message
+                ErrorMessage = $"Unexpected error: Error occurred while getting products list. Details: {ex.Message}"
             });
         }
     }
@@ -60,11 +60,11 @@ public class ProductsController(
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"*** UNHANDLED EXCEPTION *** Error occurred while getting product with id {id}.");
-            return BadRequest(new ApiResponse
+            _logger.LogError(ex, $"**Unexpected error** Error occurred while getting product with id {id}.");
+            return StatusCode(500, new ApiResponse
             {
                 IsSuccess = false,
-                ErrorMessage = ex.Message
+                ErrorMessage = $"Unexpected error:  Error occurred while getting product with id {id}. Details: {ex.Message}"
             });
         }
     }
@@ -83,11 +83,11 @@ public class ProductsController(
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"*** UNHANDLED EXCEPTION *** Error occurred while getting product reviews with productId {productId}.");
-            return BadRequest(new ApiResponse
+            _logger.LogError(ex, $"**Unexpected error** Error occurred while getting product with id {productId}.");
+            return StatusCode(500, new ApiResponse
             {
                 IsSuccess = false,
-                ErrorMessage = ex.Message
+                ErrorMessage = $"Unexpected error: Error occurred while getting product with id {productId}. Details: {ex.Message}"
             });
         }
     }

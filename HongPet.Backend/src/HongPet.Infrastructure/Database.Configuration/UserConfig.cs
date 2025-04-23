@@ -15,6 +15,9 @@ public class UserConfig : IEntityTypeConfiguration<User>
         builder.Property(x => x.CreatedDate).HasDefaultValueSql("getutcdate()");
         builder.Property(x => x.LastModificatedDate).HasDefaultValueSql("getutcdate()");
 
+        // add global query filter
+        builder.HasQueryFilter(x => x.DeletedDate == null);
+
         #region init data
         builder.HasData
         (
