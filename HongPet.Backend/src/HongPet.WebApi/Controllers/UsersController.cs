@@ -11,7 +11,7 @@ public class UsersController(
             ILogger<UsersController> _logger,
             IUserService _userService) : ControllerBase
 {
-    [HttpGet]
+    [HttpGet("/admin/api/users")]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> GetUsers([FromQuery] QueryListCriteria criteria)
     {
@@ -198,7 +198,7 @@ public class UsersController(
         }
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("/admin/api/users/{id}")]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> InactiveUser(Guid id)
     {

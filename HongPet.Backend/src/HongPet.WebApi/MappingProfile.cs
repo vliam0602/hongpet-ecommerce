@@ -12,7 +12,7 @@ public class MappingProfile : Profile
     {
         CreateMap(typeof(PagedList<>), typeof(PagedList<>));
 
-        // mapping for Product
+        // product mappings
         CreateMap<Product, ProductGeneralVM>();
 
         CreateMap<Product, ProductDetailVM>()
@@ -25,7 +25,9 @@ public class MappingProfile : Profile
             .ForMember(model => model.Attribute, 
                 opt => opt.MapFrom(x => x.Attribute.Name));
 
-        //mapping for review
+        CreateMap<ProductModel, Product>();
+
+        // review mappings
         CreateMap<Review, ReviewVM>()
             .ForMember(model => model.ReviewerName,
                 opt => opt.MapFrom(x => x.Customer.Username))
@@ -36,7 +38,7 @@ public class MappingProfile : Profile
 
         CreateMap<ReviewUpdateModel, Review>();
 
-        // mapping for order
+        // order mappings
         CreateMap<OrderCreationModel, Order>();
 
         CreateMap<OrderItemCreationModel, OrderItem>();
@@ -51,7 +53,7 @@ public class MappingProfile : Profile
             .ForMember(model => model.AttributeValues,
                 opt => opt.MapFrom(x => x.Variant.AttributeValues));
 
-        // mapping for user
+        // user mappings
         CreateMap<User, UserVM>();
         CreateMap<UserUpdateModel, User>();
     }
