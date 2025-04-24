@@ -49,6 +49,10 @@ public class MappingProfile : Profile
             .ForMember(model => model.ProductName,
                 opt => opt.MapFrom(x => x.Variant.ProductName))
             .ForMember(model => model.AttributeValues,
-                opt => opt.MapFrom(x => x.Variant.AttributeValues));        
+                opt => opt.MapFrom(x => x.Variant.AttributeValues));
+
+        // mapping for user
+        CreateMap<User, UserVM>();
+        CreateMap<UserUpdateModel, User>();
     }
 }

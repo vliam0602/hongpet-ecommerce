@@ -30,4 +30,13 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
 
         return await base.ToPaginationAsync(orders, pageIndex, pageSize, searchKey);
     }
+
+    public async Task<Order?> GetOrderDetailAsync(Guid id)
+    {
+        return await _dbSet.Include(x => x.OrderItems)
+                            .ThenInclude(o => o.Variant)
+                                .ThenInclude(v => v.AttributeValues)
+                                    .ThenInclude(a => a.Attribute)
+                            .SingleOrDefaultAsync(o => o.Id == id);
+    }
 }
