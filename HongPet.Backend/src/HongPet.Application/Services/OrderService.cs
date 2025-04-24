@@ -60,7 +60,7 @@ public class OrderService : GenericService<Order>, IOrderService
 
         if (order == null)
         {
-            throw new KeyNotFoundException($"The order with id {order} not found.");
+            throw new KeyNotFoundException($"The order with id {orderId} not found.");
         }
 
         if (isAdmin == false && currentUserId != order.CustomerId)
