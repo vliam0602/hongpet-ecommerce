@@ -24,34 +24,34 @@ public class AuthController(
         {
             // verify login
             var account = await _userService
-                .GetByEmailAndPassword(loginModel.Email, loginModel.Password);
+                .GetByEmailAndPasswordAsync(loginModel.Email, loginModel.Password);
 
             if (account == null)
             {
                 return Unauthorized(new ApiResponse
                 {
                     IsSuccess = false,
-                    ErrorMessage = "Tên đăng nhập hoặc mật khẩu không đúng."
+                    ErrorMessage = "Wrong username/password."
                 });
             }
-            if (account.DeletedDate != null)
-            {
-                return Unauthorized(new ApiResponse
-                {
-                    IsSuccess = false,
-                    ErrorMessage = "Tài khoản của bạn đã bị vô hiệu hóa."
-                });
-            }
-
             // login success -> issue (access token, refresh token)
             var tokens = GenerateTokens(account);
 
             return Ok(new ApiResponse
             {
-                Message = "Đăng nhập thành công",
+                Message = "Logged in successfully.",
                 Data = tokens
             });
-        } catch (Exception ex)
+        } 
+        catch(UnauthorizedAccessException ex)
+        {
+            return Unauthorized(new ApiResponse
+            {
+                IsSuccess = false,
+                ErrorMessage = ex.Message
+            });
+        }
+        catch (Exception ex)
         {
             return StatusCode(500, new ApiResponse
             {
@@ -75,7 +75,7 @@ public class AuthController(
                 return Unauthorized(new ApiResponse
                 {
                     IsSuccess = false,
-                    ErrorMessage = "Refresh token không hợp lệ."
+                    ErrorMessage = "Invalid refresh token"
                 });
             }
 
@@ -86,7 +86,7 @@ public class AuthController(
                 return NotFound(new ApiResponse
                 {
                     IsSuccess = false,
-                    ErrorMessage = "Không tồn tại user với token hiện tại."
+                    ErrorMessage = $"User with id {userId} not found."
                 });
             }
 
@@ -111,7 +111,7 @@ public class AuthController(
     {
         try
         {
-            await _userService.CreateNewAccount(registerModel.Email, registerModel.Password);
+            await _userService.CreateNewAccountAsync(registerModel.Email, registerModel.Password);
 
             return CreatedAtAction("Register", new { Email = registerModel.Email}, 
                 new ApiResponse

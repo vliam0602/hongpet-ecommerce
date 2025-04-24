@@ -37,7 +37,8 @@ public class OrderService : GenericService<Order>, IOrderService
         }
         if (isAdmin == false && currentUserId != customerId)
         {
-            throw new UnauthorizedAccessException("Bạn không có quyền truy cập thông tin này.");
+            throw new UnauthorizedAccessException(
+                "You do not have permission to access this resource.");
         }
 
         var orders = await _orderRepository.GetOrderByCustomerIdAsync(
@@ -46,9 +47,28 @@ public class OrderService : GenericService<Order>, IOrderService
 
     }
 
-    public Task<OrderVM?> GetOrderWithDetailsAsync(Guid orderId)
+    public async Task<OrderVM?> GetOrderWithDetailsAsync(Guid orderId)
     {
-        throw new NotImplementedException();
+        var currentUserId = _claimService.GetCurrentUserId;
+        var isAdmin = _claimService.IsAdmin;
+        if (currentUserId == null || isAdmin == null)
+        {
+            throw new UnauthorizedAccessException("Authorization info not found");
+        }
+
+        var order = await _orderRepository.GetOrderDetailAsync(orderId);
+
+        if (order == null)
+        {
+            throw new KeyNotFoundException($"The order with id {orderId} not found.");
+        }
+
+        if (isAdmin == false && currentUserId != order.CustomerId)
+        {
+            throw new UnauthorizedAccessException(
+                "You do not have permission to access this resource.");
+        }
+        return _mapper.Map<OrderVM>(order);
     }
 
     public async Task<Order> CreateOrderAsync(OrderCreationModel orderModel)

@@ -10,8 +10,7 @@ namespace HongPet.WebApi.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 public class ReviewsController(
-    IReviewService _reviewService,
-    IMapper _mapper) : ControllerBase
+    IReviewService _reviewService) : ControllerBase
 {
     [HttpPost]
     [Authorize]
@@ -57,7 +56,7 @@ public class ReviewsController(
     }
 
     [HttpPut("{id}")]
-    [Authorize]
+    [Authorize(Roles = "Customer")]
     public async Task<IActionResult> UpdateReview(Guid id,
         [FromBody] ReviewUpdateModel model)
     {
