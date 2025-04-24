@@ -18,6 +18,7 @@ namespace HongPet.SharedViewModels.ViewModels
 
     public class OrderItemVM
     {
+        public Guid ProductId { get; set; }
         public Guid VariantId { get; set; }
         public string ProductName { get; set; } = default!;
         public IEnumerable<AttributeValueVM> AttributeValues { get; set; }

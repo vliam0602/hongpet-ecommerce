@@ -1,6 +1,5 @@
 ﻿using HongPet.Application.Services.Abstractions;
 using HongPet.SharedViewModels.Models;
-using HongPet.SharedViewModels.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +19,12 @@ public class OrdersController(
         try
         {
             var order = await _orderService.CreateOrderAsync(orderModel);
-            return CreatedAtAction("CreateOrder", new { Id = order.Id }, order);
+            return CreatedAtAction("CreateOrder", new { Id = order.Id }, 
+                new ApiResponse
+                {
+                    Message = "Order created successfully",
+                    Data = order
+                });
         } catch (ArgumentException ex)
         {
             return BadRequest(new ApiResponse
@@ -66,8 +70,7 @@ public class OrdersController(
                 IsSuccess = false,
                 ErrorMessage = ex.Message
             });
-        }
-        catch (Exception ex)
+        } catch (Exception ex)
         {
             _logger.LogError(ex,
                 $"**Unexpected error** Error occurred while getting orders list of userId {User}");
@@ -77,5 +80,5 @@ public class OrdersController(
                 ErrorMessage = $"Unexpected error: Error occurred while getting orders list of userId {User}. Details: {ex.Message}"
             });
         }
-    }
+    }    
 }

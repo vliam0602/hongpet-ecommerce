@@ -10,6 +10,7 @@ namespace HongPet.Application.Commons
         Task AddAsync(TEntity entity);
         Task UpdateAsync(TEntity entity);
         Task DeleteAsync(Guid id);
+        Task SoftDeleteAsync(Guid id);
         Task<IEnumerable<TEntity>> GetAsync(Expression<Func<TEntity, bool>> query);
         Task<IPagedList<TEntity>> GetPagedAsync(int pageIndex = 1, int pageSize = 10, string? keyword="");
     }

@@ -1,7 +1,6 @@
 ﻿using HongPet.Application.Commons;
 using HongPet.Application.Services.Abstractions;
 using HongPet.SharedViewModels.Models;
-using HongPet.SharedViewModels.Response;
 using HongPet.SharedViewModels.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -12,7 +11,8 @@ namespace HongPet.WebApi.Controllers;
 [ApiController]
 public class ProductsController(
     ILogger<ProductsController> _logger,
-    IProductService _productService) : ControllerBase
+    IProductService _productService,
+    IReviewService _reviewService) : ControllerBase
 {
 
     [HttpGet]
@@ -55,7 +55,7 @@ public class ProductsController(
             return NotFound(new ApiResponse
             {
                 IsSuccess = false,
-                ErrorMessage = "Sản phẩm không tồn tại"
+                ErrorMessage = "Product is not exist!"
             });
         }
         catch (Exception ex)
@@ -74,7 +74,7 @@ public class ProductsController(
     {
         try
         {
-            var reviews = await _productService.GetProductReviewsAsync(productId, criteria.PageIndex, criteria.PageSize);
+            var reviews = await _reviewService.GetReviewsByProductIdAsync(productId, criteria.PageIndex, criteria.PageSize);
             return Ok(new ApiResponse
             {
                 IsSuccess = true,

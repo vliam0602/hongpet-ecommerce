@@ -4,7 +4,6 @@ using HongPet.Application.Services.Abstractions;
 using HongPet.Application.Services.Commons;
 using HongPet.Domain.Entities;
 using HongPet.SharedViewModels.Models;
-using HongPet.SharedViewModels.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -114,11 +113,12 @@ public class AuthController(
         {
             await _userService.CreateNewAccount(registerModel.Email, registerModel.Password);
 
-            return Ok(new ApiResponse
-            {
-                Message = "Đăng ký tài khoản thành công",
-                Data = new { Email = registerModel.Email }
-            });            
+            return CreatedAtAction("Register", new { Email = registerModel.Email}, 
+                new ApiResponse
+                {
+                    Message = "Đăng ký tài khoản thành công",
+                    Data = registerModel
+                });            
         } 
         catch (ArgumentException ex)
         {

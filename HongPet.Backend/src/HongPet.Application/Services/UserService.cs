@@ -8,7 +8,9 @@ namespace HongPet.Application.Services;
 public class UserService : GenericService<User>, IUserService
 {
     private readonly IUserRepository _userRepository;
-    public UserService(IUnitOfWork unitOfWork) : base(unitOfWork)
+    public UserService(
+        IUnitOfWork unitOfWork,
+        IClaimService claimService) : base(unitOfWork, claimService)
     {
         _userRepository = _unitOfWork.UserRepository;
         _repository = _userRepository; // để dùng cho những hàm được override từ Generic sang UserRepository
@@ -26,8 +28,7 @@ public class UserService : GenericService<User>, IUserService
             Password = password.Hash()
         };
 
-        await _userRepository.AddAsync(user);
-        await _unitOfWork.SaveChangesAsync();
+        await base.AddAsync(user);
     }
 
     public async Task<User?> GetByEmailAndPassword(string email, string password)

@@ -13,6 +13,7 @@ public static class ServiceInjection
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IOrderService, OrderService>();
+        services.AddScoped<IReviewService, ReviewService>();
         
         services.AddScoped<IClaimService, ClaimService>();
         return services;

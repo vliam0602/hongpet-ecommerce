@@ -6,6 +6,7 @@ namespace HongPet.Domain.Repositories.Abstractions;
 public interface IGenericRepository<TEntity> where TEntity : BaseEntity
 {
     Task<TEntity?> GetByIdAsync(Guid id);
+    Task<TEntity?> GetByIdNoTrackingAsync(Guid id);
     Task<IEnumerable<TEntity>> GetAllAsync();
     Task AddAsync(TEntity entity);
     void Update(TEntity entity);
@@ -14,4 +15,6 @@ public interface IGenericRepository<TEntity> where TEntity : BaseEntity
     Task<IPagedList<TEntity>> GetPagedAsync(int pageIndex=1, int pageSize=10, string? keyword="");
     Task<IPagedList<TEntity>> ToPaginationAsync(IQueryable<TEntity> entities,
         int pageIndex = 1, int pageSize = 10, string? keyword = "");
+
+    Task<bool> IsExistAsync(Guid id);
 }

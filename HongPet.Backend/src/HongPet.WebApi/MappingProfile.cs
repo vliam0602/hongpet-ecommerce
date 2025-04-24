@@ -32,6 +32,10 @@ public class MappingProfile : Profile
             .ForMember(model => model.ReviewerAvatar,
                 opt => opt.MapFrom(x => x.Customer.AvatarUrl));
 
+        CreateMap<ReviewCreateModel, Review>();
+
+        CreateMap<ReviewUpdateModel, Review>();
+
         // mapping for order
         CreateMap<OrderCreationModel, Order>();
 
@@ -40,9 +44,11 @@ public class MappingProfile : Profile
         CreateMap<Order, OrderVM>();
 
         CreateMap<OrderItem, OrderItemVM>()
+            .ForMember(model => model.ProductId,
+                opt => opt.MapFrom(x => x.Variant.ProductId))
             .ForMember(model => model.ProductName,
                 opt => opt.MapFrom(x => x.Variant.ProductName))
             .ForMember(model => model.AttributeValues,
-                opt => opt.MapFrom(x => x.Variant.AttributeValues));
+                opt => opt.MapFrom(x => x.Variant.AttributeValues));        
     }
 }

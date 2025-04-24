@@ -15,17 +15,15 @@ public class OrderService : GenericService<Order>, IOrderService
     private readonly IOrderRepository _orderRepository;
     private readonly IGenericRepository<Variant> _variantRepository;
     private readonly IMapper _mapper;
-    private readonly IClaimService _claimService;
     public OrderService(
         IUnitOfWork unitOfWork, 
         IMapper mapper,
-        IClaimService claimService) : base(unitOfWork)
+        IClaimService claimService) : base(unitOfWork, claimService)
     {
         _orderRepository = unitOfWork.OrderRepository;
         _repository = _orderRepository; // for reuse the generic service methods
         _mapper = mapper;
         _variantRepository = _unitOfWork.Repository<Variant>();
-        _claimService = claimService;
     }
 
     public async Task<IPagedList<OrderVM>> GetOrdersByCustomerIdAsync(
@@ -90,11 +88,7 @@ public class OrderService : GenericService<Order>, IOrderService
         }
 
         // add the order to the db
-        await _orderRepository.AddAsync(order);
-        if (await _unitOfWork.SaveChangesAsync() == 0)
-        {
-            throw new Exception("Failed to save new order in db.");
-        }
+        await base.AddAsync(order);
 
         return order;
     }

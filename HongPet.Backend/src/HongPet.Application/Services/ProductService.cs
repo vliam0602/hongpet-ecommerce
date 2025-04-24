@@ -15,7 +15,8 @@ public class ProductService : GenericService<Product>, IProductService
     private readonly IMapper _mapper;
 
     public ProductService(IUnitOfWork unitOfWork,
-        IMapper mapper) : base(unitOfWork)
+        IMapper mapper,
+        IClaimService claimService) : base(unitOfWork, claimService)
     {
         _productRepository = unitOfWork.ProductRepository;
         _reviewRepository = unitOfWork.ReviewRepository;
@@ -38,14 +39,5 @@ public class ProductService : GenericService<Product>, IProductService
             throw new KeyNotFoundException("Sản phẩm không tồn tại hoặc đã bị xóa.");
 
         return _mapper.Map<ProductDetailVM>(product);
-    }
-
-    public async Task<IPagedList<ReviewVM>> GetProductReviewsAsync(Guid productId, 
-        int pageIndex = 1, int pageSize = 10)
-    {
-        var pagedReviews = await _reviewRepository
-            .GetReviewsByProductIdAsync(productId, pageIndex, pageSize);
-
-        return _mapper.Map<PagedList<ReviewVM>>(pagedReviews);
-    }
+    } 
 }

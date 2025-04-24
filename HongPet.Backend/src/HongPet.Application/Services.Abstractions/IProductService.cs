@@ -8,7 +8,5 @@ public interface IProductService : IGenericService<Product>
 {
     Task<IPagedList<ProductGeneralVM>> GetPagedProductAsync(
         int pageIndex = 1, int pageSize = 10, string? keyword = "");
-    Task<ProductDetailVM> GetProductDetailAsync(Guid id);
-    Task<IPagedList<ReviewVM>> GetProductReviewsAsync(Guid productId, 
-        int pageIndex = 1, int pageSize = 10);
+    Task<ProductDetailVM> GetProductDetailAsync(Guid id);    
 }

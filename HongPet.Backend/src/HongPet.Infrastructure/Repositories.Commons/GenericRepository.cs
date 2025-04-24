@@ -5,10 +5,11 @@ using HongPet.Domain.Repositories.Abstractions;
 using HongPet.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using System.Net.Http.Metrics;
 
 namespace HongPet.Infrastructure.Repositories.Commons;
 
-public class GenericRepository<TEntity> : IGenericRepository<TEntity> 
+public class GenericRepository<TEntity> : IGenericRepository<TEntity>
     where TEntity : BaseEntity
 {
     protected readonly AppDbContext _context;
@@ -79,5 +80,17 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity>
                             .ToListAsync();
 
         return new PagedList<TEntity>(items, totalCount, pageIndex, pageSize);
+    }
+
+    public async Task<bool> IsExistAsync(Guid id)
+    {
+        return await _dbSet.AnyAsync(x => x.Id == id);
+    }
+
+    public async Task<TEntity?> GetByIdNoTrackingAsync(Guid id)
+    {
+        return await _dbSet
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Id == id);
     }
 }
