@@ -1,0 +1,115 @@
+﻿@model RegisterViewModel
+<!-- Page Header -->
+<section class="page-header py-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="page-title">Đăng Kí</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Trang chủ</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Đăng kí</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Register Section -->
+<section class="register-section py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="register-container">
+                    <div class="register-header text-center">
+                        <div class="register-icon">
+                            <i class="bi bi-person-plus"></i>
+                        </div>
+                        <h2 class="register-title">Tạo tài khoản</h2>
+                        <p class="register-subtitle">Gia nhập cộng đồng mua sắm cho thú cưng</p>
+                        <span class="text-danger">@ViewBag.ErrMsg</span>
+                    </div>                                        
+
+                    <form asp-action="Register" method="post" class="register-form">
+                        <div class="row">
+                            <div class="mb-3">
+                                <label asp-for="Fullname" class="form-label"></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                    <input asp-for="Fullname" class="form-control" placeholder="Nhập họ tên" />
+                                </div>
+                                <span asp-validation-for="Fullname" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label"></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                <input asp-for="Email" class="form-control" placeholder="Nhập email" />
+                            </div>
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Password" class="form-label"></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                <input asp-for="Password" type="password" class="form-control" placeholder="Nhập mật khẩu" />
+                                <button class="btn btn-outline-secondary toggle-password" type="button" data-target="Password">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="ConfirmPassword" class="form-label"></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Xác nhận mật khẩu" />
+                                <button class="btn btn-outline-secondary toggle-password" type="button" data-target="ConfirmPassword">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="form-check">
+                                <input asp-for="IsConfirm" class="form-check-input" 
+                                       type="checkbox" id="terms" checked />
+                                <label class="form-check-label" for="terms">
+                                    Tôi xác nhận đồng ý với <a href="#" class="terms-link">Điều khoản và điều kiện</a> và <a href="#" class="terms-link">Chính sách quyền riêng tư</a> của Hồng Pét shop
+                                </label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-register w-100">Tạo tài khoản</button>
+
+                        <div class="divider">
+                            <span>hoặc đăng kí với</span>
+                        </div>
+
+                        <div class="social-register">
+                            <button type="button" class="btn btn-social btn-facebook">
+                                <i class="bi bi-facebook"></i>
+                            </button>
+                            <button type="button" class="btn btn-social btn-google">
+                                <i class="bi bi-google"></i>
+                            </button>
+                            <button type="button" class="btn btn-social btn-twitter">
+                                <i class="bi bi-twitter"></i>
+                            </button>
+                        </div>
+
+                        <div class="login-link text-center mt-4">
+                            Đã có tài khoản? <a asp-controller="Auth" asp-action="Login">Đăng nhập</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

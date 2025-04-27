@@ -1,0 +1,257 @@
+﻿/* Register Container */
+.register-container {
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    padding: 40px;
+    margin-bottom: 30px;
+}
+
+/* Register Header */
+.register-header {
+    margin-bottom: 30px;
+}
+
+.register-icon {
+    width: 80px;
+    height: 80px;
+    background-color: var(--primary-pink-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 2.5rem;
+    color: var(--primary-pink-dark);
+}
+
+.register-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 10px;
+}
+
+.register-subtitle {
+    color: var(--text-light);
+    font-size: 1rem;
+}
+
+/* Register Form */
+.register-form .form-label {
+    font-weight: 500;
+    color: var(--text-dark);
+    margin-bottom: 8px;
+}
+
+.register-form .input-group-text {
+    background-color: white;
+    border-right: none;
+    color: var(--text-light);
+}
+
+.register-form .form-control {
+    border-left: none;
+    padding-left: 0;
+}
+
+    .register-form .form-control:focus {
+        box-shadow: none;
+        border-color: #ced4da;
+    }
+
+.register-form .toggle-password {
+    border-left: none;
+    background-color: white;
+    color: var(--text-light);
+}
+
+    .register-form .toggle-password:hover {
+        color: var(--primary-pink-dark);
+    }
+
+/* Password Strength */
+.password-strength {
+    margin-top: 8px;
+}
+
+.strength-bar {
+    height: 5px;
+    background-color: #e9ecef;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.strength-progress {
+    height: 100%;
+    width: 0;
+    background-color: #ff4d4d;
+    transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.strength-text {
+    display: block;
+    margin-top: 5px;
+    color: var(--text-light);
+    font-size: 0.8rem;
+}
+
+/* Terms Checkbox */
+.form-check-input:checked {
+    background-color: var(--primary-pink-dark);
+    border-color: var(--primary-pink-dark);
+}
+
+.terms-link {
+    color: var(--primary-pink-dark);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+    .terms-link:hover {
+        text-decoration: underline;
+    }
+
+/* Register Button */
+.btn-register {
+    background-color: var(--primary-pink);
+    color: white;
+    padding: 12px;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+    .btn-register:hover {
+        background-color: var(--primary-pink-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(249, 168, 185, 0.4);
+    }
+
+/* Divider */
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 25px 0;
+}
+
+    .divider::before,
+    .divider::after {
+        content: '';
+        flex: 1;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .divider span {
+        padding: 0 15px;
+        color: var(--text-light);
+        font-size: 0.9rem;
+    }
+
+/* Social Register */
+.social-register {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.btn-social {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.btn-facebook {
+    background-color: #3b5998;
+    color: white;
+}
+
+.btn-google {
+    background-color: #db4437;
+    color: white;
+}
+
+.btn-twitter {
+    background-color: #1da1f2;
+    color: white;
+}
+
+.btn-social:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    color: white;
+}
+
+/* Login Link */
+.login-link {
+    color: var(--text-light);
+    font-size: 0.95rem;
+}
+
+    .login-link a {
+        color: var(--primary-pink-dark);
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.3s ease;
+    }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+/* Animation */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.register-container {
+    animation: fadeInUp 0.6s ease-out forwards;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .register-container {
+        padding: 30px 20px;
+    }
+
+    .register-icon {
+        width: 70px;
+        height: 70px;
+        font-size: 2rem;
+    }
+
+    .register-title {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .register-container {
+        padding: 25px 15px;
+    }
+
+    .social-register {
+        gap: 10px;
+    }
+
+    .btn-social {
+        width: 45px;
+        height: 45px;
+        font-size: 1rem;
+    }
+}

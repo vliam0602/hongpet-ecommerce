@@ -7,6 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddSession();
+builder.Services.AddHttpContextAccessor();
+
 // Bind AppConfiguration from configuration
 var _config = builder.Configuration.Get<AppConfiguration>();
 builder.Configuration.Bind(_config);
@@ -15,10 +18,10 @@ builder.Services.AddSingleton(_config!);
 var baseUrl = _config!.ApiSettings.BaseUrl;
 
 // Register the API services with HttpClient
-builder.Services.AddHttpClient<IProductApiService, ProductApiService>(client =>
-{
-    client.BaseAddress = new Uri(baseUrl);
-});
+builder.Services.AddApiServices(_config.ApiSettings.BaseUrl);
+
+// Add auto mapper
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 var app = builder.Build();
 
@@ -32,6 +35,8 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseRouting();
+
+app.UseSession();
 
 app.UseAuthorization();
 

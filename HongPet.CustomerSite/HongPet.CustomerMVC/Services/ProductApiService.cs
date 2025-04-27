@@ -41,34 +41,36 @@ public class ProductApiService : IProductApiService
 
     public async Task<ProductGeneralVM> GetProductAsync(Guid id)
     {
-        var response = await _httpClient
-            .GetFromJsonAsync<ApiResponse>(
-            $"api/products/{id}");
-        
-        if (response == null)
-        {
-            throw new HttpRequestException(
-                $"Error when request product with id {id}. " +
-                $"The api response is null.");
-        }
-        
-        return (ProductGeneralVM)response.Data!;
+        //var response = await _httpClient
+        //    .GetFromJsonAsync<ApiResponse>(
+        //    $"api/products/{id}");
+
+        //if (response == null)
+        //{
+        //    throw new HttpRequestException(
+        //        $"Error when request product with id {id}. " +
+        //        $"The api response is null.");
+        //}
+
+        //return (ProductGeneralVM)response.Data!;
+        throw new NotImplementedException();
     }
 
     public async Task<PagedList<ReviewVM>> GetProductReviewsAsync(Guid productId, QueryListCriteria criteria)
     {
-        var response = await _httpClient.GetFromJsonAsync<ApiResponse>(
-            $"api/products/{productId}/reviews?" +
-            $"pageIndex={criteria.PageIndex}" +
-            $"&pageSize={criteria.PageSize}");
+        //var response = await _httpClient.GetFromJsonAsync<ApiResponse>(
+        //    $"api/products/{productId}/reviews?" +
+        //    $"pageIndex={criteria.PageIndex}" +
+        //    $"&pageSize={criteria.PageSize}");
 
-        if (response == null)
-        {
-            throw new HttpRequestException(
-                $"Error when request reviews of product with id {productId}. " +
-                $"The api response is null.");
-        }
+        //if (response == null)
+        //{
+        //    throw new HttpRequestException(
+        //        $"Error when request reviews of product with id {productId}. " +
+        //        $"The api response is null.");
+        //}
 
-        return (PagedList<ReviewVM>)response.Data!;
+        //return (PagedList<ReviewVM>)response.Data!;
+        throw new NotImplementedException();
     }
 }

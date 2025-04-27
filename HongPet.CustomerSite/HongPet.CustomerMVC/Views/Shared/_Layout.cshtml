@@ -19,19 +19,18 @@
     <!-- General custom css -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 
+    <link rel="stylesheet" href="~/css/navbar.css" asp-append-version="true" />
+
     <!-- Bundle file for specific css of razor views -->
     <link rel="stylesheet" href="~/HongPet.CustomerMVC.styles.css" asp-append-version="true" />
 </head>
 <body>
 
-    <partial name="_Navbar" />
-    <partial name="_Hero" />        
+    <partial name="_Navbar" />       
 
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+    <main role="main">
+        @RenderBody()
+    </main>
 
     <partial name="_Footer" />
 
