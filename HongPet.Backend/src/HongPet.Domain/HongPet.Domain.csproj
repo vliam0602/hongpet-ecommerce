@@ -10,4 +10,8 @@
     <PackageReference Include="NewId" Version="4.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\HongPet.SharedViewModels\HongPet.SharedViewModels.csproj" />
+  </ItemGroup>
+
 </Project>

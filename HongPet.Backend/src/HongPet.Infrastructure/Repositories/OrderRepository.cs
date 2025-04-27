@@ -1,12 +1,9 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using Domain.Entities.Commons;
-using HongPet.Application.Commons;
 using HongPet.Domain.Entities;
 using HongPet.Domain.Repositories.Abstractions;
 using HongPet.Infrastructure.Database;
 using HongPet.Infrastructure.Repositories.Commons;
-using HongPet.SharedViewModels.ViewModels;
+using HongPet.SharedViewModels.Generals;
 using Microsoft.EntityFrameworkCore;
 
 namespace HongPet.Infrastructure.Repositories;

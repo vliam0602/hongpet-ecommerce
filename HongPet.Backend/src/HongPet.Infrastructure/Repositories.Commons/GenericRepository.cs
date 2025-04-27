@@ -1,11 +1,9 @@
-﻿
-using Domain.Entities.Commons;
-using HongPet.Application.Commons;
+﻿using HongPet.Domain.Entities.Commons;
 using HongPet.Domain.Repositories.Abstractions;
 using HongPet.Infrastructure.Database;
+using HongPet.SharedViewModels.Generals;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using System.Net.Http.Metrics;
 
 namespace HongPet.Infrastructure.Repositories.Commons;
 

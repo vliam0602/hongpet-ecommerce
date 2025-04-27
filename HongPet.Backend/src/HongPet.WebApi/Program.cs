@@ -6,7 +6,6 @@ using HongPet.Infrastructure.Database;
 using HongPet.Infrastructure.Repositories.Commons;
 using HongPet.WebApi;
 using HongPet.WebApi.ServiceEnxtensions;
-using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,6 +24,17 @@ var _config = builder.Configuration.Get<AppConfiguration>();
 builder.Configuration.Bind(_config);
 builder.Services.AddSingleton(_config!);
 
+// Add Cors policy
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigins", policy =>
+    {
+        policy.WithOrigins(
+                    _config!.CorsPolicy.AllowedOrigins.CustomerSite)
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
 // Add dbcontext
 builder.Services.AddDbConfig(_config!);
 

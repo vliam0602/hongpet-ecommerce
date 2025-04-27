@@ -1,6 +1,4 @@
-﻿using Domain.Entities.Commons;
-
-namespace HongPet.Domain.Entities;
+﻿namespace HongPet.Domain.Entities;
 
 public class OrderItem
 {
