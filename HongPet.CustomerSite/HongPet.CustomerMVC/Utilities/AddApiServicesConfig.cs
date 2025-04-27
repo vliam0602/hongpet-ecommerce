@@ -1,7 +1,7 @@
 ﻿using HongPet.CustomerMVC.Services;
 using HongPet.CustomerMVC.Services.Abstraction;
 
-namespace HongPet.CustomerMVC;
+namespace HongPet.CustomerMVC.Utilities;
 
 public static class AddApiServicesConfig
 {

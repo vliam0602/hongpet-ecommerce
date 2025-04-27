@@ -1,0 +1,121 @@
+﻿@model ProductListViewModel
+
+<!-- Page Header -->
+<section class="page-header py-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="page-title">Sản phẩm</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                        <a asp-controller="Home">
+                            Trang chủ</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Sản phẩm</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Product List Section -->
+<section class="product-list-section py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Sidebar Filters -->
+            <partial name="_SidebarFilter" />
+
+            <!-- Product Grid -->
+            <div class="col-lg-9">
+                <!-- Product List Header -->
+                <div class="product-list-header d-flex justify-content-between align-items-center mb-4">
+                    <div class="results-count">
+                        Showing @((Model.ProductPagedList.CurrentPage - 1) * Model.ProductPagedList.PageSize
+                           + Math.Min(Model.ProductPagedList.Items.Count, 
+                                        Model.ProductPagedList.CurrentPage * Model.ProductPagedList.PageSize))
+                        of @Model.ProductPagedList.TotalCount results
+                    </div>
+                    <div class="sort-dropdown">
+                        <select class="form-select">
+                            <option selected>Sort by latest</option>
+                            <option>Sort by popularity</option>
+                            <option>Sort by price: low to high</option>
+                            <option>Sort by price: high to low</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Products Grid -->
+                <div class="row">
+                    @foreach (var product in Model.ProductPagedList.Items)
+                    {
+                        <a class="col-md-4 mb-4 product-detail"
+                           asp-action="Details">
+                            <div class="product-card">
+                                <div class="product-image">
+                                    <img src="@product.ThumbnailUrl" alt="@product.Name">
+                                </div>
+                                <div class="product-info">
+                                    <h3 class="product-title">@product.Name</h3>
+                                    <div class="product-price">
+                                        @product.Price.ToString("C", 
+                                            new System.Globalization.CultureInfo("vi-VN"))
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    }
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination-container d-flex justify-content-center mt-4">
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination">
+                            <!-- Previous Page -->
+                            @if (Model.ProductPagedList.HasPrevious)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" 
+                                       asp-controller="Product" 
+                                       asp-action="Index" 
+                                       asp-route-pageIndex="@(Model.ProductPagedList.CurrentPage - 1)" 
+                                       asp-route-pageSize="@Model.ProductPagedList.PageSize" 
+                                       asp-route-searchString="@Model.SearchString">Previous</a>
+                                </li>
+                            }
+
+                            <!-- Page Numbers -->
+                            @for (int i = 1; i <= Model.ProductPagedList.TotalPages; i++)
+                            {
+                                <li class="page-item 
+                                    @(i == Model.ProductPagedList.CurrentPage ? "active" : "")">
+                                    <a class="page-link" 
+                                       asp-controller="Product" 
+                                       asp-action="Index" 
+                                       asp-route-pageIndex="@i" 
+                                       asp-route-pageSize="@Model.ProductPagedList.PageSize" 
+                                       asp-route-searchString="@Model.SearchString">@i</a>
+                                </li>
+                            }
+
+                            <!-- Next Page -->
+                            @if (Model.ProductPagedList.HasNext)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" 
+                                       asp-controller="Product"
+                                       asp-action="Index" 
+                                       asp-route-pageIndex="@(Model.ProductPagedList.CurrentPage + 1)" 
+                                       asp-route-pageSize="@Model.ProductPagedList.PageSize" 
+                                       asp-route-searchString="@Model.SearchString">Next</a>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>

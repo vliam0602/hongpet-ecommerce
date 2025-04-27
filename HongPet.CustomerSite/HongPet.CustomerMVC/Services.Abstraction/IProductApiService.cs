@@ -8,6 +8,6 @@ public interface IProductApiService
 {
     Task<PagedList<ProductGeneralVM>> GetProductsAsync(
         QueryListCriteria criteria);
-    Task<ProductGeneralVM> GetProductAsync(Guid id);
+    Task<ProductDetailVM?> GetProductByIdAsync(Guid id);
     Task<PagedList<ReviewVM>> GetProductReviewsAsync(Guid productId, QueryListCriteria criteria);
 }

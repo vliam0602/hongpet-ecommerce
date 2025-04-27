@@ -1,4 +1,4 @@
-﻿@model IEnumerable<HongPet.SharedViewModels.ViewModels.ProductGeneralVM>
+﻿@model ProductListViewModel
 
 @{
     ViewData["Title"] = "Trang Chủ";
@@ -16,7 +16,7 @@
         </div>
 
         <div class="row">
-            @foreach (var product in Model)
+            @foreach (var product in Model.ProductPagedList.Items)
             {
                 <div class="col-md-4 mb-4">
                     <div class="featured-product-card">

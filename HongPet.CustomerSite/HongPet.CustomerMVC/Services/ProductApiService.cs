@@ -1,8 +1,10 @@
 ﻿using HongPet.CustomerMVC.Services.Abstraction;
+using HongPet.CustomerMVC.Utilities;
 using HongPet.SharedViewModels.Generals;
 using HongPet.SharedViewModels.Models;
 using HongPet.SharedViewModels.ViewModels;
 using Newtonsoft.Json;
+using System.Net;
 
 namespace HongPet.CustomerMVC.Services;
 
@@ -17,21 +19,26 @@ public class ProductApiService : IProductApiService
 
     public async Task<PagedList<ProductGeneralVM>> GetProductsAsync(QueryListCriteria criteria)
     {
-        var response = await _httpClient
-            .GetFromJsonAsync<ApiResponse>(
-            $"api/products?" +
+        var url = $"api/products?" +
             $"pageIndex={criteria.PageIndex}" +
             $"&pageSize={criteria.PageSize}" +
-            $"&keyword={criteria.Keyword}");
+            $"&keyword={criteria.Keyword}";
 
-        var responseString = response?.Data?.ToString()!;
+        var (response, apiResponse) = 
+            await HttpClientHelper.GetAsync(_httpClient, url);
 
-        if (response == null|| string.IsNullOrEmpty(responseString))
+        if (apiResponse == null)
         {
-            throw new HttpRequestException(
-                $"Error when requesting products. " +
-                $"The API response is empty.");
+            throw new HttpRequestException(apiResponse?.ErrorMessage ??
+                "Invalid response from server.");
         }
+
+        if (response.StatusCode == HttpStatusCode.InternalServerError)
+        {
+            throw new Exception($"Server error: {apiResponse.ErrorMessage}");
+        }
+
+        var responseString = apiResponse?.Data?.ToString()!;       
 
         var products = JsonConvert
             .DeserializeObject<PagedList<ProductGeneralVM>>(responseString);
@@ -39,21 +46,39 @@ public class ProductApiService : IProductApiService
         return products ?? new PagedList<ProductGeneralVM>();
     }
 
-    public async Task<ProductGeneralVM> GetProductAsync(Guid id)
+    public async Task<ProductDetailVM?> GetProductByIdAsync(Guid id)
     {
-        //var response = await _httpClient
-        //    .GetFromJsonAsync<ApiResponse>(
-        //    $"api/products/{id}");
+        var url = $"api/products/{id}";
 
-        //if (response == null)
-        //{
-        //    throw new HttpRequestException(
-        //        $"Error when request product with id {id}. " +
-        //        $"The api response is null.");
-        //}
+        var (response, apiResponse) = 
+            await HttpClientHelper.GetAsync(_httpClient, url);        
 
-        //return (ProductGeneralVM)response.Data!;
-        throw new NotImplementedException();
+        if (apiResponse == null)
+        {
+            throw new HttpRequestException(apiResponse?.ErrorMessage ??
+                "Invalid response from server.");
+        }
+
+        // Check response status
+        if (response.StatusCode == HttpStatusCode.NotFound)
+        {
+            throw new KeyNotFoundException(apiResponse.ErrorMessage);
+        } else if (response.StatusCode == HttpStatusCode.InternalServerError)
+        {
+            throw new Exception($"Server error: {apiResponse.ErrorMessage}");
+        }
+
+        var responseString = apiResponse?.Data?.ToString()!;
+
+        if (string.IsNullOrEmpty(responseString))
+        {
+            throw new HttpRequestException("Failed to parse response data.");
+        }
+
+        var products = JsonConvert
+            .DeserializeObject<ProductDetailVM>(responseString);
+
+        return products;
     }
 
     public async Task<PagedList<ReviewVM>> GetProductReviewsAsync(Guid productId, QueryListCriteria criteria)

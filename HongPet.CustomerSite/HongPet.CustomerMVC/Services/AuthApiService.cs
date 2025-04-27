@@ -1,5 +1,7 @@
-﻿using HongPet.SharedViewModels.Models;
+﻿using HongPet.CustomerMVC.Utilities;
+using HongPet.SharedViewModels.Models;
 using Newtonsoft.Json;
+using System;
 using System.Net;
 
 namespace HongPet.CustomerMVC.Services;
@@ -9,12 +11,10 @@ public class AuthApiService(
 {
     public async Task<TokenModel> LoginAsync(LoginModel loginModel)
     {
-        var response = await _httpClient
-            .PostAsJsonAsync("api/auth/login", loginModel);        
+        var url = $"api/auth/login";
 
-        // Convert response content to ApiResponse
-        var responseContent = await response.Content.ReadAsStringAsync();
-        var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(responseContent);
+        var (response, apiResponse) = await HttpClientHelper
+            .PostAsync(_httpClient, url, loginModel);                
 
         if (apiResponse == null)
         {
@@ -42,14 +42,16 @@ public class AuthApiService(
     }
 
     public async Task<RegisterModel> RegisterAsync(RegisterModel registerModel)
-    {
-        // Gửi yêu cầu POST đến API /api/auth/register
-        var response = await _httpClient.PostAsJsonAsync("api/auth/register", registerModel);
+    {        
+        var url = "api/auth/register";
+        var (response, apiResponse) = await HttpClientHelper
+            .PostAsync(_httpClient, url, registerModel);
 
-        // Đọc nội dung phản hồi từ API
-        var responseContent = await response.Content.ReadAsStringAsync();
-        var apiResponse = JsonConvert
-            .DeserializeObject<ApiResponse>(responseContent);
+        if (apiResponse == null)
+        {
+            throw new HttpRequestException(apiResponse?.ErrorMessage ??
+                "Invalid response from server.");
+        }
 
         if (apiResponse == null)
         {
@@ -69,6 +71,7 @@ public class AuthApiService(
         // Chuyển đổi dữ liệu phản hồi thành RegisterModel
         var registeredUser = JsonConvert
             .DeserializeObject<RegisterModel>(apiResponse.Data!.ToString()!);
+
         if (registeredUser == null)
         {
             throw new HttpRequestException("Failed to parse registered user data.");
