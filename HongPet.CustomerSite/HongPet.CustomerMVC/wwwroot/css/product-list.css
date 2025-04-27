@@ -1,0 +1,226 @@
+﻿/* Product List Header */
+.product-list-header {
+    background-color: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.results-count {
+    color: var(--text-light);
+    font-size: 0.9rem;
+}
+
+.sort-dropdown .form-select {
+    border-color: #e9ecef;
+    color: var(--text-dark);
+    font-size: 0.9rem;
+    padding-right: 30px;
+    cursor: pointer;
+}
+
+/* Product Cards */
+.product-detail {
+    text-decoration: none;
+}
+
+.product-card {
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+}
+
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+.product-image {
+    position: relative;
+    padding: 20px;
+    background-color: #f8f9fa;
+}
+
+    .product-image img {
+        width: 100%;
+        height: 200px;
+        object-fit: contain;
+    }
+
+.wishlist-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background-color: white;
+    border: none;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-dark);
+    font-size: 1.1rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+    .wishlist-btn:hover {
+        color: var(--accent-orange);
+        transform: scale(1.1);
+    }
+
+.product-info {
+    padding: 15px;
+}
+
+.product-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text-dark);
+}
+
+.product-price {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+/* Pagination */
+.pagination-container {
+    margin-top: 30px;
+}
+
+.pagination .page-link {
+    color: var(--text-dark);
+    border-color: #e9ecef;
+    padding: 8px 15px;
+    margin: 0 5px;
+    border-radius: 5px;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: var(--accent-orange);
+    border-color: var(--accent-orange);
+    color: white;
+}
+
+.pagination .page-link:hover {
+    background-color: #f8f9fa;
+    color: var(--accent-orange);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 992px) {
+    .filter-widget {
+        margin-bottom: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .product-list-header {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .sort-dropdown {
+        width: 100%;
+    }
+
+    .pagination .page-link {
+        padding: 6px 12px;
+        margin: 0 3px;
+    }
+}
+
+@media (max-width: 576px) {
+    .filter-title {
+        font-size: 1.1rem;
+    }
+
+    .product-title {
+        font-size: 0.9rem;
+    }
+
+    .product-price {
+        font-size: 1rem;
+    }
+
+    .product-image img {
+        height: 150px;
+    }
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.product-card {
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+    .product-card:nth-child(2) {
+        animation-delay: 0.1s;
+    }
+
+    .product-card:nth-child(3) {
+        animation-delay: 0.2s;
+    }
+
+    .product-card:nth-child(4) {
+        animation-delay: 0.3s;
+    }
+
+    .product-card:nth-child(5) {
+        animation-delay: 0.4s;
+    }
+
+    .product-card:nth-child(6) {
+        animation-delay: 0.5s;
+    }
+
+    .product-card:nth-child(7) {
+        animation-delay: 0.6s;
+    }
+
+    .product-card:nth-child(8) {
+        animation-delay: 0.7s;
+    }
+
+    .product-card:nth-child(9) {
+        animation-delay: 0.8s;
+    }
+
+.filter-widget {
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+    .filter-widget:nth-child(2) {
+        animation-delay: 0.1s;
+    }
+
+    .filter-widget:nth-child(3) {
+        animation-delay: 0.2s;
+    }
+
+    .filter-widget:nth-child(4) {
+        animation-delay: 0.3s;
+    }
+
+    .filter-widget:nth-child(5) {
+        animation-delay: 0.4s;
+    }

@@ -1,4 +1,4 @@
-﻿namespace HongPet.CustomerMVC;
+﻿namespace HongPet.CustomerMVC.Utilities;
 
 public class AppConstant
 {

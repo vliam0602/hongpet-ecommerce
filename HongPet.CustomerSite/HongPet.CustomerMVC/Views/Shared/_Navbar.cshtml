@@ -21,7 +21,7 @@
                     <a class="nav-link" asp-controller="Home">Trang chủ</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Sản phẩm</a>
+                    <a class="nav-link" asp-controller="Product">Sản phẩm</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Giới thiệu</a>
@@ -35,10 +35,17 @@
         <!-- Search and Icons -->
         <div class="d-none d-lg-flex align-items-center">
             <div class="search-container me-3">
-                <input type="text" class="form-control" placeholder="Tìm kiếm sản phẩm...">
-                <button class="search-button">
-                    <i class="bi bi-search"></i>
-                </button>
+                <form method="get" 
+                      asp-controller="Product" 
+                      asp-action="Index" class="d-flex">
+                    <input type="text" name="searchString" 
+                           class="form-control" 
+                           placeholder="Tìm kiếm sản phẩm..." 
+                           value="@ViewData["searchString"]" />
+                    <button type="submit" class="search-button">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </form>
             </div>
 
             <a class="icon-container me-3" href="./cart.html">

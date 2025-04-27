@@ -1,6 +1,4 @@
 ﻿using System.Diagnostics;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using HongPet.CustomerMVC.Models;
 using HongPet.CustomerMVC.Services.Abstraction;
 using HongPet.SharedViewModels.Models;
@@ -22,9 +20,9 @@ public class HomeController(
             {
                 PageIndex = 1,
                 PageSize = 3
-            })).Items;
+            }));
 
-            return View(products);
+            return View(new ProductListViewModel { ProductPagedList = products });
         } catch (Exception ex)
         {
             _logger.LogError(ex, "Error occurred while fetching feature products.");
@@ -47,4 +45,8 @@ public class HomeController(
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
     
+    public IActionResult NotFoundError()
+    {
+        return View();
+    }
 }

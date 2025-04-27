@@ -2,9 +2,9 @@
 using HongPet.CustomerMVC.Models;
 using HongPet.SharedViewModels.Models;
 
-namespace HongPet.CustomerMVC;
+namespace HongPet.CustomerMVC.Utilities;
 
-public class MappingProfile :Profile
+public class MappingProfile : Profile
 {
     public MappingProfile()
     {
