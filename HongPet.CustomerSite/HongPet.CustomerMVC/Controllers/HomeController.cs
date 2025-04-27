@@ -1,4 +1,6 @@
 ﻿using System.Diagnostics;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using HongPet.CustomerMVC.Models;
 using HongPet.CustomerMVC.Services.Abstraction;
 using HongPet.SharedViewModels.Models;
@@ -13,34 +15,22 @@ public class HomeController(
 
     public async Task<IActionResult> Index()
     {
-        // Dữ liệu mẫu
-        //var products = new List<ProductGeneralVM>
-        //    {
-        //        new ProductGeneralVM { 
-        //            Name = "XXXXX", 
-        //            Price = 999, 
-        //            ThumbnailUrl = "https://i.ebayimg.com/thumbs/images/g/VQgAAOSwvuZiF~ai/s-l225.jpg" 
-        //        },
-        //        new ProductGeneralVM {
-        //            Name = "XXXX", 
-        //            Price = 999, 
-        //            ThumbnailUrl = "https://i.ebayimg.com/thumbs/images/g/VQgAAOSwvuZiF~ai/s-l225.jpg" 
-        //        },
-        //        new ProductGeneralVM { 
-        //            Name = "XXX", 
-        //            Price = 999, 
-        //            ThumbnailUrl = "https://i.ebayimg.com/thumbs/images/g/VQgAAOSwvuZiF~ai/s-l225.jpg" 
-        //        }
-        //    };
-        var products = (await _productApiService
+        try
+        {
+            var products = (await _productApiService
             .GetProductsAsync(new QueryListCriteria
             {
                 PageIndex = 1,
                 PageSize = 3
             })).Items;
 
-        // Truyền model vào view
-        return View(products);
+            return View(products);
+        } catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while fetching feature products.");
+
+            return RedirectToAction(nameof(Error), new { errMsg = ex.Message });
+        }
     }
 
     public IActionResult Privacy()
@@ -49,8 +39,12 @@ public class HomeController(
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
+    
+    public IActionResult Error(string? errMsg)
     {
+        ViewBag.ErrorMessage = errMsg;
+
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
+    
 }

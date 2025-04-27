@@ -25,7 +25,7 @@ public class UserService : GenericService<User>, IUserService
         _mapper = mapper;
     }
 
-    public async Task CreateNewAccountAsync(string email, string password)
+    public async Task CreateNewAccountAsync(string fullname, string email, string password)
     {
         if (await _userRepository.IsEmailExistAsync(email))
         {
@@ -33,7 +33,9 @@ public class UserService : GenericService<User>, IUserService
         }
         var user = new User
         {
+            Fullname = fullname,
             Email = email,
+            Username = email.Substring(0, email.IndexOf("@")),
             Password = password.Hash()
         };
 

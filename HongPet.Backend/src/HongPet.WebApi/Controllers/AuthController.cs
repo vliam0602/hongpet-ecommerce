@@ -106,12 +106,13 @@ public class AuthController(
         }
     }
 
-    [HttpPut("register")]
+    [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterModel registerModel)
     {
         try
         {
-            await _userService.CreateNewAccountAsync(registerModel.Email, registerModel.Password);
+            await _userService.CreateNewAccountAsync(
+                registerModel.Fullname, registerModel.Email, registerModel.Password);
 
             return CreatedAtAction("Register", new { Email = registerModel.Email}, 
                 new ApiResponse
