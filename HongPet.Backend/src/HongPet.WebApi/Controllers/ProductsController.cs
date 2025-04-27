@@ -1,5 +1,5 @@
-﻿using HongPet.Application.Commons;
-using HongPet.Application.Services.Abstractions;
+﻿using HongPet.Application.Services.Abstractions;
+using HongPet.SharedViewModels.Generals;
 using HongPet.SharedViewModels.Models;
 using HongPet.SharedViewModels.ViewModels;
 using Microsoft.AspNetCore.Authorization;

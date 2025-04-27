@@ -2,12 +2,12 @@
 using System.ComponentModel.DataAnnotations;
 using System.Security.Cryptography;
 
-namespace Domain.Entities.Commons;
+namespace HongPet.Domain.Entities.Commons;
 
 public class BaseEntity
 {
     [Key]
-    public Guid Id { get; set; } = NewId.Next().ToGuid();    
+    public Guid Id { get; set; } = NewId.Next().ToGuid();
     public Guid? CreatedBy { get; set; }
     public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
     public Guid? LastModificatedBy { get; set; }

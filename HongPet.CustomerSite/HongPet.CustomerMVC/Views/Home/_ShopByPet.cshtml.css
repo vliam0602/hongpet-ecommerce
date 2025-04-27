@@ -1,0 +1,73 @@
+﻿/* Shop by Pet Section */
+.shop-by-pet-section {
+    padding: 60px 0;
+}
+
+.pet-category-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    transition: transform 0.3s ease;
+}
+
+    .pet-category-item:hover {
+        transform: translateY(-5px);
+    }
+
+.pet-icon-container {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background-color: var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+    position: relative;
+    overflow: hidden;
+}
+
+    .pet-icon-container:hover {
+        background-color: var(--primary-pink);
+    }
+
+.pet-icon {
+    width: 70%;
+    height: 70%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.dog-icon {
+    background-image: url('/assets/dog-logo.png');
+}
+
+.cat-icon {
+    background-image: url('/assets/cat-logo.png');
+}
+
+.hamster-icon {
+    background-image: url('/assets/hamster-logo.png');
+}
+
+.rabbit-icon {
+    background-image: url('/assets/rabit-logo.png');
+}
+
+.parrot-icon {
+    background-image: url('/assets/parrot-logo.png');
+}
+
+.turtle-icon {
+    background-image: url('/assets/turtle-logo.png');
+}
+
+.pet-category-name {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-top: 5px;
+    text-align: center;
+}

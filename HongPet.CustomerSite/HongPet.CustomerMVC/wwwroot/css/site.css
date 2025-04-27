@@ -1,31 +1,85 @@
-html {
-  font-size: 14px;
+/* Custom CSS */
+:root {
+    --primary-pink: #f9a8b9;
+    --primary-pink-dark: #f7899f;
+    --primary-pink-light: #ffd1da;
+    --text-dark: #333333;
+    --text-light: #666666;
+    --border-color: #eeeeee;
+    --accent-orange: #FF6F91;
+    /* --accent-orange: #fd7e14; */
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
+/****** General Styles ******/
 
 body {
-  margin-bottom: 60px;
+    font-family: 'National Park','Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow-x: hidden;
+    background-color: #f8f9fa;
+    color: var(--text-dark);
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+/* Logo Styles */
+.logo-img {
+    width: 3rem;
+    margin: 0rem 0.5rem;
+    padding-bottom: 0.5rem;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+.logo-title {
+    color: var(--primary-pink-dark);
+    font-size: 1.5rem;
+    display: inline-block;
+    margin-top: 1.5rem;
 }
+
+/* Pagination */
+.pagination-container {
+    margin-top: 30px;
+}
+
+.pagination .page-link {
+    color: var(--text-dark);
+    border-color: #e9ecef;
+    padding: 8px 15px;
+    margin: 0 5px;
+    border-radius: 5px;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: var(--accent-orange);
+    border-color: var(--accent-orange);
+    color: white;
+}
+
+.pagination .page-link:hover {
+    background-color: #f8f9fa;
+    color: var(--accent-orange);
+}
+
+/* Page Header */
+.page-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #eee;
+}
+
+.page-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 5px;
+}
+
+.breadcrumb {
+    margin-bottom: 0;
+}
+
+.breadcrumb-item a {
+    color: var(--primary-pink-dark);
+    text-decoration: none;
+}
+
+.breadcrumb-item.active {
+    color: var(--text-light);
+}
+/****** End General Styles ******/

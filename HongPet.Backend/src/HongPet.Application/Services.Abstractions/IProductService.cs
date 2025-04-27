@@ -1,6 +1,6 @@
-﻿using Domain.Entities.Commons;
-using HongPet.Application.Commons;
+﻿using HongPet.Application.Commons;
 using HongPet.Domain.Entities;
+using HongPet.SharedViewModels.Generals;
 using HongPet.SharedViewModels.Models;
 using HongPet.SharedViewModels.ViewModels;
 

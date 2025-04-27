@@ -1,8 +1,38 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model IEnumerable<HongPet.SharedViewModels.ViewModels.ProductGeneralVM>
+
+@{
+    ViewData["Title"] = "Trang Chủ";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<partial name="_ShopByPet" />
+
+<!-- Featured Products Section -->
+<section class="featured-products py-5">
+    <div class="container">
+        <div class="section-header mb-5">
+            <h2 class="section-title text-center">Sản Phẩm Mới</h2>
+        </div>
+
+        <div class="row">
+            @foreach (var product in Model)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="featured-product-card">
+                        <div class="product-image">
+                            <img src="@product.ThumbnailUrl" alt="@product.Name" class="img-fluid">
+                        </div>
+                        <div class="product-info">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h3 class="product-title">@product.Name</h3>
+                                <button class="wishlist-btn-simple">
+                                    <i class="bi bi-cart3"></i>
+                                </button>
+                            </div>
+                            <div class="product-price">@product.Price.ToString("C")</div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>

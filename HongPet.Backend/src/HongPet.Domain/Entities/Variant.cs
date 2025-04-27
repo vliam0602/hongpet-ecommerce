@@ -1,4 +1,4 @@
-﻿using Domain.Entities.Commons;
+﻿using HongPet.Domain.Entities.Commons;
 
 namespace HongPet.Domain.Entities;
 
