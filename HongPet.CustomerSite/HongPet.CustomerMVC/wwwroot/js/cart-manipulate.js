@@ -1,5 +1,4 @@
-﻿
-function formatCurrency(value) {
+﻿function formatCurrency(value) {
     return new Intl.NumberFormat('vi-VN',
         {
             style: 'currency',
@@ -28,12 +27,23 @@ document.querySelectorAll('.variant-btn').forEach(button => {
 
         this.classList.add('active');
 
+        // get dynamic data if variant when click
         selectedVariantId = this.getAttribute('data-variant-id');
+
         selectedVariantPrice = this.getAttribute('data-variant-price');
 
-        // Cập nhật giá hiển thị
-        document.getElementById('variant-price').textContent =
-            formatCurrency(selectedVariantPrice);
+        const variantName = Array.from(this.querySelectorAll('.attribute-value'))
+            .map(span => span.textContent.trim()).join(", ");        
+
+        // update the value
+        document.getElementById('variant-price').textContent = formatCurrency(selectedVariantPrice);
+
+        document.getElementById('variantId').value = selectedVariantId;
+
+        document.getElementById('variantName').value = variantName;
+
+        document.getElementById('variantPrice').value = selectedVariantPrice;
+
     });
 });
 
@@ -42,28 +52,4 @@ function updateQuantity(change) {
     let currentQuantity = parseInt(quantityInput.value);
     currentQuantity = Math.max(1, currentQuantity + change);
     quantityInput.value = currentQuantity;
-}
-
-function addToCart() {
-    const quantity = document.getElementById('quantity-input').value;
-
-    // Lấy URL từ thuộc tính data-url
-    const url = document
-        .getElementById('add-to-cart-btn')
-        .getAttribute('data-url');
-
-    fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
-        },
-        body: JSON.stringify({ variantId: selectedVariantId, quantity: quantity })
-    }).then(response => {
-        if (response.ok) {
-            alert('Đã thêm sản phẩm vào giỏ hàng!');
-        } else {
-            alert('Thêm sản phẩm vào giỏ hàng thất bại!');
-        }
-    });
 }

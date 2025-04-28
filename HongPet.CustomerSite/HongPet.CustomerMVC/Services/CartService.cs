@@ -11,23 +11,19 @@ public class CartService(
 {
     private readonly ISession _session = httpContextAccessor.HttpContext!.Session;
 
-    public void AddToCart(Guid variantId, int quantity)
+    public void AddToCart(CartItemModel model)
     {
         var cartItems = GetCartItems().ToList();
 
         var existingItem = cartItems
-            .FirstOrDefault(item => item.VariantId == variantId);
+            .FirstOrDefault(item => item.VariantId == model.VariantId);
 
         if (existingItem != null)
         {
-            existingItem.Quantity += quantity;
+            existingItem.Quantity += model.Quantity;
         } else
         {
-            cartItems.Add(new CartItemModel
-            {
-                VariantId = variantId,
-                Quantity = quantity
-            });
+            cartItems.Add(model);
         }
 
         SaveCartItems(cartItems);
@@ -51,6 +47,15 @@ public class CartService(
     {
         var cartData = JsonConvert.SerializeObject(cartItems);
         _session.SetString(AppConstant.CartSessionKey, cartData);
+    }
+
+    public int GetCartItemsQuantity()
+    {
+        var cartData = GetCartItems();
+
+        return cartData == null || !cartData.Any()
+            ? 0
+            : cartData.Sum(x => x.Quantity);
     }
 }
 
