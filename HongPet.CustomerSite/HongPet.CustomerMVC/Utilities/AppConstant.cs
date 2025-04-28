@@ -8,4 +8,5 @@ public class AppConstant
     public static readonly string CurrentEmail = "Email";
     public static readonly string CurrentUsername = "Username";
     public static readonly string CurrentRole = "Role";
+    public static readonly string CartSessionKey = "CartItems";
 }

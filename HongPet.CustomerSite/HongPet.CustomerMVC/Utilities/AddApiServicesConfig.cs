@@ -8,6 +8,8 @@ public static class AddApiServicesConfig
     public static IServiceCollection AddApiServices(this IServiceCollection services, string baseUrl)
     {
         services.AddScoped<IClaimService, ClaimService>();
+        
+        services.AddScoped<ICartService, CartService>();
 
         services.AddHttpClient<IAuthApiService, AuthApiService>(client =>
         {

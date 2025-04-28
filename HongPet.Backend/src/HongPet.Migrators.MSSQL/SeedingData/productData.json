@@ -3,8 +3,8 @@
     "id": "00000000-0000-0000-0000-000000000001",
     "name": "Thức ăn Hamster Classic",
     "description": "Thức ăn dinh dưỡng dành cho hamster, dễ tiêu hóa.",
-    "price": 5000,
-    "thumbnailUrl": "https://paddy.vn/cdn/shop/files/banh-thuong-meo-ga-say-dong-kho-petq-130g_medium.jpg?v=1704522403",
+    "price": 50000,
+    "thumbnailUrl": "https://hamster.vn/thumb/263x203/1/upload/sanpham/pic22-7451.jpg",
     "Categories": [
       {
         "name": "Mèo"
@@ -52,8 +52,8 @@
     "id": "00000000-0000-0000-0000-000000000002",
     "name": "Lồng Hamster Màu sắc",
     "description": "Lồng nhựa cao cấp cho hamster, nhiều màu sắc đẹp.",
-    "price": 12000,
-    "thumbnailUrl": "https://paddy.vn/cdn/shop/files/banh-thuong-meo-ga-say-dong-kho-petq-130g_medium.jpg?v=1704522403",
+    "price": 120000,
+    "thumbnailUrl": "https://hamster.vn/thumb/263x203/1/upload/sanpham/z3668494612278_6b2e8b22f9197ffd0a59424fe7b321f5-(copy)-6910.jpg",
     "Categories": [
       {
         "name": "Hamster"
@@ -102,7 +102,7 @@
     "name": "Quần áo chó",
     "description": "Quần áo vải cotton dễ thương, thoáng mát.",
     "price": 80000,
-    "thumbnailUrl": "https://paddy.vn/cdn/shop/files/banh-thuong-meo-ga-say-dong-kho-petq-130g_medium.jpg?v=1704522403",
+    "thumbnailUrl": "https://paddy.vn/cdn/shop/files/ao-dai-tet-cho-meo-hoa-ren-2-1701418914278_1066x.webp?v=1704523018",
     "Categories": [
       {
         "name": "Chó"
@@ -167,7 +167,7 @@
     "name": "Nhà cây cho mèo",
     "description": "Cây mèo siêu đẹp, boss siêu mê.",
     "price": 150000,
-    "thumbnailUrl": "https://paddy.vn/cdn/shop/files/banh-thuong-meo-ga-say-dong-kho-petq-130g_medium.jpg?v=1704522403",
+    "thumbnailUrl": "https://paddy.vn/cdn/shop/files/nha-cay-cho-meo-zeze-hinh-dong-vat-ngo-nghinh_5_medium.png?v=1706185684",
     "Categories": [
       {
         "name": "Mèo"
@@ -232,7 +232,7 @@
     "name": "Thức ăn hạt cho chó con",
     "description": "Hạt khô dễ ăn, giàu dinh dưỡng cho chó con.",
     "price": 120000,
-    "thumbnailUrl": "https://paddy.vn/cdn/shop/files/banh-thuong-meo-ga-say-dong-kho-petq-130g_medium.jpg?v=1704522403",
+    "thumbnailUrl": "https://paddy.vn/cdn/shop/files/ganadorchickern.jpg?v=1711013439",
     "Categories": [
       {
         "name": "Chó"
@@ -281,7 +281,7 @@
     "name": "Xịt vệ sinh khử mùi mèo",
     "description": "Khử mùi hôi hiệu quả, an toàn cho thú cưng.",
     "price": 70000,
-    "thumbnailUrl": "https://paddy.vn/cdn/shop/files/banh-thuong-meo-ga-say-dong-kho-petq-130g_medium.jpg?v=1704522403",
+    "thumbnailUrl": "https://paddy.vn/cdn/shop/files/dau-thom-forcans-cho-meo.png?v=1708073758",
     "Categories": [
       {
         "name": "Mèo"
@@ -330,7 +330,7 @@
     "name": "Đồ chơi bóng cho chó",
     "description": "Bóng cao su mềm, an toàn khi chơi.",
     "price": 40000,
-    "thumbnailUrl": "https://paddy.vn/cdn/shop/files/banh-thuong-meo-ga-say-dong-kho-petq-130g_medium.jpg?v=1704522403",
+    "thumbnailUrl": "https://paddy.vn/cdn/shop/files/do-choi-cho-cho-thu-bong-co-tieng-keu_47a56247-0703-4d36-a262-9a85ed6c0dcd.png?v=1704521219",
     "Categories": [
       {
         "name": "Chó"
@@ -379,7 +379,7 @@
     "name": "Bánh thưởng cho mèo",
     "description": "Bánh mềm, hỗ trợ tiêu hóa và chăm sóc lông.",
     "price": 55000,
-    "thumbnailUrl": "https://paddy.vn/cdn/shop/files/banh-thuong-meo-ga-say-dong-kho-petq-130g_medium.jpg?v=1704522403",
+    "thumbnailUrl": "https://paddy.vn/cdn/shop/files/do-choi-cho-cho-que-thu-bong-doggyman.png?v=1704521392",
     "Categories": [
       {
         "name": "Mèo"
@@ -428,7 +428,7 @@
     "name": "Vitamin tăng sức đề kháng cho chó",
     "description": "Bổ sung vitamin giúp tăng đề kháng, khỏe mạnh.",
     "price": 100000,
-    "thumbnailUrl": "https://paddy.vn/cdn/shop/files/banh-thuong-meo-ga-say-dong-kho-petq-130g_medium.jpg?v=1704522403",
+    "thumbnailUrl": "https://paddy.vn/cdn/shop/files/gel-bo-xuong-khop-beaphar-joint-paste-cho-cho-250g.jpg?v=1694500347",
     "Categories": [
       {
         "name": "Chó"

@@ -5,7 +5,7 @@ namespace HongPet.Domain.Entities;
 public class Image : BaseEntity
 {
     public Guid ProductId { get; set; }
-    public string Name { get; set; } = default!;
+    public string? Name { get; set; }
     public string ImageUrl { get; set; } = default!;           
 
     public virtual Product Product { get; set; } = default!;

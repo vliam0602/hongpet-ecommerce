@@ -1,11 +1,4 @@
-﻿body {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.error-container {
+﻿.error-container {
     text-align: center;
     padding: 2rem;
     max-width: 600px;
@@ -62,3 +55,22 @@
     }
 }
 
+/* Animation for the 404 */
+@keyframes float {
+    0% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-15px);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+.animated-404 {
+    animation: float 4s ease-in-out infinite;
+    display: inline-block;
+}

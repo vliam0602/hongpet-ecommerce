@@ -1,0 +1,120 @@
+﻿@model ProductDetailViewModel
+
+@section Scripts {
+    <script src="~/js/cart-manipulate.js"></script>
+}
+
+<!-- Page Header -->
+<section class="page-header py-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="page-title">Chi tiết sản phẩm</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a asp-controller="Home"
+                               asp-action="Index">Trang chủ</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a asp-controller="Product"
+                               asp-action="Index">Sản phẩm</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                            @Model.ProductDetail.Name
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Product Detail Section -->
+<section class="product-detail-section py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Product Images -->
+            <partial name="_ProductImages" model="Model.ProductDetail.Images">
+            <!-- Product Info -->
+            <div class="col-lg-6">
+                <div class="product-info">
+                    <h1 class="product-title">@Model.ProductDetail.Name</h1>
+                    <div class="product-meta">
+                        <div class="product-rating">
+                            @for (int i = 0; i < 5; i++)
+                            {
+                                if (i < Model.ProductDetail.AverageStars)
+                                {
+                                    <i class="bi bi-star-fill"></i>
+                                } else
+                                {
+                                    <i class="bi bi-star"></i>
+                                }
+                            }
+                            <span class="rating-count">
+                                (@Model.ProductDetail.CountOfReviews reviews)
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="product-price">
+                        <span class="current-price" id="variant-price">
+                            @Model.ProductDetail.Price.ToString("C",
+                                new System.Globalization.CultureInfo("vi-VN"))
+                        </span>
+                    </div>
+
+                    <div class="product-availability in-stock">
+                        <i class="bi bi-check-circle-fill"></i> In Stock
+                    </div>
+
+                    <div class="product-short-description">
+                        <p>@Model.ProductDetail.Brief</p>
+                    </div>
+
+                    <!-- Product variant and cart action (add to cart, ...) -->
+                    <partial name="_CartManipulate" model="Model.ProductDetail" />
+
+                    <div class="product-extra-info">
+                        <div class="extra-info-item">
+                            <i class="bi bi-truck"></i>
+                            <div class="info-content">
+                                <h4>Giao hàng miễn phí</h4>
+                                <p>Cho đơn hàng trên 200.000 VND</p>
+                            </div>
+                        </div>
+
+                        <div class="extra-info-item">
+                            <i class="bi bi-arrow-repeat"></i>
+                            <div class="info-content">
+                                <h4>Đổi trả dễ dàng</h4>
+                                <p>Chính sách đổi trả 30 ngày</p>
+                            </div>
+                        </div>
+
+                        <div class="extra-info-item">
+                            <i class="bi bi-shield-check"></i>
+                            <div class="info-content">
+                                <h4>Thanh toán an toàn</h4>
+                                <p>Thanh toán được bảo mật 100%</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="product-share">
+                        <span>Chia sẻ:</span>
+                        <a href="#" class="share-icon"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="share-icon"><i class="bi bi-twitter"></i></a>
+                        <a href="#" class="share-icon"><i class="bi bi-pinterest"></i></a>
+                        <a href="#" class="share-icon"><i class="bi bi-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Tabs -->
+        <partial name="_ProductTabs" model="Model" />
+
+    </div>
+</section>   

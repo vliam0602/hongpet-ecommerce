@@ -1,0 +1,43 @@
+﻿@model HongPet.SharedViewModels.ViewModels.ProductDetailVM
+
+<div class="product-variants mb-4">
+    <h3 class="variant-title">Variants:</h3>
+    <div class="variant-options">
+        @foreach (var variant in Model.Variants)
+        {
+            <button class="variant-btn
+                        @(variant.Id == Model.Variants.First().Id
+                        ? "active" : "")"
+                    data-variant-id="@variant.Id"
+                    data-variant-price="@variant.Price"
+                    data-variant-stock="@variant.Stock">
+                @foreach (var attribute in variant.AttributeValues)
+                {
+                    <span>@(attribute.Attribute) : @(attribute.Value)</span>
+                }
+            </button>
+        }
+    </div>
+</div>
+
+<div class="product-actions">
+    <div class="quantity-selector">
+        <button class="quantity-btn minus" onclick="updateQuantity(-1)">
+            <i class="bi bi-dash"></i>
+        </button>
+        <input type="number"
+               class="quantity-input" id="quantity-input"
+               value="1" min="1" max="99">
+        <button class="quantity-btn plus" onclick="updateQuantity(1)">
+            <i class="bi bi-plus"></i>
+        </button>
+    </div>    
+    
+    @Html.AntiForgeryToken()
+    <button id="add-to-cart-btn"
+            class="btn btn-add-to-cart"
+            data-url="@Url.Action("AddToCart", "Cart")"
+            onclick="addToCart()">
+        <i class="bi bi-cart-plus"></i> Add to Cart
+    </button>   
+</div>

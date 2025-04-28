@@ -9,5 +9,6 @@ public interface IProductApiService
     Task<PagedList<ProductGeneralVM>> GetProductsAsync(
         QueryListCriteria criteria);
     Task<ProductDetailVM?> GetProductByIdAsync(Guid id);
-    Task<PagedList<ReviewVM>> GetProductReviewsAsync(Guid productId, QueryListCriteria criteria);
+    Task<PagedList<ReviewVM>> GetProductReviewsAsync(
+        Guid productId, int pageIndex, int pageSize);
 }

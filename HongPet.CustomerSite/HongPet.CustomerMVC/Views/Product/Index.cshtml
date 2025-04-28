@@ -51,7 +51,7 @@
                     @foreach (var product in Model.ProductPagedList.Items)
                     {
                         <a class="col-md-4 mb-4 product-detail"
-                           asp-action="Details">
+                           asp-action="Detail" asp-route-id="@product.Id">
                             <div class="product-card">
                                 <div class="product-image">
                                     <img src="@product.ThumbnailUrl" alt="@product.Name">

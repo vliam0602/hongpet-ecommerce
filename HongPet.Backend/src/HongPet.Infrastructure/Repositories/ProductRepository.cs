@@ -38,6 +38,7 @@ public class ProductRepository : GenericRepository<Product>, IProductRepository
     public async Task<Product?> GetProductDetailAsync(Guid id)
     {
         return await _dbSet
+            .Include(x => x.Reviews)
             .Include(x => x.Variants)
             .ThenInclude(x => x.AttributeValues)
             .ThenInclude(x => x.Attribute)

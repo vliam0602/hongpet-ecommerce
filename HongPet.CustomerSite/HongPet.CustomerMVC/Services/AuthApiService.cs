@@ -16,12 +16,6 @@ public class AuthApiService(
         var (response, apiResponse) = await HttpClientHelper
             .PostAsync(_httpClient, url, loginModel);                
 
-        if (apiResponse == null)
-        {
-            throw new HttpRequestException(apiResponse?.ErrorMessage ??
-                "Invalid response from server.");
-        }
-
         // Check response status
         if (response.StatusCode == HttpStatusCode.Unauthorized)
         {
@@ -46,12 +40,6 @@ public class AuthApiService(
         var url = "api/auth/register";
         var (response, apiResponse) = await HttpClientHelper
             .PostAsync(_httpClient, url, registerModel);
-
-        if (apiResponse == null)
-        {
-            throw new HttpRequestException(apiResponse?.ErrorMessage ??
-                "Invalid response from server.");
-        }
 
         if (apiResponse == null)
         {

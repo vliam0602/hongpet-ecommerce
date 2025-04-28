@@ -34,7 +34,7 @@ namespace HongPet.Migrators.MSSQL.Migrations
 
                     b.HasIndex("ProductsId");
 
-                    b.ToTable("CategoryProduct", (string)null);
+                    b.ToTable("CategoryProduct");
                 });
 
             modelBuilder.Entity("HongPet.Domain.Entities.Category", b =>
@@ -82,7 +82,7 @@ namespace HongPet.Migrators.MSSQL.Migrations
 
                     b.HasIndex("ParentCategoryId");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
 
                     b.HasData(
                         new
@@ -257,7 +257,6 @@ namespace HongPet.Migrators.MSSQL.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("ProductId")
@@ -267,7 +266,7 @@ namespace HongPet.Migrators.MSSQL.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Images", (string)null);
+                    b.ToTable("Images");
                 });
 
             modelBuilder.Entity("HongPet.Domain.Entities.Order", b =>
@@ -327,7 +326,7 @@ namespace HongPet.Migrators.MSSQL.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("Orders", (string)null);
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("HongPet.Domain.Entities.OrderItem", b =>
@@ -348,7 +347,7 @@ namespace HongPet.Migrators.MSSQL.Migrations
 
                     b.HasIndex("VariantId");
 
-                    b.ToTable("OrderItems", (string)null);
+                    b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("HongPet.Domain.Entities.Product", b =>
@@ -403,7 +402,7 @@ namespace HongPet.Migrators.MSSQL.Migrations
 
                     b.HasIndex("Name");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("HongPet.Domain.Entities.ProductAttribute", b =>
@@ -443,7 +442,7 @@ namespace HongPet.Migrators.MSSQL.Migrations
 
                     b.HasIndex("Name");
 
-                    b.ToTable("ProductAttributes", (string)null);
+                    b.ToTable("ProductAttributes");
                 });
 
             modelBuilder.Entity("HongPet.Domain.Entities.ProductAttributeValue", b =>
@@ -486,7 +485,7 @@ namespace HongPet.Migrators.MSSQL.Migrations
 
                     b.HasIndex("AttributeId", "Value");
 
-                    b.ToTable("ProductAttributeValues", (string)null);
+                    b.ToTable("ProductAttributeValues");
                 });
 
             modelBuilder.Entity("HongPet.Domain.Entities.Review", b =>
@@ -541,69 +540,7 @@ namespace HongPet.Migrators.MSSQL.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Reviews", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Comment = "My hamster loves it!",
-                            CreatedDate = new DateTime(2025, 4, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CustomerId = new Guid("00000000-0000-0000-0000-000000000002"),
-                            LastModificatedDate = new DateTime(2025, 4, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            OrderId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            ProductId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Rating = 5,
-                            Title = "Great product!"
-                        },
-                        new
-                        {
-                            Id = new Guid("00000000-0000-0000-0000-000000000002"),
-                            Comment = "The product is good but delivery was slow.",
-                            CreatedDate = new DateTime(2025, 4, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CustomerId = new Guid("00000000-0000-0000-0000-000000000002"),
-                            LastModificatedDate = new DateTime(2025, 4, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            OrderId = new Guid("00000000-0000-0000-0000-000000000002"),
-                            ProductId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Rating = 4,
-                            Title = "Good quality"
-                        },
-                        new
-                        {
-                            Id = new Guid("00000000-0000-0000-0000-000000000003"),
-                            Comment = "It's okay, but I expected more.",
-                            CreatedDate = new DateTime(2025, 4, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CustomerId = new Guid("00000000-0000-0000-0000-000000000002"),
-                            LastModificatedDate = new DateTime(2025, 4, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            OrderId = new Guid("00000000-0000-0000-0000-000000000003"),
-                            ProductId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Rating = 3,
-                            Title = "Average"
-                        },
-                        new
-                        {
-                            Id = new Guid("00000000-0000-0000-0000-000000000004"),
-                            Comment = "Excellent product for the price.",
-                            CreatedDate = new DateTime(2025, 4, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CustomerId = new Guid("00000000-0000-0000-0000-000000000002"),
-                            LastModificatedDate = new DateTime(2025, 4, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            OrderId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            ProductId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Rating = 5,
-                            Title = "Highly recommend"
-                        },
-                        new
-                        {
-                            Id = new Guid("00000000-0000-0000-0000-000000000005"),
-                            Comment = "Worth the money.",
-                            CreatedDate = new DateTime(2025, 4, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CustomerId = new Guid("00000000-0000-0000-0000-000000000002"),
-                            LastModificatedDate = new DateTime(2025, 4, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            OrderId = new Guid("00000000-0000-0000-0000-000000000002"),
-                            ProductId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Rating = 4,
-                            Title = "Good value"
-                        });
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("HongPet.Domain.Entities.User", b =>
@@ -668,12 +605,13 @@ namespace HongPet.Migrators.MSSQL.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
 
                     b.HasData(
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000001"),
+                            AvatarUrl = "https://i.pinimg.com/736x/34/60/3c/34603ce8a80b1ce9a768cad7ebf63c56.jpg",
                             CreatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@example.com",
                             Fullname = "Admin",
@@ -685,6 +623,7 @@ namespace HongPet.Migrators.MSSQL.Migrations
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000002"),
+                            AvatarUrl = "https://cdn11.dienmaycholon.vn/filewebdmclnew/public/userupload/files/Image%20FP_2024/avatar-cute-54.png",
                             CreatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "liam@example.com",
                             Fullname = "Lam Lam",
@@ -738,7 +677,7 @@ namespace HongPet.Migrators.MSSQL.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Variants", (string)null);
+                    b.ToTable("Variants");
                 });
 
             modelBuilder.Entity("ProductAttributeValueVariant", b =>
@@ -753,7 +692,7 @@ namespace HongPet.Migrators.MSSQL.Migrations
 
                     b.HasIndex("VariantsId");
 
-                    b.ToTable("ProductAttributeValueVariant", (string)null);
+                    b.ToTable("ProductAttributeValueVariant");
                 });
 
             modelBuilder.Entity("CategoryProduct", b =>

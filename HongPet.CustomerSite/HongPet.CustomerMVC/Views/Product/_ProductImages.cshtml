@@ -1,0 +1,23 @@
+﻿@model IEnumerable<HongPet.SharedViewModels.ViewModels.ImageVM>
+
+<!-- Product Images -->
+<div class="col-lg-6 mb-4 mb-lg-0">
+    <div class="product-images">
+        <div class="main-image-container">
+            <img src="@Model.FirstOrDefault()?.ImageUrl"
+                 alt="@Model.FirstOrDefault()?.Name ?? " Product Image""
+                 class="main-image"
+                 id="main-product-image">
+        </div>
+        <div class="thumbnail-container mt-3">
+            @foreach (var image in Model)
+            {
+                <div class="thumbnail @(image == Model.FirstOrDefault() ? "active" : "")"
+                     data-image="@image.ImageUrl">
+                    <img src="@image.ImageUrl"
+                         alt="@image.Name ?? " Product Thumbnail"">
+                </div>
+            }
+        </div>
+    </div>
+</div>
