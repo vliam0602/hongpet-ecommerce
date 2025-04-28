@@ -20,6 +20,8 @@ public class DataSeeder : IHostedService
         var basePath = Path.Combine(AppContext.BaseDirectory, "SeedingData");
         var productFilePath = Path.Combine(basePath, "productData.json");
         var orderFilePath = Path.Combine(basePath, "orderData.json");
+        var reviewFilePath = Path.Combine(basePath, "reviewData.json");
+        var imageFilePath = Path.Combine(basePath, "imageData.json");
 
         using (var scope = _serviceProvider.CreateScope())
         {
@@ -29,13 +31,18 @@ public class DataSeeder : IHostedService
 
             await SeedOrderDataAsync(orderFilePath, dbContext, cancellationToken);
 
+            await SeedReviewDataAsync(reviewFilePath, dbContext, cancellationToken);
+            
+            await SeedImageDataAsync(imageFilePath, dbContext, cancellationToken);
+
             await dbContext.SaveChangesAsync(cancellationToken);
         }
     }
 
     public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
 
-    private async Task SeedProductDataAsync(string filePath, AppDbContext dbContext, CancellationToken cancellationToken)
+    private async Task SeedProductDataAsync(string filePath, 
+        AppDbContext dbContext, CancellationToken cancellationToken)
     {
         if (!dbContext.Products.Any())
         {
@@ -116,7 +123,8 @@ public class DataSeeder : IHostedService
     }
 
 
-    private async Task SeedOrderDataAsync(string filePath, AppDbContext dbContext, CancellationToken cancellationToken)
+    private async Task SeedOrderDataAsync(string filePath, 
+        AppDbContext dbContext, CancellationToken cancellationToken)
     {
         if (!dbContext.Orders.Any())
         {
@@ -126,6 +134,28 @@ public class DataSeeder : IHostedService
             // seed orders data
             var orders = JsonHelper.LoadDataFromJson<Order>(filePath);
             await dbContext.Orders.AddRangeAsync(orders);
+        }
+    }
+
+    private async Task SeedReviewDataAsync(string filePath, 
+        AppDbContext dbContext, CancellationToken cancellationToken)
+    {
+        if (!dbContext.Reviews.Any())
+        {
+            // seed reviews data
+            var reviews = JsonHelper.LoadDataFromJson<Review>(filePath);
+            await dbContext.Reviews.AddRangeAsync(reviews);
+        }
+    }
+
+    private async Task SeedImageDataAsync(string filePath,
+        AppDbContext dbContext, CancellationToken cancellationToken)
+    {
+        if (!dbContext.Images.Any())
+        {
+            // seed reviews data
+            var images = JsonHelper.LoadDataFromJson<Image>(filePath);
+            await dbContext.Images.AddRangeAsync(images);
         }
     }
 }

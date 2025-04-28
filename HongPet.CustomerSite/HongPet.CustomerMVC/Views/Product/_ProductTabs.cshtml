@@ -1,0 +1,236 @@
+﻿@model ProductDetailViewModel
+
+<!-- Product Tabs -->
+<div class="product-tabs mt-5">
+    <ul class="nav nav-tabs" id="productTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="description-tab" 
+                    data-bs-toggle="tab" data-bs-target="#description" 
+                    type="button" role="tab" aria-controls="description" 
+                    aria-selected="true">
+            Mô tả</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="specifications-tab" 
+                    data-bs-toggle="tab" data-bs-target="#specifications" 
+                    type="button" role="tab" aria-controls="specifications" 
+                    aria-selected="false">
+            Thông số sản phẩm</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="reviews-tab"
+                    data-bs-toggle="tab" data-bs-target="#reviews" 
+                    type="button" role="tab" aria-controls="reviews" 
+                    aria-selected="false">
+            Đánh giá (@Model.ProductDetail.CountOfReviews)</button>
+        </li>
+    </ul>
+    <div class="tab-content" id="productTabsContent">
+        <!-- description tab -->
+        <div class="tab-pane fade show active" 
+             id="description" 
+             role="tabpanel" aria-labelledby="description-tab">
+            <div class="product-description">
+                @Model.ProductDetail.Description
+            </div>
+        </div>
+        <!-- specification tab -->
+        <div class="tab-pane fade" 
+             id="specifications"
+             role="tabpanel" aria-labelledby="specifications-tab">
+            <div class="product-specifications">
+                <table class="specs-table">
+                    <tbody>
+                        <tr>
+                            <th>Product Name</th>
+                            <td>Premium Dog Food</td>
+                        </tr>
+                        <tr>
+                            <th>Brand</th>
+                            <td>Hồng Pét</td>
+                        </tr>
+                        <tr>
+                            <th>Type</th>
+                            <td>Dry Dog Food</td>
+                        </tr>
+                        <tr>
+                            <th>Life Stage</th>
+                            <td>Adult</td>
+                        </tr>
+                        <tr>
+                            <th>Breed Size</th>
+                            <td>All Breeds</td>
+                        </tr>
+                        <tr>
+                            <th>Weight</th>
+                            <td>5kg</td>
+                        </tr>
+                        <tr>
+                            <th>Protein Content</th>
+                            <td>26%</td>
+                        </tr>
+                        <tr>
+                            <th>Fat Content</th>
+                            <td>15%</td>
+                        </tr>
+                        <tr>
+                            <th>Fiber Content</th>
+                            <td>4%</td>
+                        </tr>
+                        <tr>
+                            <th>Moisture Content</th>
+                            <td>10%</td>
+                        </tr>
+                        <tr>
+                            <th>Caloric Content</th>
+                            <td>3,500 kcal/kg</td>
+                        </tr>
+                        <tr>
+                            <th>Country of Origin</th>
+                            <td>USA</td>
+                        </tr>
+                        <tr>
+                            <th>Storage</th>
+                            <td>Store in a cool, dry place. After opening, store in an airtight container.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- review tab -->
+        <div class="tab-pane fade" 
+             id="reviews" 
+             role="tabpanel" aria-labelledby="reviews-tab">
+            <div class="product-reviews">
+                <div class="reviews-summary">
+                    <!-- Tổng điểm đánh giá trung bình -->
+                    <div class="overall-rating">
+                        <div class="rating-number">
+                            @Model.ProductDetail.AverageStars
+                        </div>
+                        <div class="rating-stars">
+                            @for (int i = 0; i < 5; i++)
+                            {
+                                if (i <= Model.ProductDetail.AverageStars)
+                                {
+                                    <i class="bi bi-star-fill"></i>
+                                } else if (i <= Model.ProductDetail.AverageStars + 0.5)
+                                {
+                                    <i class="bi bi-star-half"></i>
+                                } else
+                                {
+                                    <i class="bi bi-star"></i>
+                                }
+                            }
+                        </div>
+                        <div class="rating-count">
+                            Dựa trên @Model.ProductDetail.CountOfReviews đánh giá
+                        </div>
+                    </div>
+
+                    <!-- Thanh hiển thị tỷ lệ đánh giá -->
+                    <div class="rating-bars">
+                        @for (int star = 5; star >= 1; star--)
+                        {
+                            var starCount = Model.ProductDetail.Reviews.Count(r 
+                                => r.Rating == star);
+                            var percentage = Model.ProductDetail.CountOfReviews > 0
+                                ? (starCount * 100) / Model.ProductDetail.CountOfReviews
+                                : 0;
+
+                            <div class="rating-bar-item">
+                                <div class="rating-label">@star stars</div>
+                                <div class="progress">
+                                    <div class="progress-bar" style="width: @percentage%"></div>
+                                </div>
+                                <div class="rating-count">@starCount</div>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="reviews-list">
+                    <h3>Customer Reviews</h3>
+                    @foreach (var review in Model.Reviews.Items)
+                    {
+                        <div class="review-item row">
+                            <div class="col-md-1 reviewer-info">
+                                <img class="reviewer-avatar"
+                                     src="@review.ReviewerAvatar" alt="avatar"
+                                     style="max-width: 5rem;" />
+                                <h4 class="reviewer-name">@review.ReviewerName</h4>
+                                <div class="review-date">
+                                    @review.CreatedDate.ToShortDateString()
+                                </div>
+                            </div>
+                            <div class="col-md-11">
+                                <div class="review-header">
+                                    <h5 class="review-title">@review.Title</h5>
+                                    <div class="review-rating">
+                                        @for (int i = 0; i < 5; i++)
+                                        {
+                                            if (i < review.Rating)
+                                            {
+                                                <i class="bi bi-star-fill"></i>
+                                            } else
+                                            {
+                                                <i class="bi bi-star"></i>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                                <div class="review-content">
+                                    <p>@review.Comment</p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    <!-- pagination section -->
+                    <div class="pagination-container d-flex justify-content-center mt-4">
+                        <nav aria-label="Reviews pagination">
+                            <ul class="pagination">
+                                @if (Model.Reviews.HasPrevious)
+                                {
+                                    <li class="page-item">
+                                        <a class="page-link" 
+                                           asp-action="Detail" 
+                                           asp-route-id="@Model.ProductDetail.Id"
+                                           asp-route-reviewPageIndex="@(Model.Reviews.CurrentPage - 1)"
+                                           asp-route-reviewPageSize="@Model.Reviews.PageSize">
+                                        Previous</a>
+                                    </li>
+                                }
+
+                                @for (int i = 1; i <= Model.Reviews.TotalPages; i++)
+                                {
+                                    <li class="page-item 
+                                        @(i == Model.Reviews.CurrentPage ? "active" : "")">
+                                        <a class="page-link" 
+                                           asp-action="Detail" 
+                                           asp-route-id="@Model.ProductDetail.Id" 
+                                           asp-route-reviewPageIndex="@i" 
+                                           asp-route-reviewPageSize="@Model.Reviews.PageSize">
+                                        @i</a>
+                                    </li>
+                                }
+
+                                @if (Model.Reviews.HasNext)
+                                {
+                                    <li class="page-item">
+                                        <a class="page-link" 
+                                           asp-action="Detail"
+                                           asp-route-id="@Model.ProductDetail.Id" 
+                                           asp-route-reviewPageIndex="@(Model.Reviews.CurrentPage + 1)" 
+                                           asp-route-reviewPageSize="@Model.Reviews.PageSize">
+                                        Next</a>
+                                    </li>
+                                }
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

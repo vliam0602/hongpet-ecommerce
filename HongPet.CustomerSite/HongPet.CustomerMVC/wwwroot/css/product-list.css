@@ -79,6 +79,7 @@
 }
 
 .product-title {
+    margin-top: 0.5rem;
     font-size: 1rem;
     font-weight: 600;
     margin-bottom: 8px;

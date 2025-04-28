@@ -5,7 +5,7 @@ namespace HongPet.CustomerMVC.Utilities;
 
 public static class HttpClientHelper
 {
-    public static async Task<(HttpResponseMessage, ApiResponse?)> GetAsync(
+    public static async Task<(HttpResponseMessage, ApiResponse)> GetAsync(
         HttpClient httpClient, string url)
     {
         var response = await httpClient.GetAsync(url);
@@ -13,7 +13,7 @@ public static class HttpClientHelper
         return (response, apiResponse);
     }
 
-    public static async Task<(HttpResponseMessage, ApiResponse?)> PostAsync<T>(
+    public static async Task<(HttpResponseMessage, ApiResponse)> PostAsync<T>(
         HttpClient httpClient, string url, T content)
     {
         var response = await httpClient.PostAsJsonAsync(url, content);
@@ -21,10 +21,19 @@ public static class HttpClientHelper
         return (response, apiResponse);
     }
 
-    private static async Task<ApiResponse?> ParseApiResponseAsync(
+    private static async Task<ApiResponse> ParseApiResponseAsync(
         HttpResponseMessage response)
     {
         var responseContent = await response.Content.ReadAsStringAsync();
-        return JsonConvert.DeserializeObject<ApiResponse>(responseContent);
+
+        var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(responseContent);
+
+        if (apiResponse == null)
+        {
+            throw new HttpRequestException(apiResponse?.ErrorMessage ??
+                "Invalid response from server.");
+        }
+
+        return apiResponse;
     }
 }

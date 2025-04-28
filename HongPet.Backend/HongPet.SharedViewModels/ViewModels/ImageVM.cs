@@ -8,6 +8,6 @@ namespace HongPet.SharedViewModels.ViewModels
     {
         public Guid Id { get; set; }
         public string? Name { get; set; }
-        public string Url { get; set; } = default!;
+        public string ImageUrl { get; set; } = default!;
     }
 }

@@ -1,0 +1,57 @@
+[
+  {
+    "Id": "00000000-0000-0000-0000-000000000001",
+    "OrderId": "00000000-0000-0000-0000-000000000001",
+    "CustomerId": "00000000-0000-0000-0000-000000000002",
+    "ProductId": "00000000-0000-0000-0000-000000000001",
+    "Rating": 5,
+    "Title": "Great product!",
+    "Comment": "My hamster loves it!",
+    "CreatedDate": "2025-04-22T00:00:00",
+    "LastModificatedDate": "2025-04-22T00:00:00"
+  },
+  {
+    "Id": "00000000-0000-0000-0000-000000000002",
+    "OrderId": "00000000-0000-0000-0000-000000000002",
+    "CustomerId": "00000000-0000-0000-0000-000000000002",
+    "ProductId": "00000000-0000-0000-0000-000000000001",
+    "Rating": 4,
+    "Title": "Good quality",
+    "Comment": "The product is good but delivery was slow.",
+    "CreatedDate": "2025-04-22T00:00:00",
+    "LastModificatedDate": "2025-04-22T00:00:00"
+  },
+  {
+    "Id": "00000000-0000-0000-0000-000000000003",
+    "OrderId": "00000000-0000-0000-0000-000000000003",
+    "CustomerId": "00000000-0000-0000-0000-000000000002",
+    "ProductId": "00000000-0000-0000-0000-000000000001",
+    "Rating": 3,
+    "Title": "Average",
+    "Comment": "It's okay, but I expected more.",
+    "CreatedDate": "2025-04-22T00:00:00",
+    "LastModificatedDate": "2025-04-22T00:00:00"
+  },
+  {
+    "Id": "00000000-0000-0000-0000-000000000004",
+    "OrderId": "00000000-0000-0000-0000-000000000001",
+    "CustomerId": "00000000-0000-0000-0000-000000000002",
+    "ProductId": "00000000-0000-0000-0000-000000000001",
+    "Rating": 5,
+    "Title": "Highly recommend",
+    "Comment": "Excellent product for the price.",
+    "CreatedDate": "2025-04-22T00:00:00",
+    "LastModificatedDate": "2025-04-22T00:00:00"
+  },
+  {
+    "Id": "00000000-0000-0000-0000-000000000005",
+    "OrderId": "00000000-0000-0000-0000-000000000002",
+    "CustomerId": "00000000-0000-0000-0000-000000000002",
+    "ProductId": "00000000-0000-0000-0000-000000000001",
+    "Rating": 4,
+    "Title": "Good value",
+    "Comment": "Worth the money.",
+    "CreatedDate": "2025-04-22T00:00:00",
+    "LastModificatedDate": "2025-04-22T00:00:00"
+  }
+]

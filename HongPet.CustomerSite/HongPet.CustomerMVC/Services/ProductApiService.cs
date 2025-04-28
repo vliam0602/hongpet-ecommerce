@@ -8,14 +8,9 @@ using System.Net;
 
 namespace HongPet.CustomerMVC.Services;
 
-public class ProductApiService : IProductApiService
+public class ProductApiService(
+    HttpClient _httpClient) : IProductApiService
 {
-    private readonly HttpClient _httpClient;
-
-    public ProductApiService(HttpClient httpClient)
-    {
-        _httpClient = httpClient;
-    }
 
     public async Task<PagedList<ProductGeneralVM>> GetProductsAsync(QueryListCriteria criteria)
     {
@@ -27,13 +22,8 @@ public class ProductApiService : IProductApiService
         var (response, apiResponse) = 
             await HttpClientHelper.GetAsync(_httpClient, url);
 
-        if (apiResponse == null)
-        {
-            throw new HttpRequestException(apiResponse?.ErrorMessage ??
-                "Invalid response from server.");
-        }
-
-        if (response.StatusCode == HttpStatusCode.InternalServerError)
+        if (response.StatusCode == HttpStatusCode.InternalServerError ||
+                    !apiResponse.IsSuccess)
         {
             throw new Exception($"Server error: {apiResponse.ErrorMessage}");
         }
@@ -43,7 +33,12 @@ public class ProductApiService : IProductApiService
         var products = JsonConvert
             .DeserializeObject<PagedList<ProductGeneralVM>>(responseString);
 
-        return products ?? new PagedList<ProductGeneralVM>();
+        if (products == null)
+        {
+            throw new HttpRequestException("Failed to parse response data.");
+        }
+
+        return products;
     }
 
     public async Task<ProductDetailVM?> GetProductByIdAsync(Guid id)
@@ -53,49 +48,56 @@ public class ProductApiService : IProductApiService
         var (response, apiResponse) = 
             await HttpClientHelper.GetAsync(_httpClient, url);        
 
-        if (apiResponse == null)
-        {
-            throw new HttpRequestException(apiResponse?.ErrorMessage ??
-                "Invalid response from server.");
-        }
-
         // Check response status
         if (response.StatusCode == HttpStatusCode.NotFound)
         {
             throw new KeyNotFoundException(apiResponse.ErrorMessage);
-        } else if (response.StatusCode == HttpStatusCode.InternalServerError)
+        } else if (response.StatusCode == HttpStatusCode.InternalServerError ||
+                    !apiResponse.IsSuccess)
         {
             throw new Exception($"Server error: {apiResponse.ErrorMessage}");
         }
 
-        var responseString = apiResponse?.Data?.ToString()!;
+        var responseString = apiResponse?.Data?.ToString()!;        
 
-        if (string.IsNullOrEmpty(responseString))
+        var product = JsonConvert
+            .DeserializeObject<ProductDetailVM>(responseString);
+        
+        if (product == null)
         {
             throw new HttpRequestException("Failed to parse response data.");
         }
 
-        var products = JsonConvert
-            .DeserializeObject<ProductDetailVM>(responseString);
-
-        return products;
+        return product;
     }
 
-    public async Task<PagedList<ReviewVM>> GetProductReviewsAsync(Guid productId, QueryListCriteria criteria)
+    public async Task<PagedList<ReviewVM>> GetProductReviewsAsync(
+        Guid productId, int pageIndex, int pageSize)
     {
-        //var response = await _httpClient.GetFromJsonAsync<ApiResponse>(
-        //    $"api/products/{productId}/reviews?" +
-        //    $"pageIndex={criteria.PageIndex}" +
-        //    $"&pageSize={criteria.PageSize}");
+        var url = $"api/products/{productId}/reviews?" +
+            $"pageIndex={pageIndex}" +
+            $"&pageSize={pageSize}";
 
-        //if (response == null)
-        //{
-        //    throw new HttpRequestException(
-        //        $"Error when request reviews of product with id {productId}. " +
-        //        $"The api response is null.");
-        //}
+        var (response, apiResponse) = 
+            await HttpClientHelper.GetAsync(_httpClient, url);
 
-        //return (PagedList<ReviewVM>)response.Data!;
-        throw new NotImplementedException();
+        if (response.StatusCode == HttpStatusCode.InternalServerError ||
+                    !apiResponse.IsSuccess)
+        {
+            throw new Exception($"Server error: {apiResponse.ErrorMessage}");
+        }
+
+        var responseString = apiResponse?.Data?.ToString()!;        
+
+        var reviews = JsonConvert
+            .DeserializeObject<PagedList<ReviewVM>>(responseString);
+
+        if (reviews == null)
+        {
+            throw new HttpRequestException("Failed to parse response data.");
+        }
+
+        return reviews;
     }
+
 }

@@ -10,31 +10,49 @@ public class ProductController(
     public async Task<IActionResult> Index(int pageIndex = 1, int pageSize = 6, 
         string searchString = "")
     {
-        ViewData["searchString"] = searchString;
+        try
+        {
+            ViewData["searchString"] = searchString;
 
-        var products = (await _productApiService
-            .GetProductsAsync(new QueryListCriteria
+            var products = (await _productApiService
+                .GetProductsAsync(new QueryListCriteria
+                {
+                    PageIndex = pageIndex,
+                    PageSize = pageSize,
+                    Keyword = searchString
+                }));
+
+            return View(new ProductListViewModel
             {
-                PageIndex = pageIndex,
-                PageSize = pageSize,
-                Keyword = searchString
-            }));
-
-        return View(new ProductListViewModel 
-        { 
-            ProductPagedList = products,
-            SearchString = searchString
-        });       
+                ProductPagedList = products,
+                SearchString = searchString
+            });
+        } catch (Exception ex)
+        {
+            return RedirectToAction("Error", "Home", new { errMsg = ex.Message });
+        }
     }
 
-    public async Task<IActionResult> Detail(Guid id)
+    public async Task<ActionResult<ProductDetailViewModel>> Detail(Guid id,
+        int reviewPageIndex = 1, int reviewPageSize = 3)
     {
-        var product = await _productApiService.GetProductByIdAsync(id);
-        if (product == null)
+        try
+        {
+            var product = await _productApiService.GetProductByIdAsync(id);
+            var viewModel = new ProductDetailViewModel
+            {
+                ProductDetail = product,
+                Reviews = await _productApiService.GetProductReviewsAsync(
+                    id, reviewPageIndex, reviewPageSize)
+            };
+            return View(viewModel);
+        } catch (KeyNotFoundException)
         {
             return RedirectToAction("NotFoundError", "Home");
+        } catch (HttpRequestException ex)
+        {
+            return RedirectToAction("Error", "Home", new { errMsg = ex.Message });
         }
-        return View(product);
     }
 
 }

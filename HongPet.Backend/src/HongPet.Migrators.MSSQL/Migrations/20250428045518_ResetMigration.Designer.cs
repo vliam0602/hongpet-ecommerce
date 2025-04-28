@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HongPet.Migrators.MSSQL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250415041647_InitEntities")]
-    partial class InitEntities
+    [Migration("20250428045518_ResetMigration")]
+    partial class ResetMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,17 +25,35 @@ namespace HongPet.Migrators.MSSQL.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("CategoryProduct", b =>
+                {
+                    b.Property<Guid>("CategoriesId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ProductsId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("CategoriesId", "ProductsId");
+
+                    b.HasIndex("ProductsId");
+
+                    b.ToTable("CategoryProduct");
+                });
+
             modelBuilder.Entity("HongPet.Domain.Entities.Category", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("newid()");
 
                     b.Property<Guid?>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getutcdate()");
 
                     b.Property<Guid?>("DeletedBy")
                         .HasColumnType("uniqueidentifier");
@@ -46,12 +64,14 @@ namespace HongPet.Migrators.MSSQL.Migrations
                     b.Property<Guid?>("LastModificatedBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("LastModificatedDate")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTime>("LastModificatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getutcdate()");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<Guid?>("ParentCategoryId")
                         .HasColumnType("uniqueidentifier");
@@ -61,9 +81,154 @@ namespace HongPet.Migrators.MSSQL.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Name");
+
                     b.HasIndex("ParentCategoryId");
 
                     b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000002"),
+                            CreatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastModificatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Hamster"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000003"),
+                            CreatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastModificatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Chó"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000004"),
+                            CreatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastModificatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Mèo"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000005"),
+                            CreatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastModificatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Thức ăn cho hamster",
+                            ParrentCategoryId = new Guid("00000000-0000-0000-0000-000000000002")
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000006"),
+                            CreatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastModificatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Lồng - Chuồng cho hamster",
+                            ParrentCategoryId = new Guid("00000000-0000-0000-0000-000000000002")
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000007"),
+                            CreatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastModificatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Đồ chơi - Phụ kiện cho hamster",
+                            ParrentCategoryId = new Guid("00000000-0000-0000-0000-000000000002")
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000008"),
+                            CreatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastModificatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Vệ sinh cho hamster",
+                            ParrentCategoryId = new Guid("00000000-0000-0000-0000-000000000002")
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000009"),
+                            CreatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastModificatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Chăm sóc sức khỏe cho hamster",
+                            ParrentCategoryId = new Guid("00000000-0000-0000-0000-000000000002")
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000010"),
+                            CreatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastModificatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Thức ăn cho chó",
+                            ParrentCategoryId = new Guid("00000000-0000-0000-0000-000000000003")
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000011"),
+                            CreatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastModificatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Bánh thưởng cho chó",
+                            ParrentCategoryId = new Guid("00000000-0000-0000-0000-000000000003")
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000012"),
+                            CreatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastModificatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Đồ chơi - Phụ kiện cho chó",
+                            ParrentCategoryId = new Guid("00000000-0000-0000-0000-000000000003")
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000013"),
+                            CreatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastModificatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Vệ sinh cho chó",
+                            ParrentCategoryId = new Guid("00000000-0000-0000-0000-000000000003")
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000014"),
+                            CreatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastModificatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Chăm sóc sức khỏe cho chó",
+                            ParrentCategoryId = new Guid("00000000-0000-0000-0000-000000000003")
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000015"),
+                            CreatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastModificatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Thức ăn cho mèo",
+                            ParrentCategoryId = new Guid("00000000-0000-0000-0000-000000000004")
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000016"),
+                            CreatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastModificatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Bánh thưởng cho mèo",
+                            ParrentCategoryId = new Guid("00000000-0000-0000-0000-000000000004")
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000017"),
+                            CreatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastModificatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Đồ chơi - Phụ kiện cho mèo",
+                            ParrentCategoryId = new Guid("00000000-0000-0000-0000-000000000004")
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000018"),
+                            CreatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastModificatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Vệ sinh cho mèo",
+                            ParrentCategoryId = new Guid("00000000-0000-0000-0000-000000000004")
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000019"),
+                            CreatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastModificatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Chăm sóc sức khỏe cho mèo",
+                            ParrentCategoryId = new Guid("00000000-0000-0000-0000-000000000004")
+                        });
                 });
 
             modelBuilder.Entity("HongPet.Domain.Entities.Image", b =>
@@ -91,7 +256,7 @@ namespace HongPet.Migrators.MSSQL.Migrations
                     b.Property<Guid?>("LastModificatedBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("LastModificatedDate")
+                    b.Property<DateTime>("LastModificatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
@@ -112,17 +277,16 @@ namespace HongPet.Migrators.MSSQL.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("newid()");
 
                     b.Property<Guid?>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CustomerEmail")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getutcdate()");
 
                     b.Property<Guid>("CustomerId")
                         .HasColumnType("uniqueidentifier");
@@ -144,8 +308,13 @@ namespace HongPet.Migrators.MSSQL.Migrations
                     b.Property<Guid?>("LastModificatedBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("LastModificatedDate")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTime>("LastModificatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getutcdate()");
+
+                    b.Property<int>("PaymentMethod")
+                        .HasColumnType("int");
 
                     b.Property<string>("ShippingAddress")
                         .IsRequired()
@@ -189,16 +358,19 @@ namespace HongPet.Migrators.MSSQL.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("newid()");
 
-                    b.Property<Guid>("CategoryId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Brief")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getutcdate()");
 
                     b.Property<Guid?>("DeletedBy")
                         .HasColumnType("uniqueidentifier");
@@ -209,19 +381,30 @@ namespace HongPet.Migrators.MSSQL.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
                     b.Property<Guid?>("LastModificatedBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("LastModificatedDate")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTime>("LastModificatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getutcdate()");
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
+
+                    b.Property<string>("ThumbnailUrl")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId");
+                    b.HasIndex("Name");
 
                     b.ToTable("Products");
                 });
@@ -230,13 +413,16 @@ namespace HongPet.Migrators.MSSQL.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("newid()");
 
                     b.Property<Guid?>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getutcdate()");
 
                     b.Property<Guid?>("DeletedBy")
                         .HasColumnType("uniqueidentifier");
@@ -247,14 +433,18 @@ namespace HongPet.Migrators.MSSQL.Migrations
                     b.Property<Guid?>("LastModificatedBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("LastModificatedDate")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTime>("LastModificatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getutcdate()");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name");
 
                     b.ToTable("ProductAttributes");
                 });
@@ -263,7 +453,8 @@ namespace HongPet.Migrators.MSSQL.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("newid()");
 
                     b.Property<Guid>("AttributeId")
                         .HasColumnType("uniqueidentifier");
@@ -272,7 +463,9 @@ namespace HongPet.Migrators.MSSQL.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getutcdate()");
 
                     b.Property<Guid?>("DeletedBy")
                         .HasColumnType("uniqueidentifier");
@@ -283,16 +476,18 @@ namespace HongPet.Migrators.MSSQL.Migrations
                     b.Property<Guid?>("LastModificatedBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("LastModificatedDate")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTime>("LastModificatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getutcdate()");
 
                     b.Property<string>("Value")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AttributeId");
+                    b.HasIndex("AttributeId", "Value");
 
                     b.ToTable("ProductAttributeValues");
                 });
@@ -325,7 +520,7 @@ namespace HongPet.Migrators.MSSQL.Migrations
                     b.Property<Guid?>("LastModificatedBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("LastModificatedDate")
+                    b.Property<DateTime>("LastModificatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid>("OrderId")
@@ -336,6 +531,10 @@ namespace HongPet.Migrators.MSSQL.Migrations
 
                     b.Property<int>("Rating")
                         .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -386,7 +585,7 @@ namespace HongPet.Migrators.MSSQL.Migrations
                     b.Property<Guid?>("LastModificatedBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("LastModificatedDate")
+                    b.Property<DateTime>("LastModificatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("getutcdate()");
@@ -401,12 +600,42 @@ namespace HongPet.Migrators.MSSQL.Migrations
                     b.Property<int>("Role")
                         .HasColumnType("int");
 
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("Email")
                         .IsUnique();
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000001"),
+                            AvatarUrl = "https://i.pinimg.com/736x/34/60/3c/34603ce8a80b1ce9a768cad7ebf63c56.jpg",
+                            CreatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "admin@example.com",
+                            Fullname = "Admin",
+                            LastModificatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Password = "t3sQhtkqtj41Row1AsEIUURPf5NAt7dh+gIKNLpMhxmZ9sHs",
+                            Role = 2,
+                            Username = "admin"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000002"),
+                            AvatarUrl = "https://cdn11.dienmaycholon.vn/filewebdmclnew/public/userupload/files/Image%20FP_2024/avatar-cute-54.png",
+                            CreatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "liam@example.com",
+                            Fullname = "Lam Lam",
+                            LastModificatedDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Password = "t3sQhtkqtj41Row1AsEIUURPf5NAt7dh+gIKNLpMhxmZ9sHs",
+                            Role = 1,
+                            Username = "liam"
+                        });
                 });
 
             modelBuilder.Entity("HongPet.Domain.Entities.Variant", b =>
@@ -433,7 +662,7 @@ namespace HongPet.Migrators.MSSQL.Migrations
                     b.Property<Guid?>("LastModificatedBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("LastModificatedDate")
+                    b.Property<DateTime>("LastModificatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("Price")
@@ -441,6 +670,9 @@ namespace HongPet.Migrators.MSSQL.Migrations
 
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ProductName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Stock")
                         .HasColumnType("int");
@@ -465,6 +697,21 @@ namespace HongPet.Migrators.MSSQL.Migrations
                     b.HasIndex("VariantsId");
 
                     b.ToTable("ProductAttributeValueVariant");
+                });
+
+            modelBuilder.Entity("CategoryProduct", b =>
+                {
+                    b.HasOne("HongPet.Domain.Entities.Category", null)
+                        .WithMany()
+                        .HasForeignKey("CategoriesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HongPet.Domain.Entities.Product", null)
+                        .WithMany()
+                        .HasForeignKey("ProductsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("HongPet.Domain.Entities.Category", b =>
@@ -515,17 +762,6 @@ namespace HongPet.Migrators.MSSQL.Migrations
                     b.Navigation("Order");
 
                     b.Navigation("Variant");
-                });
-
-            modelBuilder.Entity("HongPet.Domain.Entities.Product", b =>
-                {
-                    b.HasOne("HongPet.Domain.Entities.Category", "Category")
-                        .WithMany("Products")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("HongPet.Domain.Entities.ProductAttributeValue", b =>
@@ -594,8 +830,6 @@ namespace HongPet.Migrators.MSSQL.Migrations
 
             modelBuilder.Entity("HongPet.Domain.Entities.Category", b =>
                 {
-                    b.Navigation("Products");
-
                     b.Navigation("SubCategories");
                 });
 

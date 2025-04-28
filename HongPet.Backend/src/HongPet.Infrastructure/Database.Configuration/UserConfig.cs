@@ -30,6 +30,7 @@ public class UserConfig : IEntityTypeConfiguration<User>
                 Password = "t3sQhtkqtj41Row1AsEIUURPf5NAt7dh+gIKNLpMhxmZ9sHs", // hash password of "P@ss123"
                 Fullname = "Admin",
                 Role = RoleEnum.Admin,
+                AvatarUrl = "https://i.pinimg.com/736x/34/60/3c/34603ce8a80b1ce9a768cad7ebf63c56.jpg",
                 CreatedDate = DateTime.Parse("2025-04-15"),
                 LastModificatedDate = DateTime.Parse("2025-04-15")
             },
@@ -41,6 +42,7 @@ public class UserConfig : IEntityTypeConfiguration<User>
                 Username = "liam",
                 Password = "t3sQhtkqtj41Row1AsEIUURPf5NAt7dh+gIKNLpMhxmZ9sHs", // hash password of "P@ss123"
                 Fullname = "Lam Lam",
+                AvatarUrl = "https://cdn11.dienmaycholon.vn/filewebdmclnew/public/userupload/files/Image%20FP_2024/avatar-cute-54.png",
                 Role = RoleEnum.Customer,
                 CreatedDate = DateTime.Parse("2025-04-15"),
                 LastModificatedDate = DateTime.Parse("2025-04-15")

@@ -14,7 +14,8 @@ public class ProductsController(
             IReviewService _reviewService) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<PagedList<ProductGeneralVM>>> GetProducts([FromQuery] QueryListCriteria criteria)
+    public async Task<ActionResult<PagedList<ProductGeneralVM>>> GetProducts(
+        [FromQuery] QueryListCriteria criteria)
     {
         try
         {
@@ -66,11 +67,13 @@ public class ProductsController(
     }
 
     [HttpGet("{productId}/reviews")]
-    public async Task<ActionResult<PagedList<ReviewVM>>> GetProductReviews(Guid productId, [FromQuery] QueryListCriteria criteria)
+    public async Task<ActionResult<PagedList<ReviewVM>>> GetProductReviews(Guid productId, 
+        [FromQuery] QueryListCriteria criteria)
     {
         try
         {
-            var reviews = await _reviewService.GetReviewsByProductIdAsync(productId, criteria.PageIndex, criteria.PageSize);
+            var reviews = await _reviewService.GetReviewsByProductIdAsync(productId, 
+                criteria.PageIndex, criteria.PageSize);
             return Ok(new ApiResponse
             {
                 IsSuccess = true,

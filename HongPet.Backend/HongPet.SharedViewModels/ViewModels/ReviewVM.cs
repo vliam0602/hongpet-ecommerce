@@ -12,4 +12,10 @@ namespace HongPet.SharedViewModels.ViewModels
         public string ReviewerName { get; set; } = default!;
         public string? ReviewerAvatar { get; set; }
     }
+
+    public class ReviewGeneralVM
+    {
+        public Guid Id { get; set; }
+        public int Rating { get; set; }
+    }
 }
