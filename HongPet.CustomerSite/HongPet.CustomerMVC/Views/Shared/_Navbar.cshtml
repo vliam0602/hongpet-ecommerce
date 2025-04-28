@@ -1,5 +1,5 @@
 ﻿@inject HongPet.CustomerMVC.Services.Abstraction.IClaimService claimService
-
+@inject HongPet.CustomerMVC.Services.Abstraction.ICartService cartService
 <!-- Navigation Bar -->
 <nav class="navbar navbar-expand-lg navbar-light">
     <div class="container">
@@ -36,11 +36,11 @@
         <div class="d-none d-lg-flex align-items-center">
             <div class="search-container me-3">
                 <form method="get" class="d-flex"
-                      asp-controller="Product" 
+                      asp-controller="Product"
                       asp-action="Index">
-                    <input type="text" name="searchString" 
-                           class="form-control" 
-                           placeholder="Tìm kiếm sản phẩm..." 
+                    <input type="text" name="searchString"
+                           class="form-control"
+                           placeholder="Tìm kiếm sản phẩm..."
                            value="@ViewData["searchString"]" />
                     <button type="submit" class="search-button">
                         <i class="bi bi-search"></i>
@@ -50,7 +50,9 @@
 
             <a class="icon-container me-3" asp-controller="Cart" asp-action="Index">
                 <i class="bi bi-cart3"></i>
-                <span class="badge">0</span>
+                <span class="badge" id="cart-badge">
+                    @cartService.GetCartItemsQuantity()
+                </span>
             </a>
 
             @* Kiểm tra nếu đã đăng nhập *@
@@ -64,25 +66,25 @@
                     <ul class="dropdown-menu dropdown-menu-end"
                         aria-labelledby="userDropdown">
                         <li>
-                        <a class="dropdown-item" href="#">
-                            <i class="bi bi-person me-2"></i>
-                            Tài khoản của tôi
-                        </a>
+                            <a class="dropdown-item" href="#">
+                                <i class="bi bi-person me-2"></i>
+                                Tài khoản của tôi
+                            </a>
                         </li>
                         <li>
-                        <a class="dropdown-item" href="#">
-                            <i class="bi bi-bag me-2"></i>
-                            Đơn hàng của tôi
-                        </a>
+                            <a class="dropdown-item" href="#">
+                                <i class="bi bi-bag me-2"></i>
+                                Đơn hàng của tôi
+                            </a>
                         </li>
                         <li><hr class="dropdown-divider"></li>
                         <li>
-                        <a class="dropdown-item text-danger"
-                           asp-controller="Auth" 
-                           asp-action="Logout">
-                            <i class="bi bi-box-arrow-right me-2"></i>
-                            Đăng xuất
-                        </a>
+                            <a class="dropdown-item text-danger"
+                               asp-controller="Auth"
+                               asp-action="Logout">
+                                <i class="bi bi-box-arrow-right me-2"></i>
+                                Đăng xuất
+                            </a>
                         </li>
                     </ul>
                 </div>

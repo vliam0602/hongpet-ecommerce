@@ -4,7 +4,8 @@ namespace HongPet.CustomerMVC.Services.Abstraction;
 
 public interface ICartService
 {
-    void AddToCart(Guid variantId, int quantity);
+    void AddToCart(CartItemModel model);
     IEnumerable<CartItemModel> GetCartItems();
+    int GetCartItemsQuantity();
     void ClearCart();
 }

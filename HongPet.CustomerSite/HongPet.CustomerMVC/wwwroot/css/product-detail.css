@@ -237,7 +237,7 @@
     .quantity-input:focus {
         outline: none;
     }
-
+/* Add to cart form */
 .btn-add-to-cart {
     flex: 1;
     height: 50px;
@@ -259,22 +259,10 @@
         box-shadow: 0 5px 15px rgba(249, 168, 185, 0.4);
     }
 
-.btn-buy-now {
-    height: 50px;
-    background-color: var(--accent-orange);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-weight: 600;
-    padding: 0 25px;
-    transition: all 0.3s ease;
+.add-to-cart-form {
+    display: flex;
+    gap: 2rem;
 }
-
-    .btn-buy-now:hover {
-        background-color: #ff7d1a;
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(255, 125, 26, 0.4);
-    }
 
 .product-extra-info {
     background-color: #f8f9fa;

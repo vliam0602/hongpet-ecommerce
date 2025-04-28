@@ -1,4 +1,4 @@
-﻿
+﻿@model IEnumerable<CartItemModel>
 <!-- Page Header -->
 <section class="page-header py-4">
     <div class="container">
@@ -22,106 +22,74 @@
 <section class="cart-section py-5">
     <div class="container">
         <div class="row">
-            <!-- Cart Items -->
             <div class="col-lg-8 mb-4 mb-lg-0">
                 <div class="cart-container">
                     <div class="cart-header">
                         <div class="row">
                             <div class="col-md-6">
-                                <h3 class="cart-title">Product</h3>
+                                <h3 class="cart-title">Sản phẩm</h3>
                             </div>
                             <div class="col-md-2 text-center">
-                                <h3 class="cart-title">Price</h3>
+                                <h3 class="cart-title">Giá</h3>
                             </div>
                             <div class="col-md-2 text-center">
-                                <h3 class="cart-title">Quantity</h3>
+                                <h3 class="cart-title">Số lượng</h3>
                             </div>
                             <div class="col-md-2 text-end">
-                                <h3 class="cart-title">Subtotal</h3>
+                                <h3 class="cart-title">Thành tiền</h3>
                             </div>
                         </div>
                     </div>
-
+                    <!-- Cart Items -->
                     <div class="cart-items">
-                        <!-- Cart Item 1 -->
-                        <div class="cart-item">
-                            <div class="row align-items-center">
-                                <div class="col-md-6">
-                                    <div class="item-info">
-                                        <div class="item-image">
-                                            <img src="https://i.ebayimg.com/thumbs/images/g/VQgAAOSwvuZiF~ai/s-l225.jpg" alt="Premium Dog Food">
+                        @foreach (var item in Model)
+                        {
+                            <div class="cart-item">
+                                <div class="row align-items-center">
+                                    <div class="col-md-6">
+                                        <div class="item-info">
+                                            <div class="item-image">
+                                                <img src="@item.ThumbnailImageUrl" alt="@item.ProductName">
+                                            </div>
+                                            <div class="item-details">
+                                                <h4 class="item-title">@item.ProductName</h4>
+                                                <div class="item-variant">@item.VariantName</div>
+                                                <button class="remove-item">
+                                                    <i class="bi bi-trash"></i> Remove
+                                                </button>
+                                            </div>
                                         </div>
-                                        <div class="item-details">
-                                            <h4 class="item-title">Premium Dog Food</h4>
-                                            <div class="item-variant">Size: 5kg</div>
-                                            <button class="remove-item">
-                                                <i class="bi bi-trash"></i> Remove
+                                    </div>
+                                    <div class="col-md-2 text-center">
+                                        <div class="item-price">@item.Price.ToString("C",
+                                                    new System.Globalization.CultureInfo("vi-VN"))</div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="quantity-selector">
+                                            <button class="quantity-btn minus">
+                                                <i class="bi bi-dash"></i>
+                                            </button>
+                                            <input type="number" class="quantity-input" value="@item.Quantity" min="1" max="99">
+                                            <button class="quantity-btn plus">
+                                                <i class="bi bi-plus"></i>
                                             </button>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-md-2 text-center">
-                                    <div class="item-price">$29.99</div>
-                                </div>
-                                <div class="col-md-2">
-                                    <div class="quantity-selector">
-                                        <button class="quantity-btn minus">
-                                            <i class="bi bi-dash"></i>
-                                        </button>
-                                        <input type="number" class="quantity-input" value="1" min="1" max="99">
-                                        <button class="quantity-btn plus">
-                                            <i class="bi bi-plus"></i>
-                                        </button>
+                                    <div class="col-md-2 text-end">
+                                        <div class="item-subtotal">@item.Subtotal.ToString("C",
+                                                    new System.Globalization.CultureInfo("vi-VN"))</div>
                                     </div>
-                                </div>
-                                <div class="col-md-2 text-end">
-                                    <div class="item-subtotal">$29.99</div>
                                 </div>
                             </div>
-                        </div>
-
-                        <!-- Cart Item 2 -->
-                        <div class="cart-item">
-                            <div class="row align-items-center">
-                                <div class="col-md-6">
-                                    <div class="item-info">
-                                        <div class="item-image">
-                                            <img src="https://i.ebayimg.com/thumbs/images/g/VQgAAOSwvuZiF~ai/s-l225.jpg" alt="Dog Bowl">
-                                        </div>
-                                        <div class="item-details">
-                                            <h4 class="item-title">Dog Bowl</h4>
-                                            <div class="item-variant">Color: Blue</div>
-                                            <button class="remove-item">
-                                                <i class="bi bi-trash"></i> Remove
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-2 text-center">
-                                    <div class="item-price">$19.99</div>
-                                </div>
-                                <div class="col-md-2">
-                                    <div class="quantity-selector">
-                                        <button class="quantity-btn minus">
-                                            <i class="bi bi-dash"></i>
-                                        </button>
-                                        <input type="number" class="quantity-input" value="2" min="1" max="99">
-                                        <button class="quantity-btn plus">
-                                            <i class="bi bi-plus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="col-md-2 text-end">
-                                    <div class="item-subtotal">$39.98</div>
-                                </div>
-                            </div>
-                        </div>
+                        }
                     </div>
+
                     <!-- Cart Actions -->
                     <div class="cart-actions">
                         <div class="row">
                             <div class="col-md-4 text-md-start">
-                                <a href="product-list.html" class="btn btn-continue-shopping">
+                                <a asp-controller="Product" asp-action="Index"
+                                   class="btn btn-continue-shopping">
                                     <i class="bi bi-arrow-left"></i> Tiếp tục mua sắm
                                 </a>
                             </div>
@@ -137,48 +105,39 @@
             <!-- Cart Summary -->
             <div class="col-lg-4">
                 <div class="cart-summary">
-                    <h3 class="summary-title">Cart Summary</h3>
-
+                    <h3 class="summary-title">Chi tiết đơn hàng</h3>
                     <div class="summary-item">
-                        <span class="summary-label">Subtotal</span>
-                        <span class="summary-value">$69.97</span>
+                        <span class="summary-label">Tổng tiền hàng: </span>
+                        <span class="summary-value">
+                            @Model.Sum(item => item.Subtotal).ToString("C", 
+                           new System.Globalization.CultureInfo("vi-VN"))
+                        </span>
                     </div>
-
                     <div class="summary-item">
-                        <span class="summary-label">Shipping</span>
-                        <span class="summary-value">$5.00</span>
+                        <span class="summary-label">Phí vận chuyển: </span>
+                        <span class="summary-value">Freeship</span>
                     </div>
-
                     <div class="summary-item">
-                        <span class="summary-label">Tax</span>
-                        <span class="summary-value">$7.50</span>
+                        <span class="summary-label">Tổng cộng: </span>
+                        <span class="summary-value">
+                            @Model.Sum(item => item.Subtotal).ToString("C",
+                           new System.Globalization.CultureInfo("vi-VN"))
+                        </span>
                     </div>
-
-                    <div class="summary-item discount">
-                        <span class="summary-label">Discount</span>
-                        <span class="summary-value">-$5.00</span>
-                    </div>
-
-                    <div class="summary-total">
-                        <span class="total-label">Total</span>
-                        <span class="total-value">$77.47</span>
-                    </div>
-
                     <a href="./payment.html" class="btn btn-checkout">
                         Thanh toán <i class="bi bi-arrow-right"></i>
                     </a>
 
                     <div class="secure-checkout">
-                        <i class="bi bi-shield-lock"></i> Secure Checkout
+                        <i class="bi bi-shield-lock"></i> Thanh toán an toàn
                     </div>
-
                     <div class="payment-methods">
                         <span class="payment-icon"><i class="bi bi-credit-card"></i></span>
                         <span class="payment-icon"><i class="bi bi-paypal"></i></span>
                         <span class="payment-icon"><i class="bi bi-wallet2"></i></span>
                         <span class="payment-icon"><i class="bi bi-bank"></i></span>
                     </div>
-                </div>
+                </div>                
             </div>
         </div>
     </div>
