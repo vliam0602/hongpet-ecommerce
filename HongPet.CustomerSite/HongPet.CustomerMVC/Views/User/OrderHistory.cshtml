@@ -1,0 +1,524 @@
+﻿<!-- Page Header -->
+<section class="page-header py-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="page-title">Order History</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                        <li class="breadcrumb-item"><a href="#">My Account</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Order History</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Order History Section -->
+<section class="order-history-section py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Account Sidebar -->
+            <div class="col-lg-3 mb-4 mb-lg-0">
+                <div class="account-sidebar">
+                    <div class="user-info">
+                        <div class="user-avatar">
+                            <i class="bi bi-person-circle"></i>
+                        </div>
+                        <div class="user-details">
+                            <h3 class="user-name">John Doe</h3>
+                            <p class="user-email">john.doe@example.com</p>
+                        </div>
+                    </div>
+
+                    <ul class="account-menu">
+                        <li class="menu-item">
+                            <a href="#" class="menu-link">
+                                <i class="bi bi-person"></i> Account Dashboard
+                            </a>
+                        </li>
+                        <li class="menu-item active">
+                            <a href="order-history.html" class="menu-link">
+                                <i class="bi bi-box-seam"></i> Order History
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="#" class="menu-link">
+                                <i class="bi bi-geo-alt"></i> Addresses
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="#" class="menu-link">
+                                <i class="bi bi-credit-card"></i> Payment Methods
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="#" class="menu-link">
+                                <i class="bi bi-shield-lock"></i> Account Settings
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="login.html" class="menu-link">
+                                <i class="bi bi-box-arrow-right"></i> Logout
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Order History Content -->
+            <div class="col-lg-9">
+                <div class="order-history-container">
+                    <div class="order-history-header">
+                        <h2 class="section-title">Your Orders</h2>
+
+                        <div class="order-filters">
+                            <div class="filter-group">
+                                <label for="order-period" class="filter-label">Time Period:</label>
+                                <select id="order-period" class="form-select">
+                                    <option value="all" selected>All Orders</option>
+                                    <option value="last-30">Last 30 Days</option>
+                                    <option value="last-6-months">Last 6 Months</option>
+                                    <option value="last-year">Last Year</option>
+                                </select>
+                            </div>
+
+                            <div class="filter-group">
+                                <label for="order-status" class="filter-label">Status:</label>
+                                <select id="order-status" class="form-select">
+                                    <option value="all" selected>All Status</option>
+                                    <option value="processing">Processing</option>
+                                    <option value="shipped">Shipped</option>
+                                    <option value="delivered">Delivered</option>
+                                    <option value="cancelled">Cancelled</option>
+                                </select>
+                            </div>
+
+                            <button class="btn btn-filter">
+                                <i class="bi bi-funnel"></i> Filter
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="orders-list">
+                        <!-- Order 1 -->
+                        <div class="order-item">
+                            <div class="order-header" data-bs-toggle="collapse" data-bs-target="#order1Details" aria-expanded="false" aria-controls="order1Details">
+                                <div class="order-info">
+                                    <div class="order-number">
+                                        <span class="label">Order #:</span>
+                                        <span class="value">ORD-2023-8745</span>
+                                    </div>
+                                    <div class="order-date">
+                                        <span class="label">Date:</span>
+                                        <span class="value">June 15, 2023</span>
+                                    </div>
+                                </div>
+
+                                <div class="order-status">
+                                    <span class="status-badge delivered">Delivered</span>
+                                </div>
+
+                                <div class="order-total">
+                                    <span class="label">Total:</span>
+                                    <span class="value">$77.47</span>
+                                </div>
+
+                                <div class="order-toggle">
+                                    <i class="bi bi-chevron-down"></i>
+                                </div>
+                            </div>
+
+                            <div id="order1Details" class="collapse order-details">
+                                <div class="order-products">
+                                    <!-- Product 1 -->
+                                    <div class="order-product">
+                                        <div class="product-image">
+                                            <img src="https://i.ebayimg.com/thumbs/images/g/VQgAAOSwvuZiF~ai/s-l225.jpg" alt="Premium Dog Food">
+                                        </div>
+                                        <div class="product-details">
+                                            <h4 class="product-name">Premium Dog Food</h4>
+                                            <div class="product-variant">Size: 5kg</div>
+                                            <div class="product-price">$29.99 x 1</div>
+                                        </div>
+                                        <div class="product-actions">
+                                            <a href="product-detail.html" class="btn btn-sm btn-view">
+                                                <i class="bi bi-eye"></i> View
+                                            </a>
+                                            <a href="add-review.html?product=premium-dog-food" class="btn btn-sm btn-review">
+                                                <i class="bi bi-star"></i> Review
+                                            </a>
+                                            <button class="btn btn-sm btn-reorder">
+                                                <i class="bi bi-cart-plus"></i> Reorder
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Product 2 -->
+                                    <div class="order-product">
+                                        <div class="product-image">
+                                            <img src="https://i.ebayimg.com/thumbs/images/g/VQgAAOSwvuZiF~ai/s-l225.jpg" alt="Dog Bowl">
+                                        </div>
+                                        <div class="product-details">
+                                            <h4 class="product-name">Dog Bowl</h4>
+                                            <div class="product-variant">Color: Blue</div>
+                                            <div class="product-price">$19.99 x 2</div>
+                                        </div>
+                                        <div class="product-actions">
+                                            <a href="product-detail.html" class="btn btn-sm btn-view">
+                                                <i class="bi bi-eye"></i> View
+                                            </a>
+                                            <a href="add-review.html?product=dog-bowl" class="btn btn-sm btn-review">
+                                                <i class="bi bi-star"></i> Review
+                                            </a>
+                                            <button class="btn btn-sm btn-reorder">
+                                                <i class="bi bi-cart-plus"></i> Reorder
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="order-summary">
+                                    <div class="summary-item">
+                                        <span class="label">Subtotal:</span>
+                                        <span class="value">$69.97</span>
+                                    </div>
+                                    <div class="summary-item">
+                                        <span class="label">Shipping:</span>
+                                        <span class="value">$5.00</span>
+                                    </div>
+                                    <div class="summary-item">
+                                        <span class="label">Tax:</span>
+                                        <span class="value">$7.50</span>
+                                    </div>
+                                    <div class="summary-item discount">
+                                        <span class="label">Discount:</span>
+                                        <span class="value">-$5.00</span>
+                                    </div>
+                                    <div class="summary-total">
+                                        <span class="label">Total:</span>
+                                        <span class="value">$77.47</span>
+                                    </div>
+                                </div>
+
+                                <div class="order-actions">
+                                    <button class="btn btn-track">
+                                        <i class="bi bi-truck"></i> Track Order
+                                    </button>
+                                    <button class="btn btn-invoice">
+                                        <i class="bi bi-file-earmark-text"></i> Invoice
+                                    </button>
+                                    <button class="btn btn-help">
+                                        <i class="bi bi-question-circle"></i> Help
+                                    </button>
+                                </div>
+
+                                <div class="delivery-info">
+                                    <div class="delivery-address">
+                                        <h5>Delivery Address</h5>
+                                        <p>
+                                            John Doe<br>
+                                            123 Main Street, Apt 4B<br>
+                                            New York, NY 10001<br>
+                                            United States<br>
+                                            Phone: (123) 456-7890
+                                        </p>
+                                    </div>
+
+                                    <div class="delivery-method">
+                                        <h5>Delivery Method</h5>
+                                        <p>
+                                            Standard Shipping<br>
+                                            Delivered on June 18, 2023
+                                        </p>
+                                    </div>
+
+                                    <div class="payment-method">
+                                        <h5>Payment Method</h5>
+                                        <p>
+                                            Credit Card<br>
+                                            **** **** **** 1234
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Order 2 -->
+                        <div class="order-item">
+                            <div class="order-header" data-bs-toggle="collapse" data-bs-target="#order2Details" aria-expanded="false" aria-controls="order2Details">
+                                <div class="order-info">
+                                    <div class="order-number">
+                                        <span class="label">Order #:</span>
+                                        <span class="value">ORD-2023-7652</span>
+                                    </div>
+                                    <div class="order-date">
+                                        <span class="label">Date:</span>
+                                        <span class="value">May 22, 2023</span>
+                                    </div>
+                                </div>
+
+                                <div class="order-status">
+                                    <span class="status-badge delivered">Delivered</span>
+                                </div>
+
+                                <div class="order-total">
+                                    <span class="label">Total:</span>
+                                    <span class="value">$45.98</span>
+                                </div>
+
+                                <div class="order-toggle">
+                                    <i class="bi bi-chevron-down"></i>
+                                </div>
+                            </div>
+
+                            <div id="order2Details" class="collapse order-details">
+                                <div class="order-products">
+                                    <!-- Product 1 -->
+                                    <div class="order-product">
+                                        <div class="product-image">
+                                            <img src="https://i.ebayimg.com/thumbs/images/g/VQgAAOSwvuZiF~ai/s-l225.jpg" alt="Cat Food">
+                                        </div>
+                                        <div class="product-details">
+                                            <h4 class="product-name">Premium Cat Food</h4>
+                                            <div class="product-variant">Size: 2kg</div>
+                                            <div class="product-price">$24.99 x 1</div>
+                                        </div>
+                                        <div class="product-actions">
+                                            <a href="product-detail.html" class="btn btn-sm btn-view">
+                                                <i class="bi bi-eye"></i> View
+                                            </a>
+                                            <a href="add-review.html?product=premium-cat-food" class="btn btn-sm btn-review">
+                                                <i class="bi bi-star"></i> Review
+                                            </a>
+                                            <button class="btn btn-sm btn-reorder">
+                                                <i class="bi bi-cart-plus"></i> Reorder
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Product 2 -->
+                                    <div class="order-product">
+                                        <div class="product-image">
+                                            <img src="https://i.ebayimg.com/thumbs/images/g/VQgAAOSwvuZiF~ai/s-l225.jpg" alt="Cat Toy">
+                                        </div>
+                                        <div class="product-details">
+                                            <h4 class="product-name">Interactive Cat Toy</h4>
+                                            <div class="product-variant">Color: Multi</div>
+                                            <div class="product-price">$15.99 x 1</div>
+                                        </div>
+                                        <div class="product-actions">
+                                            <a href="product-detail.html" class="btn btn-sm btn-view">
+                                                <i class="bi bi-eye"></i> View
+                                            </a>
+                                            <a href="add-review.html?product=interactive-cat-toy" class="btn btn-sm btn-review">
+                                                <i class="bi bi-star"></i> Review
+                                            </a>
+                                            <button class="btn btn-sm btn-reorder">
+                                                <i class="bi bi-cart-plus"></i> Reorder
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="order-summary">
+                                    <div class="summary-item">
+                                        <span class="label">Subtotal:</span>
+                                        <span class="value">$40.98</span>
+                                    </div>
+                                    <div class="summary-item">
+                                        <span class="label">Shipping:</span>
+                                        <span class="value">$5.00</span>
+                                    </div>
+                                    <div class="summary-item">
+                                        <span class="label">Tax:</span>
+                                        <span class="value">$0.00</span>
+                                    </div>
+                                    <div class="summary-total">
+                                        <span class="label">Total:</span>
+                                        <span class="value">$45.98</span>
+                                    </div>
+                                </div>
+
+                                <div class="order-actions">
+                                    <button class="btn btn-track">
+                                        <i class="bi bi-truck"></i> Track Order
+                                    </button>
+                                    <button class="btn btn-invoice">
+                                        <i class="bi bi-file-earmark-text"></i> Invoice
+                                    </button>
+                                    <button class="btn btn-help">
+                                        <i class="bi bi-question-circle"></i> Help
+                                    </button>
+                                </div>
+
+                                <div class="delivery-info">
+                                    <div class="delivery-address">
+                                        <h5>Delivery Address</h5>
+                                        <p>
+                                            John Doe<br>
+                                            123 Main Street, Apt 4B<br>
+                                            New York, NY 10001<br>
+                                            United States<br>
+                                            Phone: (123) 456-7890
+                                        </p>
+                                    </div>
+
+                                    <div class="delivery-method">
+                                        <h5>Delivery Method</h5>
+                                        <p>
+                                            Standard Shipping<br>
+                                            Delivered on May 25, 2023
+                                        </p>
+                                    </div>
+
+                                    <div class="payment-method">
+                                        <h5>Payment Method</h5>
+                                        <p>
+                                            PayPal<br>
+                                            john.doe@example.com
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Order 3 -->
+                        <div class="order-item">
+                            <div class="order-header" data-bs-toggle="collapse" data-bs-target="#order3Details" aria-expanded="false" aria-controls="order3Details">
+                                <div class="order-info">
+                                    <div class="order-number">
+                                        <span class="label">Order #:</span>
+                                        <span class="value">ORD-2023-6543</span>
+                                    </div>
+                                    <div class="order-date">
+                                        <span class="label">Date:</span>
+                                        <span class="value">April 10, 2023</span>
+                                    </div>
+                                </div>
+
+                                <div class="order-status">
+                                    <span class="status-badge shipped">Shipped</span>
+                                </div>
+
+                                <div class="order-total">
+                                    <span class="label">Total:</span>
+                                    <span class="value">$89.97</span>
+                                </div>
+
+                                <div class="order-toggle">
+                                    <i class="bi bi-chevron-down"></i>
+                                </div>
+                            </div>
+
+                            <div id="order3Details" class="collapse order-details">
+                                <div class="order-products">
+                                    <!-- Product 1 -->
+                                    <div class="order-product">
+                                        <div class="product-image">
+                                            <img src="https://i.ebayimg.com/thumbs/images/g/VQgAAOSwvuZiF~ai/s-l225.jpg" alt="Dog Bed">
+                                        </div>
+                                        <div class="product-details">
+                                            <h4 class="product-name">Orthopedic Dog Bed</h4>
+                                            <div class="product-variant">Size: Large</div>
+                                            <div class="product-price">$89.97 x 1</div>
+                                        </div>
+                                        <div class="product-actions">
+                                            <a href="product-detail.html" class="btn btn-sm btn-view">
+                                                <i class="bi bi-eye"></i> View
+                                            </a>
+                                            <a href="add-review.html?product=orthopedic-dog-bed" class="btn btn-sm btn-review">
+                                                <i class="bi bi-star"></i> Review
+                                            </a>
+                                            <button class="btn btn-sm btn-reorder">
+                                                <i class="bi bi-cart-plus"></i> Reorder
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="order-summary">
+                                    <div class="summary-item">
+                                        <span class="label">Subtotal:</span>
+                                        <span class="value">$89.97</span>
+                                    </div>
+                                    <div class="summary-item">
+                                        <span class="label">Shipping:</span>
+                                        <span class="value">$0.00</span>
+                                    </div>
+                                    <div class="summary-item">
+                                        <span class="label">Tax:</span>
+                                        <span class="value">$0.00</span>
+                                    </div>
+                                    <div class="summary-total">
+                                        <span class="label">Total:</span>
+                                        <span class="value">$89.97</span>
+                                    </div>
+                                </div>
+
+                                <div class="order-actions">
+                                    <button class="btn btn-track">
+                                        <i class="bi bi-truck"></i> Track Order
+                                    </button>
+                                    <button class="btn btn-invoice">
+                                        <i class="bi bi-file-earmark-text"></i> Invoice
+                                    </button>
+                                    <button class="btn btn-help">
+                                        <i class="bi bi-question-circle"></i> Help
+                                    </button>
+                                </div>
+
+                                <div class="delivery-info">
+                                    <div class="delivery-address">
+                                        <h5>Delivery Address</h5>
+                                        <p>
+                                            John Doe<br>
+                                            123 Main Street, Apt 4B<br>
+                                            New York, NY 10001<br>
+                                            United States<br>
+                                            Phone: (123) 456-7890
+                                        </p>
+                                    </div>
+
+                                    <div class="delivery-method">
+                                        <h5>Delivery Method</h5>
+                                        <p>
+                                            Express Shipping<br>
+                                            Estimated delivery: April 15, 2023
+                                        </p>
+                                    </div>
+
+                                    <div class="payment-method">
+                                        <h5>Payment Method</h5>
+                                        <p>
+                                            Credit Card<br>
+                                            **** **** **** 1234
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pagination-container d-flex justify-content-center mt-4">
+                        <nav aria-label="Orders pagination">
+                            <ul class="pagination">
+                                <li class="page-item active">
+                                    <a class="page-link" href="#">1</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#">2</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#">Next</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
