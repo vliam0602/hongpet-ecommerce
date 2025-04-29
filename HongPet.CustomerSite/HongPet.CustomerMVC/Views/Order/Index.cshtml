@@ -1,0 +1,164 @@
+﻿<!-- Page Header -->
+<section class="page-header py-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="page-title">Thanh Toán</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a asp-controller="Home" asp-action="Index">Trang chủ</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a asp-controller="Cart" asp-action="Index">Giỏ hàng</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                            Thanh toán
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Payment Section -->
+<section class="payment-section py-5">
+    <div class="container">
+        <form id="checkout-form" class="row"
+              asp-controller="Order" asp-action="OrderConfirm">
+            <!-- Customer Information and Payment Methods -->
+            <div class="col-lg-8 mb-4 mb-lg-0">
+                <div class="payment-container">
+                    <h2 class="payment-title">Thông tin giao hàng</h2>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="fullName" class="form-label required-field">
+                                Họ và tên
+                            </label>
+                            <input type="text" class="form-control" name="fullName" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="email" class="form-label required-field">
+                                Email
+                            </label>
+                            <input type="email" class="form-control" name="email" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="phone" class="form-label required-field">
+                                Số điện thoại
+                            </label>
+                            <input type="tel" class="form-control" name="phone" required>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <label for="address" class="form-label required-field">
+                                Địa chỉ
+                            </label>
+                            <input type="text" class="form-control" name="address" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="payment-container">
+                    <h2 class="payment-title">Phương thức thanh toán</h2>
+                    <div class="payment-method">
+                        <label class="payment-option" data-payment="cod">
+                            <input type="radio" name="payment" id="cod"
+                                   class="payment-option-radio" checked>
+                            <span class="payment-option-icon">
+                                <i class="bi bi-cash"></i>
+                            </span>
+                            <span class="payment-option-details">
+                                <span class="payment-option-title">
+                                    Thanh toán khi nhận hàng (COD)
+                                </span>
+                                <span class="payment-option-description">
+                                    Bạn chỉ phải thanh toán khi nhận được hàng
+                                </span>
+                            </span>
+                        </label>
+
+                        <label class="payment-option" data-payment="online">
+                            <input type="radio" name="payment" id="online"
+                                   class="payment-option-radio">
+                            <span class="payment-option-icon">
+                                <i class="bi bi-credit-card"></i>
+                            </span>
+                            <span class="payment-option-details">
+                                <span class="payment-option-title">
+                                    Thanh toán online
+                                </span>
+                                <span class="payment-option-description">
+                                    Thanh toán bằng cách quét mã QR
+                                </span>
+                            </span>
+                        </label>                        
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="col-lg-4">
+                <div class="payment-container">
+                    <h2 class="payment-title">Đơn hàng của bạn</h2>
+
+                    <div class="order-summary">
+                        <div class="order-item">
+                            <div>
+                                <div class="item-name">Premium Dog Food</div>
+                                <div class="item-quantity">Size: 5kg x 1</div>
+                            </div>
+                            <div class="item-price">$29.99</div>
+                        </div>
+
+                        <div class="order-item">
+                            <div>
+                                <div class="item-name">Dog Bowl</div>
+                                <div class="item-quantity">Color: Blue x 2</div>
+                            </div>
+                            <div class="item-price">$39.98</div>
+                        </div>
+
+                        <div class="summary-item">
+                            <span class="summary-label">Tạm tính</span>
+                            <span class="summary-value">$69.97</span>
+                        </div>
+
+                        <div class="summary-item">
+                            <span class="summary-label">Phí vận chuyển</span>
+                            <span class="summary-value">$5.00</span>
+                        </div>
+
+                        <div class="summary-item">
+                            <span class="summary-label">Thuế</span>
+                            <span class="summary-value">$7.50</span>
+                        </div>
+
+                        <div class="summary-item">
+                            <span class="summary-label">Giảm giá</span>
+                            <span class="summary-value" style="color: #28a745;">-$5.00</span>
+                        </div>
+
+                        <div class="summary-total">
+                            <span class="total-label">Tổng cộng</span>
+                            <span class="total-value">$77.47</span>
+                        </div>
+                    </div>
+
+                    <button type="submit" form="checkout-form" class="btn btn-place-order">
+                        Đặt hàng
+                    </button>
+
+                    <div class="secure-checkout">
+                        <i class="bi bi-shield-lock"></i> Thanh toán an toàn
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
