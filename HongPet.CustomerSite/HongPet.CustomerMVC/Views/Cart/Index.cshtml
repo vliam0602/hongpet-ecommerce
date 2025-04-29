@@ -54,9 +54,12 @@
                                             <div class="item-details">
                                                 <h4 class="item-title">@item.ProductName</h4>
                                                 <div class="item-variant">@item.VariantName</div>
-                                                <button class="remove-item">
+                                                <a class="remove-item"
+                                                   asp-controller="Cart" 
+                                                    asp-action="RemoveFromCart"
+                                                    asp-route-variantId="@item.VariantId">
                                                     <i class="bi bi-trash"></i> Remove
-                                                </button>
+                                                </a>
                                             </div>
                                         </div>
                                     </div>
@@ -66,13 +69,20 @@
                                     </div>
                                     <div class="col-md-2">
                                         <div class="quantity-selector">
-                                            <button class="quantity-btn minus">
+                                            <a class="quantity-btn minus btn"
+                                                    asp-controller="Cart" 
+                                                    asp-action="DecreaseQuantity"
+                                                    asp-route-variantId="@item.VariantId">
                                                 <i class="bi bi-dash"></i>
-                                            </button>
-                                            <input type="number" class="quantity-input" value="@item.Quantity" min="1" max="99">
-                                            <button class="quantity-btn plus">
+                                            </a>
+                                            <input type="number" class="quantity-input" 
+                                                   value="@item.Quantity" min="1" max="99" readonly>
+                                            <a class="quantity-btn plus btn"
+                                                    asp-controller="Cart" 
+                                                    asp-action="IncreaseQuantity"
+                                                    asp-route-variantId="@item.VariantId">
                                                 <i class="bi bi-plus"></i>
-                                            </button>
+                                            </a>
                                         </div>
                                     </div>
                                     <div class="col-md-2 text-end">
@@ -124,7 +134,8 @@
                            new System.Globalization.CultureInfo("vi-VN"))
                         </span>
                     </div>
-                    <a href="./payment.html" class="btn btn-checkout">
+                    <a asp-controller="Order" asp-action="Index"
+                       class="btn btn-checkout">
                         Thanh toán <i class="bi bi-arrow-right"></i>
                     </a>
 

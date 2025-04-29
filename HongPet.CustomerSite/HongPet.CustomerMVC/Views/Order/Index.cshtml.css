@@ -1,0 +1,246 @@
+﻿/* Payment Page Styles */
+.payment-section {
+    padding: 40px 0;
+}
+
+.payment-container {
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    padding: 30px;
+    margin-bottom: 30px;
+}
+
+.payment-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.form-label {
+    font-weight: 500;
+    color: var(--text-dark);
+    margin-bottom: 8px;
+}
+
+.form-control, .form-select {
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+    margin-bottom: 15px;
+}
+
+    .form-control:focus, .form-select:focus {
+        border-color: var(--primary-pink);
+        box-shadow: 0 0 0 0.25rem rgba(249, 168, 185, 0.25);
+    }
+
+.payment-method {
+    margin-bottom: 20px;
+}
+
+.payment-option {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+    .payment-option:hover {
+        border-color: var(--primary-pink);
+    }
+
+    .payment-option.active {
+        border-color: var(--primary-pink);
+        background-color: rgba(249, 168, 185, 0.05);
+    }
+
+.payment-option-radio {
+    margin-right: 15px;
+}
+
+.payment-option-icon {
+    font-size: 1.5rem;
+    margin-right: 15px;
+    color: var(--text-dark);
+}
+
+.payment-option-details {
+    flex: 1;
+}
+
+.payment-option-title {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.payment-option-description {
+    display: block;
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
+
+.qr-code-container {
+    display: none;
+    text-align: center;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    margin-top: 15px;
+}
+
+    .qr-code-container.active {
+        display: block;
+        animation: fadeIn 0.5s ease-out forwards;
+    }
+
+.qr-code {
+    max-width: 200px;
+    margin: 0 auto 15px;
+}
+
+.qr-instructions {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    margin-bottom: 15px;
+}
+
+.order-summary {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.order-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+    .order-item:last-child {
+        border-bottom: none;
+    }
+
+.item-name {
+    font-weight: 500;
+}
+
+.item-quantity {
+    color: var(--text-light);
+    font-size: 0.9rem;
+}
+
+.item-price {
+    font-weight: 600;
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.summary-label {
+    color: var(--text-light);
+}
+
+.summary-value {
+    font-weight: 500;
+}
+
+.summary-total {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #e9ecef;
+}
+
+.total-label {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.total-value {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--primary-pink-dark);
+}
+
+.btn-place-order {
+    background-color: var(--primary-pink);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px;
+    font-weight: 600;
+    width: 100%;
+    margin-top: 20px;
+    transition: all 0.3s ease;
+}
+
+    .btn-place-order:hover {
+        background-color: var(--primary-pink-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(249, 168, 185, 0.4);
+    }
+
+.secure-checkout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 15px;
+    color: var(--text-light);
+    font-size: 0.9rem;
+}
+
+    .secure-checkout i {
+        margin-right: 5px;
+        color: var(--primary-pink-dark);
+    }
+
+.required-field::after {
+    content: "*";
+    color: #dc3545;
+    margin-left: 4px;
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.payment-container {
+    animation: fadeIn 0.6s ease-out forwards;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 992px) {
+    .payment-container {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .order-summary {
+        margin-top: 30px;
+    }
+}

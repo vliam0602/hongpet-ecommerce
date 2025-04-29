@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HongPet.CustomerMVC.Controllers;
 public class CartController(
+    ILogger<CartController> _logger,
     ICartService _cartService) : Controller
 {
     public IActionResult Index()
@@ -37,6 +38,42 @@ public class CartController(
         {
             return BadRequest(new { message = ex.Message });
         }
+    }
+
+    public IActionResult DecreaseQuantity(Guid variantId)
+    {
+        try
+        {
+            _cartService.IncreaseQuantity(variantId, -1);            
+        } catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Decrease quantity failed: {ex.Message}");            
+        }
+        return RedirectToAction("Index");
+    }
+
+    public IActionResult IncreaseQuantity(Guid variantId)
+    {
+        try
+        {
+            _cartService.IncreaseQuantity(variantId, 1);
+        } catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Increase quantity failed: {ex.Message}");
+        }
+        return RedirectToAction("Index");
+    }
+
+    public IActionResult RemoveFromCart(Guid variantId)
+    {
+        try
+        {
+            _cartService.RemoveFromCart(variantId);            
+        } catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Remove item from cart failed: {ex.Message}");
+        }
+        return RedirectToAction("Index");
     }
 
 

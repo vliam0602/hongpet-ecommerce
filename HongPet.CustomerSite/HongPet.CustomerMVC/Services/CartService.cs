@@ -57,5 +57,39 @@ public class CartService(
             ? 0
             : cartData.Sum(x => x.Quantity);
     }
+
+    public void IncreaseQuantity(Guid variantId, int quantity)
+    {
+        var cartItems = GetCartItems().ToList();
+
+        var existingItem = cartItems
+            .FirstOrDefault(item => item.VariantId == variantId);
+
+        if (existingItem != null)
+        {
+            if (quantity > 0 || existingItem.Quantity > 1)
+            {
+                existingItem.Quantity += quantity;
+            } else
+            {
+                cartItems.Remove(existingItem);
+            }
+            SaveCartItems(cartItems);
+        }
+    }
+
+    public void RemoveFromCart(Guid variantId)
+    {
+        var cartItems = GetCartItems().ToList();
+
+        var itemToRemove = cartItems
+            .FirstOrDefault(item => item.VariantId == variantId);
+
+        if (itemToRemove != null)
+        {
+            cartItems.Remove(itemToRemove);
+            SaveCartItems(cartItems);
+        }
+    }
 }
 
