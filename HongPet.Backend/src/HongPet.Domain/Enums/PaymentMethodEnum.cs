@@ -8,5 +8,5 @@ namespace HongPet.Domain.Enums;
 public enum PaymentMethodEnum
 {
     COD = 1,
-    VietQR = 2
+    Onl = 2
 }

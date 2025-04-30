@@ -7,6 +7,7 @@ public class Order : BaseEntity
 {
     public Guid CustomerId { get; set; }
     public string CustomerName { get; set; } = default!;
+    public string CustomerEmail { get; set; } = default!;
     public string CustomerPhone { get; set; } = default!;
     public string ShippingAddress { get; set; } = default!;
     public decimal TotalAmount { get; set; }

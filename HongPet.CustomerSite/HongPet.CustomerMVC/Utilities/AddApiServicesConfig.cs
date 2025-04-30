@@ -19,6 +19,10 @@ public static class AddApiServicesConfig
         {
             client.BaseAddress = new Uri(baseUrl);
         });
+        services.AddHttpClient<IOrderApiService, OrderApiService>(client =>
+        {
+            client.BaseAddress = new Uri(baseUrl);
+        });
         return services;
     }
 }

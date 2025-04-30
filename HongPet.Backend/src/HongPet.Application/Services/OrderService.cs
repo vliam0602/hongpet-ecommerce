@@ -73,11 +73,11 @@ public class OrderService : GenericService<Order>, IOrderService
     public async Task<Order> CreateOrderAsync(OrderCreationModel orderModel)
     {
         // validate the string enum
-        if (!Enum.IsDefined(typeof(OrderStatusEnum), orderModel.Status)) {
-            throw new ArgumentException(
-                $"Invalid order status. Order status should be in range " +
-                $"[{string.Join(", ", Enum.GetValues<OrderStatusEnum>())}]");
-        }
+        //if (!Enum.IsDefined(typeof(OrderStatusEnum), orderModel.Status)) {
+        //    throw new ArgumentException(
+        //        $"Invalid order status. Order status should be in range " +
+        //        $"[{string.Join(", ", Enum.GetValues<OrderStatusEnum>())}]");
+        //}
         if (!Enum.IsDefined(typeof(PaymentMethodEnum), orderModel.PaymentMethod)) {
             throw new ArgumentException(
                 $"Invalid payment method. Payment method should be in range " +

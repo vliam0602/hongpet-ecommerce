@@ -27,7 +27,7 @@ public class OrdersController(
                 new ApiResponse
                 {
                     Message = "Order created successfully",
-                    Data = order
+                    Data = _mapper.Map<OrderVM>(order)
                 });
         } catch (ArgumentException ex)
         {
@@ -53,7 +53,7 @@ public class OrdersController(
     [HttpGet]
     [Route("/api/users/{userId}/orders/")]
     [Authorize]
-    public async Task<IActionResult> GetUserOrders(
+    public async Task<ActionResult<PagedList<OrderVM>>> GetUserOrders(
         [FromRoute] Guid userId,
         [FromQuery] QueryListCriteria criteria)
     {
@@ -113,8 +113,8 @@ public class OrdersController(
     }
 
 
-    [HttpGet("/admin/api/orders/{id}")]
-    [Authorize(Roles = "Admin")]
+    [HttpGet("{id}")]
+    [Authorize]
     public async Task<IActionResult> GetOrderDetail(Guid id)
     {
         try
