@@ -1,4 +1,5 @@
-﻿<!-- Page Header -->
+﻿@model HongPet.SharedViewModels.ViewModels.OrderVM
+<!-- Page Header -->
 <section class="page-header py-4">
     <div class="container">
         <div class="row">
@@ -6,10 +7,18 @@
                 <h1 class="page-title">Xác Nhận Đơn Hàng</h1>
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="index.html">Trang chủ</a></li>
-                        <li class="breadcrumb-item"><a href="cart.html">Giỏ hàng</a></li>
-                        <li class="breadcrumb-item"><a href="payment.html">Thanh toán</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Xác nhận đơn hàng</li>
+                        <li class="breadcrumb-item">
+                            <a asp-controller="Home" asp-action="Index">Trang chủ</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a asp-controller="Cart" asp-action="Index">Giỏ hàng</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a href="#">Thanh toán</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                            Xác nhận đơn hàng
+                        </li>
                     </ol>
                 </nav>
             </div>
@@ -31,19 +40,19 @@
                 <h2 class="order-info-title">Thông tin đơn hàng</h2>
                 <div class="info-row">
                     <span class="info-label">Mã đơn hàng:</span>
-                    <span class="info-value">#HP-12345678</span>
+                    <span class="info-value">@Model.Id</span>
                 </div>
                 <div class="info-row">
                     <span class="info-label">Ngày đặt hàng:</span>
-                    <span class="info-value">29/04/2025, 21:35</span>
+                    <span class="info-value">@DateTime.Now.ToString("dd/MM/yyyy, HH:mm")</span>
                 </div>
                 <div class="info-row">
                     <span class="info-label">Trạng thái đơn hàng:</span>
-                    <span class="info-value">Đang xử lý</span>
+                    <span class="info-value">@Model.Status</span>
                 </div>
                 <div class="info-row">
                     <span class="info-label">Phương thức thanh toán:</span>
-                    <span class="info-value">Thanh toán khi nhận hàng (COD)</span>
+                    <span class="info-value">@Model.PaymentMethod</span>
                 </div>
             </div>
 
@@ -52,12 +61,10 @@
                     <div class="shipping-info">
                         <h2 class="order-info-title">Thông tin giao hàng</h2>
                         <div class="address-box">
-                            <div class="address-name">Nguyễn Văn A</div>
+                            <div class="address-name">@Model.CustomerName</div>
                             <p class="address-details">
-                                123 Đường Lê Lợi, Phường 1<br>
-                                Quận 1, TP. Hồ Chí Minh<br>
-                                Số điện thoại: 0901234567<br>
-                                Email: nguyenvana@example.com
+                                @Model.ShippingAddress<br>
+                                Số điện thoại: @Model.CustomerPhone<br>
                             </p>
                         </div>
                     </div>
@@ -67,7 +74,7 @@
                     <div class="payment-info">
                         <h2 class="order-info-title">Thông tin thanh toán</h2>
                         <div class="payment-box">
-                            <div class="payment-method">Thanh toán khi nhận hàng (COD)</div>
+                            <div class="payment-method">@Model.PaymentMethod</div>
                             <p class="payment-details">
                                 Bạn sẽ thanh toán khi nhận được hàng.<br>
                                 Vui lòng chuẩn bị số tiền chính xác để thuận tiện cho việc giao hàng.
@@ -80,42 +87,46 @@
             <div class="order-items">
                 <h2 class="order-info-title">Sản phẩm đã đặt</h2>
 
-                <div class="order-item">
-                    <div class="item-image">
-                        <img src="https://i.ebayimg.com/thumbs/images/g/VQgAAOSwvuZiF~ai/s-l225.jpg" alt="Premium Dog Food">
+                @foreach (var item in Model.OrderItems)
+                {
+                    <div class="order-item">
+                        <div class="item-image">
+                            <img src="@item.ThumbnailImageUrl" alt="@item.ProductName">
+                        </div>
+                        <div class="item-details">
+                            <div class="item-name">@item.ProductName</div>
+                            <div class="item-variant">
+                                @string.Join(", ", item.AttributeValues
+                                    .Select(v => $"{v.Attribute}: {v.Value}"))
+                            </div>
+                        </div>
+                        <div class="item-price">
+                            @item.Price.ToString("C", 
+                                new System.Globalization.CultureInfo("vi-VN"))
+                        </div>
                     </div>
-                    <div class="item-details">
-                        <div class="item-name">Premium Dog Food</div>
-                        <div class="item-variant">Size: 5kg x 1</div>
-                    </div>
-                    <div class="item-price">$29.99</div>
-                </div>
-
-                <div class="order-item">
-                    <div class="item-image">
-                        <img src="https://i.ebayimg.com/thumbs/images/g/VQgAAOSwvuZiF~ai/s-l225.jpg" alt="Dog Bowl">
-                    </div>
-                    <div class="item-details">
-                        <div class="item-name">Dog Bowl</div>
-                        <div class="item-variant">Color: Blue x 2</div>
-                    </div>
-                    <div class="item-price">$39.98</div>
-                </div>
+                }
 
                 <div class="order-summary">
                     <div class="summary-row">
                         <span class="summary-label">Tạm tính</span>
-                        <span class="summary-value">$69.97</span>
+                        <span class="summary-value">
+                            @Model.TotalAmount.ToString("C",
+                                  new System.Globalization.CultureInfo("vi-VN"))
+                        </span>
                     </div>
 
                     <div class="summary-row">
                         <span class="summary-label">Phí vận chuyển</span>
-                        <span class="summary-value">$5.00</span>
+                        <span class="summary-value">Freeship</span>
                     </div>
 
                     <div class="summary-total">
                         <span class="total-label">Tổng cộng</span>
-                        <span class="total-value">$77.47</span>
+                        <span class="total-value">
+                            @Model.TotalAmount.ToString("C",
+                                new System.Globalization.CultureInfo("vi-VN"))
+                        </span>
                     </div>
                 </div>
             </div>

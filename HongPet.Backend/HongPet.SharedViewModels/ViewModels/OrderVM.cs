@@ -20,7 +20,8 @@ namespace HongPet.SharedViewModels.ViewModels
     {
         public Guid ProductId { get; set; }
         public Guid VariantId { get; set; }
-        public string ProductName { get; set; } = default!;
+        public string? ProductName { get; set; }
+        public string? ThumbnailImageUrl { get; set; }
         public IEnumerable<AttributeValueVM> AttributeValues { get; set; }
             = new List<AttributeValueVM>();
         public int Quantity { get; set; }

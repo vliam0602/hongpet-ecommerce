@@ -13,7 +13,7 @@ public class OrderApiService(
     HttpClient _httpClient,
     IClaimService _claimService) : IOrderApiService
 {
-    public async Task<OrderVM> CreateOrderAsync(OrderCreationModel orderModel)
+    public async Task<Guid> CreateOrderAsync(OrderCreationModel orderModel)
     {
         var url = "api/orders";
 
@@ -36,13 +36,12 @@ public class OrderApiService(
                 $"{apiResponse.ErrorMessage}");
         }
         var responseString = apiResponse?.Data?.ToString()!;
-        var order = JsonConvert
-            .DeserializeObject<OrderVM>(responseString);
-        if (order == null)
+        var orderId = Guid.Parse(responseString);
+        if (orderId == default)
         {
             throw new HttpRequestException("Failed to parse response data.");
         }
-        return order;
+        return orderId;
     }
 
     public async Task<IPagedList<OrderVM>> GetUserOrdersAsync(Guid userId, 

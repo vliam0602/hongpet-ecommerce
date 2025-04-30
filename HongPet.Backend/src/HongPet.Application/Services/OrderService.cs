@@ -91,7 +91,7 @@ public class OrderService : GenericService<Order>, IOrderService
 
         var order = _mapper.Map<Order>(orderModel);
 
-        order.CustomerId = customerId.Value;
+        order.CustomerId = customerId.Value;       
 
         // validate the variantId
         foreach (var item in order.OrderItems)
@@ -104,6 +104,9 @@ public class OrderService : GenericService<Order>, IOrderService
             }
             item.Variant = variant;
             item.OrderId = order.Id;
+
+            // calculate the order total amount
+            order.TotalAmount += item.Price * item.Quantity;
         }
 
         // add the order to the db

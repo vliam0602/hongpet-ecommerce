@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using HongPet.Domain.Entities;
+using HongPet.Infrastructure.DTOs;
 using HongPet.SharedViewModels.Generals;
 using HongPet.SharedViewModels.Models;
 using HongPet.SharedViewModels.ViewModels;
@@ -21,15 +22,12 @@ public class MappingProfile : Profile
             .ForMember(model => model.AverageStars,
                 opt => opt.MapFrom(x => (x.Reviews.Sum(r => r.Rating) / 5)));
 
-        CreateMap<Variant, VariantVM>();
-
-        CreateMap<ProductAttributeValue, AttributeValueVM>()
-            .ForMember(model => model.Attribute, 
-                opt => opt.MapFrom(x => x.Attribute.Name));
+        CreateMap<Variant, VariantVM>();        
 
         CreateMap<ProductModel, Product>();
 
         CreateMap<Image, ImageVM>();
+
         // review mappings
         CreateMap<Review, ReviewVM>()
             .ForMember(model => model.ReviewerName,
@@ -47,15 +45,25 @@ public class MappingProfile : Profile
 
         CreateMap<OrderItemCreationModel, OrderItem>();
 
-        CreateMap<Order, OrderVM>();
+        //CreateMap<Order, OrderVM>();
 
-        CreateMap<OrderItem, OrderItemVM>()
-            .ForMember(model => model.ProductId,
-                opt => opt.MapFrom(x => x.Variant.ProductId))
-            .ForMember(model => model.ProductName,
-                opt => opt.MapFrom(x => x.Variant.ProductName))
-            .ForMember(model => model.AttributeValues,
-                opt => opt.MapFrom(x => x.Variant.AttributeValues));
+        //CreateMap<OrderItem, OrderItemVM>()
+        //    .ForMember(model => model.ProductId,
+        //        opt => opt.MapFrom(x => x.Variant.ProductId))
+        //    .ForMember(model => model.ProductName,
+        //        opt => opt.MapFrom(x => x.Variant.ProductName))
+        //    .ForMember(model => model.AttributeValues,
+        //        opt => opt.MapFrom(x => x.Variant.AttributeValues));
+
+        CreateMap<ProductAttributeValue, AttributeValueVM>()
+            .ForMember(model => model.Attribute,
+                opt => opt.MapFrom(x => x.Attribute.Name));
+
+        CreateMap<OrderDto, OrderVM>();
+
+        CreateMap<OrderItemDto, OrderItemVM>();
+
+        CreateMap<AttributeValueDto, AttributeValueVM>();        
 
         // user mappings
         CreateMap<User, UserVM>();

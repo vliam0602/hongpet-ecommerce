@@ -11,7 +11,7 @@ namespace HongPet.SharedViewModels.Models
         public string CustomerEmail { get; set; } = default!;
         public string ShippingAddress { get; set; } = default!;                
         public virtual IEnumerable<OrderItemCreationModel> OrderItems { get; set; } = new List<OrderItemCreationModel>();
-        public decimal TotalAmount { get; set; }
+        //public decimal TotalAmount { get; set; }
         public string PaymentMethod { get; set; } = default!;
         //public string Status { get; set; } = default!;
     }

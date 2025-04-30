@@ -56,6 +56,7 @@ builder.Services.AddHttpContextAccessor();
 
 // Add auto mapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
+builder.Services.AddAutoMapper(typeof(MappingDto));
 
 var app = builder.Build();
 
