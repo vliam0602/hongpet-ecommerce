@@ -109,8 +109,10 @@
                     <h2 class="payment-title">Đơn hàng của bạn</h2>
 
                     <div class="order-summary">
+                        @{ var index = -1; }
                         @foreach (var item in Model)
                         {
+                            index++;
                             <div class="order-item">
                                 <div>
                                     <div class="item-name">
@@ -121,11 +123,15 @@
                                     </div>
                                 </div>
                                 <div class="item-price">
-                                    @item.Subtotal.ToString("C", 
+                                    @item.Subtotal.ToString("C",
                                         new System.Globalization.CultureInfo("vi-VN"))
                                 </div>
                             </div>
-                        }                        
+                            <!-- Hidden inputs to send OrderItemCreationModel -->
+                            <input type="hidden" name="OrderItems[@index].VariantId" value="@item.VariantId" />
+                            <input type="hidden" name="OrderItems[@index].Quantity" value="@item.Quantity" />
+                            <input type="hidden" name="OrderItems[@index].Price" value="@item.Price" />                            
+                        }
 
                         <div class="summary-item">
                             <span class="summary-label">Tạm tính</span>

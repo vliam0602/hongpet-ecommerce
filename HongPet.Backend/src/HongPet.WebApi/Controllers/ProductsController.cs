@@ -38,7 +38,7 @@ public class ProductsController(
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<ProductGeneralVM>> GetProduct(Guid id)
+    public async Task<ActionResult<ProductDetailVM>> GetProduct(Guid id)
     {
         try
         {

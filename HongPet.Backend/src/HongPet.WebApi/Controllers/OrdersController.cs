@@ -27,7 +27,7 @@ public class OrdersController(
                 new ApiResponse
                 {
                     Message = "Order created successfully",
-                    Data = _mapper.Map<OrderVM>(order)
+                    Data = order.Id
                 });
         } catch (ArgumentException ex)
         {

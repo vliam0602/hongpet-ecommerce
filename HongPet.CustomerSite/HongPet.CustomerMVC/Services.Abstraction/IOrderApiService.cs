@@ -6,7 +6,7 @@ namespace HongPet.CustomerMVC.Services.Abstraction;
 
 public interface IOrderApiService
 {
-    Task<OrderVM> CreateOrderAsync(OrderCreationModel orderModel);
+    Task<Guid> CreateOrderAsync(OrderCreationModel orderModel);
     Task<OrderVM> GetOrderByIdAsync(Guid orderId);
     Task<IPagedList<OrderVM>> GetUserOrdersAsync(Guid userId,
         QueryListCriteria criteria);

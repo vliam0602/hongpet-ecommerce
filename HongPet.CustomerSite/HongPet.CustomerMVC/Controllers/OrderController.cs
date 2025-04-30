@@ -38,13 +38,13 @@ public class OrderController(
                 return View("Index", orderModel);
             }
 
-            var orderCreated = await _orderApiService.CreateOrderAsync(orderModel);
+            var orderIdCreated = await _orderApiService.CreateOrderAsync(orderModel);
 
             // Clear the cart after make order successfully
             _cartService.ClearCart();
 
             return RedirectToAction(nameof(OrderConfirm),
-                new { orderId = orderCreated.Id });
+                new { orderId = orderIdCreated });
 
         } catch (Exception ex)
         {
