@@ -1,4 +1,5 @@
-﻿using HongPet.CustomerMVC.Models;
+﻿using HongPet.CustomerMVC.Filters;
+using HongPet.CustomerMVC.Models;
 using HongPet.CustomerMVC.Services;
 using HongPet.CustomerMVC.Services.Abstraction;
 using HongPet.SharedViewModels.Models;
@@ -9,12 +10,14 @@ public class OrderController(
     ICartService _cartService,
     IClaimService _claimService) : Controller
 {
+    [AuthorizeSession]
     public IActionResult Index()
     {
         var cart = _cartService.GetCartItems();
         return View(cart);
     }
 
+    [AuthorizeSession]
     public async Task<IActionResult> OrderConfirm(Guid orderId)
     {
         try
@@ -31,6 +34,7 @@ public class OrderController(
     }
     
     [HttpPost]
+    [AuthorizeSession]
     public async Task<IActionResult> MakeOrder(OrderCreationModel orderModel)
     {
         try
@@ -53,8 +57,8 @@ public class OrderController(
             return RedirectToAction("Error", "Home", new { errMsg = ex.Message });
         }
     }
-    
-    //TODO: add catch unauthorized filter
+
+    [AuthorizeSession]
     public async Task<IActionResult> OrderHistory(
         int pageIndex = 1, int pageSize = 5)
     {
