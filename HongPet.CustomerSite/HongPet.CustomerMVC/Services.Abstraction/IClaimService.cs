@@ -5,7 +5,7 @@ public interface IClaimService
     bool IsAuthorized { get; }
     string AccessToken { get; }
     string RefreshToken { get; }
-    string UserId { get; }
+    Guid? UserId { get; }
     string Email { get; }    
     string Username { get; }    
 }

@@ -1,0 +1,221 @@
+﻿@model HongPet.CustomerMVC.Models.OrderListViewModel
+@inject HongPet.CustomerMVC.Services.Abstraction.IClaimService claimService
+<!-- Page Header -->
+<section class="page-header py-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="page-title">Order History</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="breadcrumb-item"><a href="#">My Account</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Order History</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Order History Section -->
+<section class="order-history-section py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Account Sidebar -->
+            <div class="col-lg-3 mb-4 mb-lg-0">
+                <div class="account-sidebar">
+                    <div class="user-info">
+                        <div class="user-avatar">
+                            <i class="bi bi-person-circle"></i>
+                        </div>
+                        <div class="user-details">
+                            <h3 class="user-name">@claimService.Username</h3>
+                            <p class="user-email">@claimService.Email</p>
+                        </div>
+                    </div>
+
+                    <ul class="account-menu">
+                        <li class="menu-item">
+                            <a href="#" class="menu-link">
+                                <i class="bi bi-person"></i> Account Dashboard
+                            </a>
+                        </li>
+                        <li class="menu-item active">
+                            <a href="order-history.html" class="menu-link">
+                                <i class="bi bi-box-seam"></i> Order History
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="#" class="menu-link">
+                                <i class="bi bi-geo-alt"></i> Addresses
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="#" class="menu-link">
+                                <i class="bi bi-credit-card"></i> Payment Methods
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="#" class="menu-link">
+                                <i class="bi bi-shield-lock"></i> Account Settings
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a asp-controller="Auth" asp-action="Logout" class="menu-link">
+                                <i class="bi bi-box-arrow-right"></i> Logout
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Order History Content -->
+            <div class="col-lg-9">
+                <div class="order-history-container">
+                    <div class="order-history-header">
+                        <h2 class="section-title">Your Orders</h2>
+
+                        <div class="order-filters">
+                            <div class="filter-group">
+                                <label for="order-period" class="filter-label">Time Period:</label>
+                                <select id="order-period" class="form-select">
+                                    <option value="all" selected>All Orders</option>
+                                    <option value="last-30">Last 30 Days</option>
+                                    <option value="last-6-months">Last 6 Months</option>
+                                    <option value="last-year">Last Year</option>
+                                </select>
+                            </div>
+
+                            <div class="filter-group">
+                                <label for="order-status" class="filter-label">Status:</label>
+                                <select id="order-status" class="form-select">
+                                    <option value="all" selected>All Status</option>
+                                    <option value="processing">Processing</option>
+                                    <option value="shipped">Shipped</option>
+                                    <option value="delivered">Delivered</option>
+                                    <option value="cancelled">Cancelled</option>
+                                </select>
+                            </div>
+
+                            <button class="btn btn-filter">
+                                <i class="bi bi-funnel"></i> Filter
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="orders-list">
+                        @foreach (var order in Model.OrderPagedList.Items)
+                        {
+                            <div class="order-item">
+                                <div class="order-header"
+                                     data-bs-toggle="collapse" data-bs-target="#order@(order.Id)"
+                                     aria-expanded="false" aria-controls="order@order.Id">
+                                    <div class="order-info">
+                                        <div class="order-number">
+                                            <span class="label">Order #:</span>
+                                            <span class="value">@order.Id</span>
+                                        </div>
+                                        <div class="order-date">
+                                            <span class="label">Date:</span>
+                                            <span class="value">@order.Status</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="order-status">
+                                        <span class="status-badge">@order.Status</span>
+                                    </div>
+
+                                    <div class="order-total">
+                                        <span class="label">Total:</span>
+                                        <span class="value">
+                                            @order.TotalAmount.ToString("C", 
+                                                new System.Globalization.CultureInfo("vi-VN"))
+                                        </span>
+                                    </div>
+
+                                    <div class="order-toggle">
+                                        <i class="bi bi-chevron-down"></i>
+                                    </div>
+                                </div>
+
+                                <div id="order@(order.Id)" class="collapse order-details">
+                                    <div class="order-products">
+                                        @foreach (var item in order.OrderItems)
+                                        {
+                                            <div class="order-product">
+                                                <div class="product-image">
+                                                    <img src="@item.ThumbnailImageUrl" alt="@item.ProductName">
+                                                </div>
+                                                <div class="product-details">
+                                                    <h4 class="product-name">@item.ProductName</h4>
+                                                    <div class="product-variant">
+                                                        @string.Join(", ", item.AttributeValues
+                                                                 .Select(v => $"{v.Attribute}: {v.Value}"))
+                                                    </div>
+                                                    <div class="product-price">
+                                                        @item.Price.ToString("C",
+                                                            new System.Globalization.CultureInfo("vi-VN"))
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="pagination-container d-flex justify-content-center mt-4">
+                        <nav aria-label="Orders pagination">
+                            <ul class="pagination">
+                                <!-- Previous Page -->
+                                @if (Model.OrderPagedList.HasPrevious)
+                                {
+                                    <li class="page-item">
+                                        <a class="page-link"
+                                           asp-controller="Order"
+                                           asp-action="OrderHistory"
+                                           asp-route-pageIndex="@(Model.OrderPagedList.CurrentPage - 1)"
+                                           asp-route-pageSize="@Model.OrderPagedList.PageSize"
+                                           >Previous</a>
+                                    </li>
+                                }
+
+                                <!-- Page Numbers -->
+                                @for (int i = 1; i <= Model.OrderPagedList.TotalPages; i++)
+                                {
+                                    <li class="page-item
+                                        @(i == Model.OrderPagedList.CurrentPage ? "active" : "")">
+                                        <a class="page-link"
+                                           asp-controller="Order"
+                                           asp-action="OrderHistory"
+                                           asp-route-pageIndex="@i"
+                                           asp-route-pageSize="@Model.OrderPagedList.PageSize"
+                                           >@i</a>
+                                    </li>
+                                }
+
+                                <!-- Next Page -->
+                                @if (Model.OrderPagedList.HasNext)
+                                {
+                                    <li class="page-item">
+                                        <a class="page-link"
+                                           asp-controller="Order"
+                                           asp-action="OrderHistory"
+                                           asp-route-pageIndex="@(Model.OrderPagedList.CurrentPage + 1)"
+                                           asp-route-pageSize="@Model.OrderPagedList.PageSize"
+                                           >Next</a>
+                                    </li>
+                                }
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

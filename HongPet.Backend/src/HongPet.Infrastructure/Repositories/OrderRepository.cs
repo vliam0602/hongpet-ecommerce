@@ -29,7 +29,8 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
 
         var orders = _dbSet
             .Where(x => x.CustomerId == customerId)
-            .ProjectTo<OrderDto>(_mapper.ConfigurationProvider);
+            .ProjectTo<OrderDto>(_mapper.ConfigurationProvider)
+            .OrderByDescending(x => x.CreatedDate);
 
         return await this.ToPaginAsync(orders, pageIndex, pageSize);
     }

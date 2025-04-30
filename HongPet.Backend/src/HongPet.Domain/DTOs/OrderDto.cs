@@ -1,5 +1,4 @@
-﻿using HongPet.Domain.Entities;
-using HongPet.Domain.Enums;
+﻿using HongPet.Domain.Enums;
 
 namespace HongPet.Infrastructure.DTOs;
 public class OrderDto
@@ -16,4 +15,5 @@ public class OrderDto
 
     public virtual IEnumerable<OrderItemDto> OrderItems { get; set; } 
         = new List<OrderItemDto>();
+    public DateTime CreatedDate { get; set; }
 }
