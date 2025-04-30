@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using HongPet.CustomerMVC.Filters;
 using HongPet.CustomerMVC.Models;
 using HongPet.CustomerMVC.Services.Abstraction;
 using HongPet.CustomerMVC.Utilities;
@@ -72,6 +73,7 @@ public class AuthController(
         }
     }
 
+    [AuthorizeSession]
     public IActionResult Logout()
     {
         HttpContext.Session.Clear();
