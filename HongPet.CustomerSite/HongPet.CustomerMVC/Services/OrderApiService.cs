@@ -44,7 +44,7 @@ public class OrderApiService(
         return orderId;
     }
 
-    public async Task<IPagedList<OrderVM>> GetUserOrdersAsync(Guid userId, 
+    public async Task<PagedList<OrderVM>> GetUserOrdersAsync(Guid userId, 
         QueryListCriteria criteria)
     {
         var url = $"api/users/{userId}/orders?" +
@@ -63,7 +63,7 @@ public class OrderApiService(
 
         var responseString = apiResponse?.Data?.ToString()!;
         var orders = JsonConvert
-            .DeserializeObject<IPagedList<OrderVM>>(responseString);
+            .DeserializeObject<PagedList<OrderVM>>(responseString);
 
         if (orders == null)
         {

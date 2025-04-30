@@ -8,6 +8,6 @@ public interface IOrderApiService
 {
     Task<Guid> CreateOrderAsync(OrderCreationModel orderModel);
     Task<OrderVM> GetOrderByIdAsync(Guid orderId);
-    Task<IPagedList<OrderVM>> GetUserOrdersAsync(Guid userId,
+    Task<PagedList<OrderVM>> GetUserOrdersAsync(Guid userId,
         QueryListCriteria criteria);
 }

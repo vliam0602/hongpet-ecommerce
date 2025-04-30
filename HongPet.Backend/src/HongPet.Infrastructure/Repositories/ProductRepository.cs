@@ -16,6 +16,7 @@ public class ProductRepository : GenericRepository<Product>, IProductRepository
     {
         return await _dbSet
                         .Include(x => x.Variants)
+                        .OrderByDescending(x => x.CreatedDate)
                         .ToListAsync();
     }
 
@@ -28,6 +29,7 @@ public class ProductRepository : GenericRepository<Product>, IProductRepository
             .Where(x => string.IsNullOrEmpty(keyword)
                         || x.Name.Contains(keyword)
                         || x.Categories.Any(c => c.Name.Contains(keyword)))
+            .OrderByDescending(x => x.CreatedDate)
             .Skip((pageIndex - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();
@@ -40,16 +42,17 @@ public class ProductRepository : GenericRepository<Product>, IProductRepository
         return await _dbSet
             .Include(x => x.Reviews)
             .Include(x => x.Variants)
-            .ThenInclude(x => x.AttributeValues)
-            .ThenInclude(x => x.Attribute)
-            .Include(x => x.Images)
+                .ThenInclude(x => x.AttributeValues)
+                    .ThenInclude(x => x.Attribute)
+                        .Include(x => x.Images)
             .FirstOrDefaultAsync(x => x.Id == id);
     }
 
     public async Task<IPagedList<Product>> GetProductsByCategoryAsync(string categoryName, int pageIndex = 1, int pageSize = 10, string? keyword = "")
     {
         var products = _dbSet
-            .Where(x => x.Categories.Any(c => c.Name == categoryName));
+            .Where(x => x.Categories.Any(c => c.Name == categoryName))
+            .OrderByDescending(x => x.CreatedDate);
 
         return await base.ToPaginationAsync(products, pageIndex, pageSize, keyword);
     }

@@ -18,9 +18,15 @@ public class ClaimService(
         => httpContextAccessor.HttpContext?.Session
             .GetString(AppConstant.RefreshToken) ?? string.Empty;
 
-    public string UserId 
-        => httpContextAccessor.HttpContext?.Session
-            .GetString(AppConstant.CurrentUserId) ?? string.Empty;
+    public Guid? UserId
+    {
+        get
+        {
+            var userId = httpContextAccessor.HttpContext?.Session
+                .GetString(AppConstant.CurrentUserId);
+            return string.IsNullOrEmpty(userId) ? null : Guid.Parse(userId);
+        }
+    }
 
     public string Email 
         => httpContextAccessor.HttpContext?.Session
