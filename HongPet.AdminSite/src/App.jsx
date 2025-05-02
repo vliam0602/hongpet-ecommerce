@@ -11,7 +11,8 @@ import Categories from "./pages/categories/Categories";
 import Customers from "./pages/customers/Customers";
 import Orders from "./pages/orders/Orders";
 import OrderDetail from "./pages/orders/OrderDetail";
-
+import AppConstants from './constants/AppConstants';
+import authService from "./services/authService";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -20,7 +21,7 @@ function App() {
 
   useEffect(() => {
     //check if user is logged in
-    const storedUser = localStorage.getItem('user');
+    const storedUser = localStorage.getItem(AppConstants.STORAGE_KEYS.USER);
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     } else if (location.pathname !== '/login') {
@@ -30,16 +31,17 @@ function App() {
 
   const handleLogin = (userData) => {
     setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData));
+    localStorage.setItem(AppConstants.STORAGE_KEYS.USER, JSON.stringify(userData));
     navigate('/');
   }
 
   const handleLogout = () => {
     setUser(null);
-    localStorage.removeItem('user');
+    authService.logout();
     navigate('/login');
   }
 
+  // Rest of your code remains unchanged
   return (
     <Routes>
       <Route path="/login" element={<Login onLogin={handleLogin} />} />
@@ -65,4 +67,4 @@ function App() {
   )
 }
 
-export default App
+export default App;

@@ -1,13 +1,21 @@
 import { useState } from 'react'
 import { Eye, EyeOff, LogIn, User } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import authService from "../services/authService"
 
 function Login({ onLogin }) {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [showPassword, setShowPassword] = useState(false)
-  const [error, setError] = useState('')
 
-  const handleSubmit = (e) => {
+  if (authService.isAuthenticated()) {
+    var navigate = useNavigate();
+    navigate('/');
+  }
+  
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     // Simple validation
@@ -16,12 +24,14 @@ function Login({ onLogin }) {
       return;
     }
     
-    // For demo purposes, accept any login or use demo credentials
-    if (email === 'admin@example.com' && password === 'password') {
-      onLogin({ email, id: '1', name: 'Admin User' });
-    } else {
-      // In a real app, you would validate with your backend
-      onLogin({ email, id: '1', name: 'Admin User' });
+    try {
+      setError('');
+            
+      const response = await authService.login(email, password);
+      onLogin(response.userData);
+
+    } catch (err) {
+      setError(err.message || 'Login failed. Please check your credentials.');
     }
   }
 
@@ -51,7 +61,7 @@ function Login({ onLogin }) {
               type="email"
               id="email"
               className="input-field"
-              placeholder="name@example.com"
+              placeholder="Enter email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -66,7 +76,7 @@ function Login({ onLogin }) {
                 type={showPassword ? "text" : "password"}
                 id="password"
                 className="input-field pr-10"
-                placeholder="••••••••"
+                placeholder="Enter password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
