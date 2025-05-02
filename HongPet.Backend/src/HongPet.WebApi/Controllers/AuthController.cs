@@ -3,6 +3,7 @@ using HongPet.Application.Commons;
 using HongPet.Application.Services.Abstractions;
 using HongPet.Application.Services.Commons;
 using HongPet.Domain.Entities;
+using HongPet.Domain.Enums;
 using HongPet.SharedViewModels.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -52,6 +53,54 @@ public class AuthController(
             });
         }
         catch (Exception ex)
+        {
+            return StatusCode(500, new ApiResponse
+            {
+                ErrorMessage = $"Unexpected error: {ex.Message}"
+            });
+        }
+    }
+
+    [HttpPost("admin-login")]
+    public async Task<IActionResult> AdminLogin([FromBody] LoginModel loginModel)
+    {
+        try
+        {
+            // verify login
+            var account = await _userService
+                .GetByEmailAndPasswordAsync(loginModel.Email, loginModel.Password);
+
+            if (account == null)
+            {
+                return Unauthorized(new ApiResponse
+                {
+                    IsSuccess = false,
+                    ErrorMessage = "Wrong username/password."
+                });
+            } else if (account.Role != RoleEnum.Admin)
+            {
+                return Unauthorized(new ApiResponse
+                {
+                    IsSuccess = false,
+                    ErrorMessage = "Only admin can access this page."
+                });
+            }
+            // login success -> issue (access token, refresh token)
+            var tokens = GenerateTokens(account);
+
+            return Ok(new ApiResponse
+            {
+                Message = "Logged in successfully.",
+                Data = tokens
+            });
+        } catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(new ApiResponse
+            {
+                IsSuccess = false,
+                ErrorMessage = ex.Message
+            });
+        } catch (Exception ex)
         {
             return StatusCode(500, new ApiResponse
             {
