@@ -12,7 +12,8 @@ public class ReviewRepository : GenericRepository<Review>, IReviewRepository
     {
     }
 
-    public async Task<IPagedList<Review>> GetReviewsByProductIdAsync(Guid productId, int pageIndex, int pageSize)
+    public async Task<IPagedList<Review>> GetReviewsByProductIdAsync(
+        Guid productId, int pageIndex, int pageSize)
     {
         var reviews = _dbSet
             .Include(x => x.Customer)

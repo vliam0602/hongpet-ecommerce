@@ -8,7 +8,7 @@ namespace HongPet.Application.Commons
     {
         Task<TEntity?> GetByIdAsync(Guid id);
         Task<IEnumerable<TEntity>> GetAllAsync();
-        Task AddAsync(TEntity entity);
+        Task<Guid> AddAsync(TEntity entity);
         Task UpdateAsync(TEntity entity);
         Task DeleteAsync(Guid id);
         Task SoftDeleteAsync(Guid id);

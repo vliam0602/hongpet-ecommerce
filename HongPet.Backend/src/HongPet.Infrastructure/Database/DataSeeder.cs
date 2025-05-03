@@ -61,14 +61,15 @@ public class DataSeeder : IHostedService
                 {
                     var category = categories[i];
                     var existedCategory = await dbContext.Categories
-                        .FirstOrDefaultAsync(c => c.Name == category.Name,
+                        .FirstOrDefaultAsync(c => c.Name.Equals(category.Name),
                                             cancellationToken);
                     if (existedCategory != null)
                     {
                         categories[i] = existedCategory;
                     }
                 }
-            }
+                product.Categories = categories;
+            }           
             await dbContext.Products.AddRangeAsync(products);
         }
     }
@@ -116,7 +117,7 @@ public class DataSeeder : IHostedService
 
                 // Update the original IEnumerable with the modified list  
                 variant.AttributeValues = attributeValuesList;
-            }
+            }                       
         }
 
         return products;

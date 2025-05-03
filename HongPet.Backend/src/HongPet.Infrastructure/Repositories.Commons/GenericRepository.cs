@@ -26,7 +26,7 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity>
 
     public virtual async Task<IEnumerable<TEntity>> GetAllAsync()
     {
-        return await _dbSet.ToListAsync();
+        return await _dbSet.OrderByDescending(x => x.CreatedDate).ToListAsync();
     }
 
     public async Task AddAsync(TEntity entity)
@@ -62,9 +62,11 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity>
     {
         var totalCount = await _dbSet.CountAsync();
 
-        var items = await _dbSet.Skip((pageIndex - 1) * pageSize)
-                                .Take(pageSize)
-                                .ToListAsync();
+        var items = await _dbSet
+            .OrderByDescending(x => x.CreatedDate)
+            .Skip((pageIndex - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
 
         return new PagedList<TEntity>(items, totalCount, pageIndex, pageSize);
     }

@@ -20,13 +20,6 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
     public async Task<IPagedList<OrderDto>> GetOrderByCustomerIdAsync(Guid customerId, 
         int pageIndex = 1, int pageSize = 10, string searchKey = "")
     {
-        //var orders = _dbSet
-        //    .Include(x => x.OrderItems)
-        //        .ThenInclude(o => o.Variant)
-        //            .ThenInclude(v => v.AttributeValues)
-        //                .ThenInclude(a => a.Attribute)
-        //    .Where(o => o.CustomerId == customerId);
-
         var orders = _dbSet
             .Where(x => x.CustomerId == customerId)
             .ProjectTo<OrderDto>(_mapper.ConfigurationProvider)
@@ -37,12 +30,6 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
 
     public async Task<OrderDto?> GetOrderDetailAsync(Guid id)
     {
-        //return await _dbSet.Include(x => x.OrderItems)
-        //                    .ThenInclude(o => o.Variant)
-        //                        .ThenInclude(v => v.AttributeValues)
-        //                            .ThenInclude(a => a.Attribute)
-        //                    .SingleOrDefaultAsync(o => o.Id == id);
-
         return await _dbSet.Where(x => x.Id == id)
             .ProjectTo<OrderDto>(_mapper.ConfigurationProvider)
             .SingleOrDefaultAsync();

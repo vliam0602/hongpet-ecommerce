@@ -11,6 +11,7 @@ namespace HongPet.SharedViewModels.ViewModels
             = new List<AttributeValueVM>();
         public double Price { get; set; }
         public int Stock { get; set; }
+        public bool IsActive { get; set; }
     }
 
     public class AttributeValueVM

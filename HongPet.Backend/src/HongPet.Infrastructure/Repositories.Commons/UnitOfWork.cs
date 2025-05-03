@@ -8,7 +8,8 @@ public class UnitOfWork(
     IProductRepository productRepository,
     IUserRepository userRepository,
     IReviewRepository reviewRepository,
-    IOrderRepository orderRepository) : IUnitOfWork
+    IOrderRepository orderRepository,
+    ICategoryRepository categoryRepository) : IUnitOfWork
 {
     private readonly Dictionary<Type, object> _repositories = new();
 
@@ -19,6 +20,8 @@ public class UnitOfWork(
     public IReviewRepository ReviewRepository => reviewRepository;
 
     public IOrderRepository OrderRepository => orderRepository;
+
+    public ICategoryRepository CategoryRepository => categoryRepository;
 
     /// <summary>
     /// Gets the repository for the specified entity type.

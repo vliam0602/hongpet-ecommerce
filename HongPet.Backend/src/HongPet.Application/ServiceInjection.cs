@@ -14,6 +14,7 @@ public static class ServiceInjection
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IOrderService, OrderService>();
         services.AddScoped<IReviewService, ReviewService>();
+        services.AddScoped<ICategoryService, CategoryService>();
         
         services.AddScoped<IClaimService, ClaimService>();
         return services;

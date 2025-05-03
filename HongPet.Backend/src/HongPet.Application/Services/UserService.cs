@@ -3,7 +3,6 @@ using HongPet.Application.Commons;
 using HongPet.Application.Services.Abstractions;
 using HongPet.Application.Services.Commons;
 using HongPet.Domain.Entities;
-using HongPet.Domain.Entities.Commons;
 using HongPet.Domain.Repositories.Abstractions;
 using HongPet.SharedViewModels.Generals;
 using HongPet.SharedViewModels.Models;
@@ -94,12 +93,12 @@ public class UserService : GenericService<User>, IUserService
         return _mapper.Map<UserVM>(user);
     }
 
-    public async Task<IPagedList<UserVM>> GetUsersListAsync(int pageIndex = 1, int pageSize = 10, string? keyword = "")
+    public async Task<IPagedList<UserVM>> GetCustomersListAsync(int pageIndex = 1, int pageSize = 10, string? keyword = "")
     {
         this.CheckAuthorize(checkAdmin: true);
 
         var pagedUsers = await _userRepository
-            .GetPagedAsync(pageIndex, pageSize, keyword);
+            .GetCustomersPagedAsync(pageIndex, pageSize, keyword);
 
         return _mapper.Map<PagedList<UserVM>>(pagedUsers);
     }

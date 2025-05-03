@@ -30,8 +30,7 @@ function App() {
   }, []);
 
   const handleLogin = (userData) => {
-    setUser(userData);
-    localStorage.setItem(AppConstants.STORAGE_KEYS.USER, JSON.stringify(userData));
+    setUser(userData);    
     navigate('/');
   }
 

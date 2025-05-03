@@ -30,7 +30,7 @@ public class GenericService<TEntity>
         return await _repository.GetAllAsync();
     }
 
-    public virtual async Task AddAsync(TEntity entity)
+    public virtual async Task<Guid> AddAsync(TEntity entity)
     {
         entity.CreatedBy = _claimService.GetCurrentUserId;   
         entity.CreatedDate = CurrentTime.GetCurrentTime;
@@ -40,6 +40,7 @@ public class GenericService<TEntity>
 
         await _repository.AddAsync(entity);
         await _unitOfWork.SaveChangesAsync();
+        return entity.Id;
     }
 
     public virtual async Task UpdateAsync(TEntity entity)
@@ -66,7 +67,8 @@ public class GenericService<TEntity>
     public virtual async Task<IPagedList<TEntity>> GetPagedAsync(
         int pageIndex = 1, int pageSize = 10, string? keyword = "")
     {
-        return await _repository.GetPagedAsync(pageIndex, pageSize, keyword);
+        return await _repository
+            .GetPagedAsync(pageIndex, pageSize, keyword);
     }
 
     public async Task SoftDeleteAsync(Guid id)

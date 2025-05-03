@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using HongPet.Domain.DTOs;
 using HongPet.Domain.Entities;
 using HongPet.Infrastructure.DTOs;
 using HongPet.SharedViewModels.Generals;
@@ -14,7 +15,9 @@ public class MappingProfile : Profile
         CreateMap(typeof(PagedList<>), typeof(PagedList<>));
 
         // product mappings
-        CreateMap<Product, ProductGeneralVM>();
+        CreateMap<Product, ProductGeneralVM>()
+            .ForMember(model => model.TotalVariants,
+                opt => opt.MapFrom(x => x.Variants.Count()));
 
         CreateMap<Product, ProductDetailVM>()
             .ForMember(model => model.CountOfReviews, 
@@ -45,15 +48,7 @@ public class MappingProfile : Profile
 
         CreateMap<OrderItemCreationModel, OrderItem>();
 
-        //CreateMap<Order, OrderVM>();
-
-        //CreateMap<OrderItem, OrderItemVM>()
-        //    .ForMember(model => model.ProductId,
-        //        opt => opt.MapFrom(x => x.Variant.ProductId))
-        //    .ForMember(model => model.ProductName,
-        //        opt => opt.MapFrom(x => x.Variant.ProductName))
-        //    .ForMember(model => model.AttributeValues,
-        //        opt => opt.MapFrom(x => x.Variant.AttributeValues));
+        CreateMap<Order, OrderVM>();        
 
         CreateMap<ProductAttributeValue, AttributeValueVM>()
             .ForMember(model => model.Attribute,
@@ -67,6 +62,14 @@ public class MappingProfile : Profile
 
         // user mappings
         CreateMap<User, UserVM>();
+        CreateMap<UserDto, UserVM>();
         CreateMap<UserUpdateModel, User>();
+
+        // category mappings
+        CreateMap<Category, CategoryVM>()
+            .ForMember(model => model.ParentCategoryName,
+                opt => opt.MapFrom(x => x.ParentCategory!= null ? 
+                        x.ParentCategory.Name : null));
+        CreateMap<CategoryCreateModel, Category>();
     }
 }

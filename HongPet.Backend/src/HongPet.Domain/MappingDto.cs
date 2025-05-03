@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
+using HongPet.Domain.DTOs;
 using HongPet.Domain.Entities;
 using HongPet.Infrastructure.DTOs;
-using HongPet.SharedViewModels.ViewModels;
 
-namespace HongPet.Infrastructure;
+namespace HongPet.Domain;
 public class MappingDto : Profile
 {
     public MappingDto()
@@ -23,5 +23,11 @@ public class MappingDto : Profile
         CreateMap<ProductAttributeValue, AttributeValueDto>()
             .ForMember(model => model.Attribute,
                 opt => opt.MapFrom(x => x.Attribute.Name));
+
+        CreateMap<User, UserDto>()
+            .ForMember(model => model.TotalOrders,
+                opt => opt.MapFrom(x => x.Orders.Count()))
+            .ForMember(model => model.TotalSpend,
+                opt => opt.MapFrom(x => x.Orders.Sum(o => o.TotalAmount)));
     }
 }
