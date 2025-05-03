@@ -23,12 +23,19 @@ public class ProductRepository : GenericRepository<Product>, IProductRepository
     public override async Task<IPagedList<Product>> GetPagedAsync
         (int pageIndex = 1, int pageSize = 10, string? keyword = "")
     {
-        var totalCount = await _dbSet.CountAsync();
+        
+        var query = _dbSet
+            .Include(x => x.Variants)
+            .AsQueryable();
+        if (!string.IsNullOrEmpty(keyword))
+        {
+            query = query.Where(x => x.Name.Contains(keyword)
+                        || x.Categories.Any(c => c.Name.Contains(keyword)));
+        }
+        
+        var totalCount = await query.CountAsync();
 
-        var items = await _dbSet
-            .Where(x => string.IsNullOrEmpty(keyword)
-                        || x.Name.Contains(keyword)
-                        || x.Categories.Any(c => c.Name.Contains(keyword)))
+        var items = await query
             .OrderByDescending(x => x.CreatedDate)
             .Skip((pageIndex - 1) * pageSize)
             .Take(pageSize)

@@ -1,100 +1,86 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Plus, Search, Edit, Trash2, Eye } from 'lucide-react'
-
-// Mock data for products
-const mockProducts = [
-  { 
-    id: '1', 
-    name: 'Premium Dog Food', 
-    description: 'High-quality dog food for all breeds',
-    price: 29.99,
-    thumbnailUrl: 'https://placehold.co/100x100',
-    isActive: true,
-    categories: ['Pet Food', 'Dogs'],
-    variants: 5,
-    createdDate: '2025-04-15'
-  },
-  { 
-    id: '2', 
-    name: 'Cat Toy Set', 
-    description: 'Interactive toys for cats',
-    price: 24.99,
-    thumbnailUrl: 'https://placehold.co/100x100',
-    isActive: true,
-    categories: ['Toys', 'Cats'],
-    variants: 3,
-    createdDate: '2025-04-10'
-  },
-  { 
-    id: '3', 
-    name: 'Bird Cage', 
-    description: 'Spacious cage for small birds',
-    price: 49.99,
-    thumbnailUrl: 'https://placehold.co/100x100',
-    isActive: true,
-    categories: ['Cages', 'Birds'],
-    variants: 2,
-    createdDate: '2025-04-05'
-  },
-  { 
-    id: '4', 
-    name: 'Fish Tank Filter', 
-    description: 'Advanced filtration system for aquariums',
-    price: 34.99,
-    thumbnailUrl: 'https://placehold.co/100x100',
-    isActive: false,
-    categories: ['Aquarium', 'Fish'],
-    variants: 4,
-    createdDate: '2025-03-28'
-  },
-  { 
-    id: '5', 
-    name: 'Hamster Wheel', 
-    description: 'Exercise wheel for small pets',
-    price: 15.99,
-    thumbnailUrl: 'https://placehold.co/100x100',
-    isActive: true,
-    categories: ['Small Pets', 'Accessories'],
-    variants: 1,
-    createdDate: '2025-03-20'
-  },
-]
+import productService from '../../services/productService'
 
 function Products() {
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [filterActive, setFilterActive] = useState('all')
+  const [pagination, setPagination] = useState({
+    pageIndex: 1,
+    pageSize: 10,
+    totalItems: 0,
+    totalPages: 0
+  })
 
   useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      setProducts(mockProducts)
-      setLoading(false)
+    const fetchProducts = async () => {
+      try {
+        setLoading(true)
+        const data = await productService.getProducts(
+          pagination.pageIndex,
+          pagination.pageSize,
+          searchTerm
+        )
+        
+        setProducts(data.items || [])
+        setPagination({
+          pageIndex: data.currentPage,
+          pageSize: data.pageSize,
+          totalItems: data.totalCount,
+          totalPages: data.totalPages
+        })
+        setError(null)
+      } catch (err) {
+        console.error('Error fetching products:', err)
+        setError('Failed to load products. Please try again later.')
+        setProducts([])
+      } finally {
+        setLoading(false)
+      }
+    }
+    
+    // Debounce search input
+    const timer = setTimeout(() => {
+      fetchProducts()
     }, 500)
-  }, [])
+    
+    return () => clearTimeout(timer)
+  }, [searchTerm, pagination.pageIndex, pagination.pageSize])
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this product?')) {
-      // In a real app, you would call an API to delete the product
-      setProducts(products.filter(product => product.id !== id))
+      try {
+        setLoading(true)
+        await productService.deleteProduct(id)
+        // Refresh the product list after deletion
+        setProducts(products.filter(product => product.id !== id))
+      } catch (err) {
+        console.error('Error deleting product:', err)
+        alert('Failed to delete product. Please try again.')
+      } finally {
+        setLoading(false)
+      }
     }
   }
 
   const filteredProducts = products.filter(product => {
-    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          product.description.toLowerCase().includes(searchTerm.toLowerCase())
+    if (filterActive === 'all') return true
+    if (filterActive === 'active') return product.isActive
+    if (filterActive === 'inactive') return !product.isActive
     
-    if (filterActive === 'all') return matchesSearch
-    if (filterActive === 'active') return matchesSearch && product.isActive
-    if (filterActive === 'inactive') return matchesSearch && !product.isActive
-    
-    return matchesSearch
+    return true
   })
 
-  if (loading) {
+  if (loading && products.length === 0) {
     return <div className="flex justify-center items-center h-full">Loading products...</div>
+  }
+
+  if (error) {
+    return <div className="flex justify-center items-center h-full text-red-500">{error}</div>
   }
 
   return (
@@ -109,8 +95,9 @@ function Products() {
 
       <div className="card">
         <div className="flex flex-col md:flex-row gap-4 mb-6">
+          {/* Search box */}
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+            <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
             <input
               type="text"
               placeholder="Search products..."
@@ -119,6 +106,7 @@ function Products() {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
+          {/* Filter by active */}
           <div className="flex gap-2">
             <button 
               className={`btn ${filterActive === 'all' ? 'btn-primary' : 'btn-dark'}`}
@@ -141,6 +129,9 @@ function Products() {
           </div>
         </div>
 
+        {loading && products.length > 0 && 
+        <div className="text-center py-4">Refreshing data...</div>}
+
         <div className="table-container">
           <table className="table">
             <thead>
@@ -148,7 +139,6 @@ function Products() {
                 <th>Image</th>
                 <th>Name</th>
                 <th className="hidden md:table-cell">Price</th>
-                <th className="hidden md:table-cell">Categories</th>
                 <th className="hidden md:table-cell">Variants</th>
                 <th className="hidden md:table-cell">Status</th>
                 <th>Actions</th>
@@ -168,18 +158,19 @@ function Products() {
                     <td>
                       <div className="font-medium">{product.name}</div>
                       <div className="text-sm text-gray-500 md:hidden">
-                        ${product.price.toFixed(2)}
+                        {new Intl.NumberFormat('vi-VN', {
+                          style: 'currency',
+                          currency: 'VND',
+                        }).format(product.price)}
                       </div>
                     </td>
-                    <td className="hidden md:table-cell">${product.price.toFixed(2)}</td>
                     <td className="hidden md:table-cell">
-                      {product.categories.map((cat, index) => (
-                        <span key={index} className="inline-block bg-gray-100 rounded-full px-2 py-1 text-xs mr-1 mb-1">
-                          {cat}
-                        </span>
-                      ))}
-                    </td>
-                    <td className="hidden md:table-cell">{product.variants}</td>
+                      {new Intl.NumberFormat('vi-VN', {
+                        style: 'currency',
+                        currency: 'VND',
+                      }).format(product.price)}
+                    </td>                    
+                    <td className="hidden md:table-cell">{product.totalVariants || 0}</td>
                     <td className="hidden md:table-cell">
                       <span className={`badge ${product.isActive ? 'badge-success' : 'badge-danger'}`}>
                         {product.isActive ? 'Active' : 'Inactive'}
@@ -211,6 +202,30 @@ function Products() {
             </tbody>
           </table>
         </div>
+        
+        <div className="flex justify-between items-center mt-4">
+            <div>
+              Showing {(pagination.pageIndex - 1) * pagination.pageSize + 1} to {Math.min(pagination.pageIndex * pagination.pageSize, pagination.totalItems)} of {pagination.totalItems} entries
+            </div>
+            <div className="flex gap-2">
+              {pagination.pageIndex > 1 && (
+                <button 
+                  className="btn btn-dark"
+                  onClick={() => setPagination(prev => ({ ...prev, pageIndex: prev.pageIndex - 1 }))}
+                >
+                  Previous
+                </button>
+              )}
+              {pagination.pageIndex < pagination.totalPages && (
+                <button
+                  className="btn btn-dark"
+                  onClick={() => setPagination(prev => ({ ...prev, pageIndex: prev.pageIndex + 1 }))}
+                >
+                  Next
+                </button>
+              )}
+            </div>
+          </div>
       </div>
     </div>
   )

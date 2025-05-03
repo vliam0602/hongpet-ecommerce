@@ -27,7 +27,7 @@ body {
 }
 
 .btn-dark {
-  @apply bg-black text-white hover:bg-gray-800;
+  @apply bg-black text-white hover:bg-accent hover:text-black ;
 }
 
 .input-field {

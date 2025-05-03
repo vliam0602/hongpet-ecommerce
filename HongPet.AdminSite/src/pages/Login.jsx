@@ -1,15 +1,8 @@
 import { useState } from 'react'
 import { Eye, EyeOff, LogIn, User } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
 import authService from "../services/authService"
 
-function Login({ onLogin }) {
-
-  if (authService.isAuthenticated()) {
-    var navigate = useNavigate();
-    navigate('/');
-  }
-  
+function Login({ onLogin }) {    
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);

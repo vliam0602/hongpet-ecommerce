@@ -1,34 +1,62 @@
 import { useState, useEffect } from 'react'
 import { Plus, Edit, Trash2, X } from 'lucide-react'
-
-// Mock data for categories
-const mockCategories = [
-  { id: '1', name: 'Pet Food', parentCategoryId: null, subCategories: ['2', '3'] },
-  { id: '2', name: 'Dog Food', parentCategoryId: '1', subCategories: [] },
-  { id: '3', name: 'Cat Food', parentCategoryId: '1', subCategories: [] },
-  { id: '4', name: 'Toys', parentCategoryId: null, subCategories: ['5', '6'] },
-  { id: '5', name: 'Dog Toys', parentCategoryId: '4', subCategories: [] },
-  { id: '6', name: 'Cat Toys', parentCategoryId: '4', subCategories: [] },
-  { id: '7', name: 'Accessories', parentCategoryId: null, subCategories: [] },
-  { id: '8', name: 'Grooming', parentCategoryId: null, subCategories: [] },
-  { id: '9', name: 'Health & Wellness', parentCategoryId: null, subCategories: [] },
-]
+import categoryService from '../../services/categoryService'
 
 function Categories() {
   const [categories, setCategories] = useState([])
+  const [allCategories, setAllCategories] = useState([]) // Lưu tất cả categories cho dropdown
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
   const [showModal, setShowModal] = useState(false)
   const [editingCategory, setEditingCategory] = useState(null)
   const [categoryName, setCategoryName] = useState('')
   const [parentCategoryId, setParentCategoryId] = useState('')
   
+  const [pagination, setPagination] = useState({
+    pageIndex: 1,
+    pageSize: 10,
+    totalItems: 0,
+    totalPages: 0
+  })
+  
   useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      setCategories(mockCategories)
-      setLoading(false)
-    }, 500)
-  }, [])
+    fetchCategories(pagination.pageIndex, pagination.pageSize);
+    // Lấy tất cả categories cho dropdown
+    fetchAllCategories();
+  }, [pagination.pageIndex, pagination.pageSize])
+  
+  const fetchCategories = async (pageIndex = 1, pageSize = 10) => {
+    try {
+      setLoading(true);
+      const data = await categoryService.getCategories(pageIndex, pageSize);
+      
+      setCategories(data.items || []);
+      
+      setPagination({
+        pageIndex: data.currentPage,
+        pageSize: data.pageSize,
+        totalItems: data.totalCount,
+        totalPages: data.totalPages
+      });
+      
+      setError(null);
+    } catch (err) {
+      console.error('Error fetching categories:', err);
+      setError('Failed to load categories. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  const fetchAllCategories = async () => {
+    try {
+      const data = await categoryService.getAllCategories();
+      setAllCategories(data || []);
+    } catch (err) {
+      console.error('Error fetching all categories:', err);
+      // Không set error vì đây là chức năng phụ, chính là danh sách phân trang
+    }
+  };
   
   const handleAddCategory = () => {
     setEditingCategory(null)
@@ -44,14 +72,33 @@ function Categories() {
     setShowModal(true)
   }
   
-  const handleDeleteCategory = (categoryId) => {
+  const handleDeleteCategory = async (categoryId) => {    
+    const categoryToDelete = categories.find(cat => cat.id === categoryId);
+    if (!categoryToDelete) return;
+    
+    const categoryName = categoryToDelete.name;
+    
     if (window.confirm('Are you sure you want to delete this category?')) {
-      // In a real app, you would call an API to delete the category
-      setCategories(categories.filter(category => category.id !== categoryId))
+      try {
+        setLoading(true);
+        // call api to delete category (hard delete)
+        await categoryService.deleteCategory(categoryId);
+                
+        alert(`Delete ${categoryName} successfully`);
+        
+        // deleted successfully, refresh the data
+        fetchCategories(pagination.pageIndex, pagination.pageSize);
+        fetchAllCategories(); // update the parent categories for drop down
+      } catch (err) {
+        console.error('Error deleting category:', err);
+        alert('Failed to delete category. Please try again.');
+      } finally {
+        setLoading(false);
+      }
     }
   }
   
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     
     if (!categoryName.trim()) {
@@ -59,57 +106,39 @@ function Categories() {
       return
     }
     
-    if (editingCategory) {
-      //  {
-      alert('Please enter a category name')
-      return
-    }
-    
-    if (editingCategory) {
-      // Update existing category
-      setCategories(categories.map(category => 
-        category.id === editingCategory.id 
-          ? { ...category, name: categoryName, parentCategoryId: parentCategoryId || null }
-          : category
-      ))
-    } else {
-      // Add new category
-      const newCategory = {
-        id: Date.now().toString(),
+    try {
+      setLoading(true);
+      const categoryData = {
         name: categoryName,
-        parentCategoryId: parentCategoryId || null,
-        subCategories: []
+        parentCategoryId: parentCategoryId || null
+      };
+      
+      if (editingCategory) {
+        // Update existing category
+        await categoryService.updateCategory(editingCategory.id, categoryData);
+      } else {
+        // Add new category
+        await categoryService.createCategory(categoryData);
       }
       
-      setCategories([...categories, newCategory])
-      
-      // If this category has a parent, update the parent's subCategories
-      if (parentCategoryId) {
-        setCategories(categories.map(category => 
-          category.id === parentCategoryId
-            ? { ...category, subCategories: [...category.subCategories, newCategory.id] }
-            : category
-        ))
-      }
+      // Refresh categories after update
+      fetchCategories(pagination.pageIndex, pagination.pageSize);
+      fetchAllCategories(); // Cập nhật lại tất cả danh mục cho dropdown
+      setShowModal(false);
+    } catch (err) {
+      console.error('Error saving category:', err);
+      alert('Failed to save category. Please try again.');
+    } finally {
+      setLoading(false);
     }
-    
-    setShowModal(false)
   }
   
-  // Get only parent categories (for dropdown)
-  const parentCategories = categories.filter(category => !category.parentCategoryId)
-  
-  // Group categories by parent for display
-  const groupedCategories = {}
-  parentCategories.forEach(parent => {
-    groupedCategories[parent.id] = {
-      parent,
-      children: categories.filter(cat => cat.parentCategoryId === parent.id)
-    }
-  })
-  
-  if (loading) {
+  if (loading && categories.length === 0) {
     return <div className="flex justify-center items-center h-full">Loading categories...</div>
+  }
+  
+  if (error) {
+    return <div className="flex justify-center items-center h-full text-red-500">{error}</div>
   }
   
   return (
@@ -142,7 +171,7 @@ function Categories() {
                     <td className="font-medium">{category.name}</td>
                     <td>
                       {category.parentCategoryId 
-                        ? categories.find(c => c.id === category.parentCategoryId)?.name 
+                        ? allCategories.find(c => c.id === category.parentCategoryId)?.name || '-' 
                         : '-'}
                     </td>
                     <td>
@@ -171,33 +200,32 @@ function Categories() {
             </tbody>
           </table>
         </div>
-      </div>
-      
-      {/* Category Tree View */}
-      <div className="card">
-        <h2 className="text-lg font-semibold mb-4">Category Hierarchy</h2>
         
-        {Object.values(groupedCategories).length > 0 ? (
-          <div className="space-y-4">
-            {Object.values(groupedCategories).map(({ parent, children }) => (
-              <div key={parent.id} className="border border-gray-200 rounded-lg p-4">
-                <h3 className="font-medium text-lg">{parent.name}</h3>
-                {children.length > 0 ? (
-                  <div className="mt-2 pl-4 border-l-2 border-gray-200">
-                    {children.map(child => (
-                      <div key={child.id} className="py-1">
-                        {child.name}
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-sm text-gray-500 mt-2">No subcategories</p>
+        {/* Pagination */}
+        {pagination.totalPages > 1 && (
+          <div className="flex justify-between items-center mt-4">
+              <div>
+                Showing {(pagination.pageIndex - 1) * pagination.pageSize + 1} to {Math.min(pagination.pageIndex * pagination.pageSize, pagination.totalItems)} of {pagination.totalItems} entries
+              </div>
+              <div className="flex gap-2">
+                {pagination.pageIndex > 1 && (
+                  <button 
+                    className="btn btn-dark"
+                    onClick={() => setPagination(prev => ({ ...prev, pageIndex: prev.pageIndex - 1 }))}
+                  >
+                    Previous
+                  </button>
+                )}
+                {pagination.pageIndex < pagination.totalPages && (
+                  <button
+                  className="btn btn-dark"
+                  onClick={() => setPagination(prev => ({ ...prev, pageIndex: prev.pageIndex + 1 }))}
+                  >
+                    Next
+                  </button>
                 )}
               </div>
-            ))}
           </div>
-        ) : (
-          <p className="text-gray-500">No categories found</p>
         )}
       </div>
       
@@ -205,6 +233,7 @@ function Categories() {
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 w-full max-w-md">
+            {/* Modal content */}
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold">
                 {editingCategory ? 'Edit Category' : 'Add Category'}
@@ -218,6 +247,7 @@ function Categories() {
             </div>
             
             <form onSubmit={handleSubmit}>
+              {/* form fields */}
               <div className="mb-4">
                 <label htmlFor="categoryName" className="block mb-1 font-medium">
                   Category Name <span className="text-red-500">*</span>
@@ -244,7 +274,8 @@ function Categories() {
                   onChange={(e) => setParentCategoryId(e.target.value)}
                 >
                   <option value="">None (Top Level)</option>
-                  {parentCategories
+                  {/* Sử dụng tất cả danh mục từ API all categories */}
+                  {allCategories
                     .filter(cat => cat.id !== (editingCategory?.id || ''))
                     .map(category => (
                       <option key={category.id} value={category.id}>
@@ -271,6 +302,14 @@ function Categories() {
           </div>
         </div>
       )}
+      
+      {loading && categories.length > 0 && 
+        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-40">
+          <div className="bg-white rounded-lg p-4">
+            <p className="text-center">Processing...</p>
+          </div>
+        </div>
+      }
     </div>
   )
 }

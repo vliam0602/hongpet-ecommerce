@@ -1,188 +1,57 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Search, Eye } from 'lucide-react'
-
-// Mock data for orders
-const mockOrders = [
-  {
-    id: '1',
-    customerId: '1',
-    customerName: 'John Doe',
-    customerPhone: '(123) 456-7890',
-    shippingAddress: '123 Main St, City, Country',
-    totalAmount: 129.99,
-    status: 'Completed',
-    paymentMethod: 'Credit Card',
-    createdDate: '2025-04-30',
-    orderItems: [
-      {
-        productId: '1',
-        variantId: '1',
-        productName: 'Premium Dog Food',
-        thumbnailImageUrl: 'https://placehold.co/100x100',
-        attributeValues: [
-          { id: '1', attribute: 'Size', value: 'Large' }
-        ],
-        quantity: 2,
-        price: 29.99
-      },
-      {
-        productId: '3',
-        variantId: '5',
-        productName: 'Dog Collar',
-        thumbnailImageUrl: 'https://placehold.co/100x100',
-        attributeValues: [
-          { id: '2', attribute: 'Size', value: 'Medium' },
-          { id: '3', attribute: 'Color', value: 'Red' }
-        ],
-        quantity: 1,
-        price: 19.99
-      }
-    ]
-  },
-  {
-    id: '2',
-    customerId: '2',
-    customerName: 'Jane Smith',
-    customerPhone: '(234) 567-8901',
-    shippingAddress: '456 Oak Ave, Town, Country',
-    totalAmount: 85.50,
-    status: 'Processing',
-    paymentMethod: 'PayPal',
-    createdDate: '2025-04-29',
-    orderItems: [
-      {
-        productId: '2',
-        variantId: '3',
-        productName: 'Cat Toy Set',
-        thumbnailImageUrl: 'https://placehold.co/100x100',
-        attributeValues: [],
-        quantity: 1,
-        price: 24.99
-      },
-      {
-        productId: '4',
-        variantId: '7',
-        productName: 'Cat Food',
-        thumbnailImageUrl: 'https://placehold.co/100x100',
-        attributeValues: [
-          { id: '4', attribute: 'Size', value: 'Small' }
-        ],
-        quantity: 2,
-        price: 19.99
-      }
-    ]
-  },
-  {
-    id: '3',
-    customerId: '3',
-    customerName: 'Robert Johnson',
-    customerPhone: '(345) 678-9012',
-    shippingAddress: '789 Pine Rd, Village, Country',
-    totalAmount: 210.75,
-    status: 'Pending',
-    paymentMethod: 'Credit Card',
-    createdDate: '2025-04-28',
-    orderItems: [
-      {
-        productId: '5',
-        variantId: '9',
-        productName: 'Bird Cage',
-        thumbnailImageUrl: 'https://placehold.co/100x100',
-        attributeValues: [
-          { id: '5', attribute: 'Size', value: 'Large' }
-        ],
-        quantity: 1,
-        price: 149.99
-      },
-      {
-        productId: '6',
-        variantId: '11',
-        productName: 'Bird Food',
-        thumbnailImageUrl: 'https://placehold.co/100x100',
-        attributeValues: [],
-        quantity: 2,
-        price: 29.99
-      }
-    ]
-  },
-  {
-    id: '4',
-    customerId: '4',
-    customerName: 'Emily Davis',
-    customerPhone: '(456) 789-0123',
-    shippingAddress: '101 Maple Dr, Suburb, Country',
-    totalAmount: 65.99,
-    status: 'Completed',
-    paymentMethod: 'PayPal',
-    createdDate: '2025-04-27',
-    orderItems: [
-      {
-        productId: '7',
-        variantId: '13',
-        productName: 'Hamster Wheel',
-        thumbnailImageUrl: 'https://placehold.co/100x100',
-        attributeValues: [],
-        quantity: 1,
-        price: 15.99
-      },
-      {
-        productId: '8',
-        variantId: '15',
-        productName: 'Hamster Food',
-        thumbnailImageUrl: 'https://placehold.co/100x100',
-        attributeValues: [],
-        quantity: 2,
-        price: 24.99
-      }
-    ]
-  },
-  {
-    id: '5',
-    customerId: '5',
-    customerName: 'Michael Wilson',
-    customerPhone: '(567) 890-1234',
-    shippingAddress: '202 Cedar Ln, District, Country',
-    totalAmount: 45.99,
-    status: 'Cancelled',
-    paymentMethod: 'Credit Card',
-    createdDate: '2025-04-26',
-    orderItems: [
-      {
-        productId: '9',
-        variantId: '17',
-        productName: 'Fish Tank Filter',
-        thumbnailImageUrl: 'https://placehold.co/100x100',
-        attributeValues: [],
-        quantity: 1,
-        price: 45.99
-      }
-    ]
-  }
-]
+import orderService from '../../services/orderService'
 
 function Orders() {
   const [orders, setOrders] = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
+  const [pagination, setPagination] = useState({
+    pageIndex: 1,
+    pageSize: 10,
+    totalItems: 0,
+    totalPages: 0
+  })
   
   useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      setOrders(mockOrders)
-      setLoading(false)
+    const fetchOrders = async () => {
+      setLoading(true)
+      try {
+        const data = await orderService.getOrders(
+          pagination.pageIndex, 
+          pagination.pageSize, 
+          searchTerm
+        )
+        setOrders(data.items)
+        setPagination({
+          pageIndex: data.currentPage,
+          pageSize: data.pageSize,
+          totalItems: data.totalCount,
+          totalPages: data.totalPages
+        })
+        setError(null)
+      } catch (err) {
+        setError('Failed to fetch orders. Please try again later.')
+        console.error('Error fetching orders:', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+    
+    // Debounce search input
+    const timer = setTimeout(() => {
+      fetchOrders()
     }, 500)
-  }, [])
+    
+    return () => clearTimeout(timer)
+  }, [searchTerm, pagination.pageIndex, pagination.pageSize])
   
   const filteredOrders = orders.filter(order => {
-    const matchesSearch = 
-      order.id.includes(searchTerm) ||
-      order.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.customerPhone.includes(searchTerm)
-    
-    if (statusFilter === 'all') return matchesSearch
-    return matchesSearch && order.status.toLowerCase() === statusFilter.toLowerCase()
+    if (statusFilter === 'all') return true;
+    return order.status.toLowerCase() === statusFilter.toLowerCase();
   })
   
   const getStatusBadgeClass = (status) => {
@@ -200,8 +69,12 @@ function Orders() {
     }
   }
   
-  if (loading) {
+  if (loading && orders.length === 0) {
     return <div className="flex justify-center items-center h-full">Loading orders...</div>
+  }
+  
+  if (error) {
+    return <div className="flex justify-center items-center h-full text-red-500">{error}</div>
   }
   
   return (
@@ -212,8 +85,9 @@ function Orders() {
       
       <div className="card">
         <div className="flex flex-col md:flex-row gap-4 mb-6">
+          {/* Search Box */}
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+            <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
             <input
               type="text"
               placeholder="Search orders..."
@@ -222,6 +96,7 @@ function Orders() {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
+          {/* Filter by status buttons */}
           <div className="flex flex-wrap gap-2">
             <button 
               className={`btn ${statusFilter === 'all' ? 'btn-primary' : 'btn-dark'}`}
@@ -256,11 +131,14 @@ function Orders() {
           </div>
         </div>
         
+        {loading && orders.length > 0 && 
+        <div className="text-center py-4">Refreshing data...</div>}
+        
         <div className="table-container">
           <table className="table">
             <thead>
               <tr>
-                <th>Order ID</th>
+                <th className="hidden">Order ID</th>
                 <th>Customer</th>
                 <th className="hidden md:table-cell">Date</th>
                 <th className="hidden md:table-cell">Total</th>
@@ -273,13 +151,20 @@ function Orders() {
               {filteredOrders.length > 0 ? (
                 filteredOrders.map((order) => (
                   <tr key={order.id}>
-                    <td>#{order.id}</td>
+                    <td className="hidden">{order.id}</td>
                     <td>
                       <div className="font-medium">{order.customerName}</div>
                       <div className="text-sm text-gray-500">{order.customerPhone}</div>
                     </td>
-                    <td className="hidden md:table-cell">{order.createdDate}</td>
-                    <td className="hidden md:table-cell">${order.totalAmount.toFixed(2)}</td>
+                    <td className="hidden md:table-cell">
+                      {new Date(order.createdDate).toLocaleString()}
+                    </td>
+                    <td className="hidden md:table-cell">
+                      {new Intl.NumberFormat('vi-VN', {
+                        style: 'currency',
+                        currency: 'VND',
+                      }).format(order.totalAmount)}
+                    </td>
                     <td>
                       <span className={`badge ${getStatusBadgeClass(order.status)}`}>
                         {order.status}
@@ -301,6 +186,32 @@ function Orders() {
             </tbody>
           </table>
         </div>
+        
+        {/* Pagination */}
+        <div className="flex justify-between items-center mt-4">
+            <div>
+              Showing {(pagination.pageIndex - 1) * pagination.pageSize + 1} to {Math.min(pagination.pageIndex * pagination.pageSize, pagination.totalItems)} of {pagination.totalItems} entries
+            </div>
+            <div className="flex gap-2">
+              {pagination.pageIndex > 1 && (
+                <button 
+                  className="btn btn-dark"
+                  onClick={() => setPagination(prev => ({ ...prev, pageIndex: prev.pageIndex - 1 }))}
+                >
+                  Previous
+                </button>
+              )}
+              {pagination.pageIndex < pagination.totalPages && (
+                <button
+                className="btn btn-dark"
+                onClick={() => setPagination(prev => ({ ...prev, pageIndex: prev.pageIndex + 1 }))}
+                >
+                  Next
+                </button>
+              )}
+            </div>
+        </div>
+      
       </div>
     </div>
   )

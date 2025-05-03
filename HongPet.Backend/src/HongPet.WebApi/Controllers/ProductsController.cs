@@ -19,7 +19,8 @@ public class ProductsController(
     {
         try
         {
-            var products = await _productService.GetPagedProductAsync(criteria.PageIndex, criteria.PageSize, criteria.Keyword);
+            var products = await _productService.GetPagedProductAsync(
+                    criteria.PageIndex, criteria.PageSize, criteria.Keyword);
 
             return Ok(new ApiResponse
             {

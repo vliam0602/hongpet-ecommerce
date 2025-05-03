@@ -13,6 +13,7 @@ namespace HongPet.SharedViewModels.ViewModels
         public string? Brief { get; set; }       
         public string? Description { get; set; }
         public string? ThumbnailUrl { get; set; }
+        public bool IsActive { get; set; }
         public virtual IEnumerable<VariantVM> Variants { get; set; } 
             = new List<VariantVM>();
         public virtual IEnumerable<ImageVM> Images { get; set; } 

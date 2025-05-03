@@ -21,7 +21,7 @@ const authService = {
                                 
         // Extract userData from decoded jwt
         const userData = authService.getCurrentUser();
-        console.log(userData);
+        localStorage.setItem(AppConstants.STORAGE_KEYS.USER, JSON.stringify(userData));
 
         return {
           ...response.data,

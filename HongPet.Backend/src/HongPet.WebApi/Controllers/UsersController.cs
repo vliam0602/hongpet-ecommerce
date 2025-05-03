@@ -17,7 +17,8 @@ public class UsersController(
     {
         try
         {
-            var users = await _userService.GetUsersListAsync(criteria.PageIndex, criteria.PageSize, criteria.Keyword);
+            var users = await _userService.GetCustomersListAsync(
+                criteria.PageIndex, criteria.PageSize, criteria.Keyword);
             return Ok(new ApiResponse
             {
                 IsSuccess = true,
