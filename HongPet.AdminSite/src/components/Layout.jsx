@@ -1,8 +1,8 @@
-import { Outlet, NavLink, Navigate } from 'react-router-dom'
+import { Outlet, NavLink, Navigate, useLocation } from 'react-router-dom'
 import { LayoutDashboard, Package, Tag, Users, ShoppingCart, LogOut, User } from 'lucide-react'
 
 function Layout({ user, onLogout }) {
-
+  const location = useLocation();
   if (!user) {
     return <Navigate to="/login" />
   }
@@ -55,9 +55,9 @@ function Layout({ user, onLogout }) {
       <div className="flex-1 flex flex-col overflow-hidden">
         <header className="bg-white shadow-sm p-4 flex justify-between items-center">
           <h2 className="text-xl font-semibold">
-            {window.location.pathname === '/' ? 'Dashboard' : 
-             window.location.pathname.split('/')[1].charAt(0).toUpperCase() + 
-             window.location.pathname.split('/')[1].slice(1)}
+            {location.pathname === '/' ? 'Dashboard' : 
+            location.pathname.split('/')[1].charAt(0).toUpperCase() + 
+            location.pathname.split('/')[1].slice(1)}
           </h2>
           <div className="flex items-center gap-2">
             <User size={20} />

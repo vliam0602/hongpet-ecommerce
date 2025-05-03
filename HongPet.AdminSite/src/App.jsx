@@ -52,7 +52,6 @@ function App() {
           <Route path="/products/add" element={<AddProduct />} />
           <Route path="/products/:id" element={<ProductDetail />} />
           <Route path="/products/edit/:id" element={<EditProduct />} />
-          <Route path="/products/:id" element={<ProductDetail />} />
 
           <Route path="/categories" element={<Categories />} />
           
