@@ -15,7 +15,6 @@ function OrderDetail() {
         setLoading(true)
         const data = await orderService.getOrderDetail(id)
         setOrder(data)
-        console.log(order);
         setError(null)
       } catch (err) {
         console.error('Error fetching order details:', err)
