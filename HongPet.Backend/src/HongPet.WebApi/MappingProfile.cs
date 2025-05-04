@@ -25,11 +25,17 @@ public class MappingProfile : Profile
             .ForMember(model => model.AverageStars,
                 opt => opt.MapFrom(x => (x.Reviews.Sum(r => r.Rating) / 5)));
 
-        CreateMap<Variant, VariantVM>();        
-
-        CreateMap<ProductModel, Product>();
+        CreateMap<Variant, VariantVM>();                
 
         CreateMap<Image, ImageVM>();
+
+        // for adding product
+        CreateMap<ProductModel, Product>();
+        CreateMap<CategoryModel, Category>();
+        CreateMap<VariantModel, Variant>();
+        CreateMap<AttributeValuePairModel, ProductAttributeValue>()
+            .ForMember(dest => dest.Attribute, opt => opt.Ignore());
+        CreateMap<ProductImageModel, Image>();
 
         // review mappings
         CreateMap<Review, ReviewVM>()

@@ -9,7 +9,7 @@ namespace HongPet.SharedViewModels.ViewModels
         public Guid Id { get; set; }
         public IEnumerable<AttributeValueVM> AttributeValues { get; set; }
             = new List<AttributeValueVM>();
-        public double Price { get; set; }
+        public decimal Price { get; set; }
         public int Stock { get; set; }
         public bool IsActive { get; set; }
     }

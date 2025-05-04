@@ -40,28 +40,6 @@ public class ProductService : GenericService<Product>, IProductService
         return _mapper.Map<ProductDetailVM>(product);
     }
 
-    public async Task<ProductDetailVM> AddProductAsync(ProductModel productModel)
-    {
-        var product = _mapper.Map<Product>(productModel);
-
-        await base.AddAsync(product);
-        return _mapper.Map<ProductDetailVM>(product);
-    }
-
-    public async Task<ProductDetailVM> UpdateProductAsync(Guid id, ProductModel productModel)
-    {
-        var product = await _productRepository.GetByIdAsync(id);
-        if (product == null || product.DeletedDate != null)
-        {
-            throw new KeyNotFoundException(
-                $"Product with id {id} not found or has been deleted.");
-        }
-
-        _mapper.Map(productModel, product);
-        await base.UpdateAsync(product);
-        return _mapper.Map<ProductDetailVM>(product);
-    }
-
     public async Task SoftDeleteProductAsync(Guid id)
     {
         var product = await _productRepository.GetByIdAsync(id);
@@ -73,4 +51,152 @@ public class ProductService : GenericService<Product>, IProductService
 
         await base.SoftDeleteAsync(id);
     }
+
+    #region old add & update methods
+    //public async Task<ProductDetailVM> AddProductAsync(ProductModel productModel)
+    //{
+    //    var product = _mapper.Map<Product>(productModel);
+
+    //    await base.AddAsync(product);
+    //    return _mapper.Map<ProductDetailVM>(product);
+    //}
+
+    //public async Task<ProductDetailVM> UpdateProductAsync(Guid id, ProductModel productModel)
+    //{
+    //    var product = await _productRepository.GetByIdAsync(id);
+    //    if (product == null || product.DeletedDate != null)
+    //    {
+    //        throw new KeyNotFoundException(
+    //            $"Product with id {id} not found or has been deleted.");
+    //    }
+
+    //    _mapper.Map(productModel, product);
+    //    await base.UpdateAsync(product);
+    //    return _mapper.Map<ProductDetailVM>(product);
+    //}
+
+    #endregion
+
+    //********************************************************
+
+    public async Task<Guid> AddProductAsync(ProductModel productModel)
+    {
+        var product = _mapper.Map<Product>(productModel);
+
+        // Process categories
+        product.Categories = await ProcessCategoriesAsync(productModel.Categories);
+
+        // Process variants
+        product.Variants = await ProcessVariantsAsync(productModel.Variants);
+
+        // Process images
+        ProcessImages(product.Images, product.Id);
+
+        // Calculate price
+        product.Price = CalculatePrice(product.Variants);
+
+        await base.AddAsync(product);
+
+        return product.Id;
+    }
+
+
+    public async Task<ProductDetailVM> UpdateProductAsync(Guid id, ProductModel productModel)
+    {
+        var product = await _productRepository.GetProductDetailAsync(id);
+        if (product == null || product.DeletedDate != null)
+        {
+            throw new KeyNotFoundException(
+                $"Product with id {id} not found or has been deleted.");
+        }
+
+        // Update basic information
+        _mapper.Map(productModel, product);
+
+        // Process categories
+        product.Categories = await ProcessCategoriesAsync(productModel.Categories);
+
+        // Process variants attribute
+        product.Variants = await ProcessVariantsAsync(productModel.Variants);
+
+        // Process images
+        ProcessImages(product.Images, product.Id);
+
+        // Calculate price
+        product.Price = CalculatePrice(product.Variants);
+
+        await base.UpdateAsync(product);
+
+        return _mapper.Map<ProductDetailVM>(product);
+    }
+
+
+    #region private methods
+    private async Task<List<Category>> ProcessCategoriesAsync(IEnumerable<CategoryModel> categoryModels)
+    {
+        var categoriesList = new List<Category>();
+        foreach (var categoryModel in categoryModels)
+        {
+            var category = await _unitOfWork.CategoryRepository.GetByIdAsync(categoryModel.Id);
+            if (category == null)
+            {
+                throw new KeyNotFoundException($"Category with id {categoryModel.Id} not found.");
+            }
+            categoriesList.Add(category);
+        }
+        return categoriesList;
+    }
+
+    private async Task<List<Variant>> ProcessVariantsAsync(IEnumerable<VariantModel> variantModels)
+    {
+        var variantsList = new List<Variant>();
+        foreach (var variantModel in variantModels)
+        {
+            var attributeValuesList = new List<ProductAttributeValue>();
+            foreach (var attributeValueModel in variantModel.Attributes)
+            {
+                var attributeValue = await _productRepository.GetAttributeValuePairAsync(
+                    attributeValueModel.Name, attributeValueModel.Value);
+
+                if (attributeValue == null)
+                {
+                    var attribute = await _productRepository.GetAttributeByNameAsync(attributeValueModel.Name) ?? new ProductAttribute
+                    {
+                        Name = attributeValueModel.Name
+                    };
+                    attributeValue = new ProductAttributeValue
+                    {
+                        AttributeId = attribute.Id,
+                        Attribute = attribute,
+                        Value = attributeValueModel.Value
+                    };
+                }
+                attributeValuesList.Add(attributeValue);
+            }
+            variantsList.Add(new Variant
+            {
+                Price = variantModel.Price,
+                Stock = variantModel.Stock,
+                IsActive = variantModel.IsActive,
+                AttributeValues = attributeValuesList
+            });
+        }
+        return variantsList;
+    }
+
+    private void ProcessImages(IEnumerable<Image> imageModels, Guid productId)
+    {
+        foreach (var image in imageModels)
+        {
+            image.ProductId = productId;
+        }
+    }
+
+    private decimal CalculatePrice(IEnumerable<Variant> variants)
+    {
+        return variants.Any() ? variants.Min(v => v.Price) : 0;
+    }
+
+    #endregion
+
 }

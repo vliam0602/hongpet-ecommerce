@@ -7,7 +7,7 @@ namespace HongPet.SharedViewModels.ViewModels
     public class ProductGeneralVM : BaseVM
     {
         public string Name { get; set; } = default!;
-        public double Price { get; set; }
+        public decimal Price { get; set; }
         public string? ThumbnailUrl { get; set; }
         public int TotalVariants { get; set; } = 0;
         public bool IsActive { get; set; }

@@ -9,7 +9,7 @@ namespace HongPet.SharedViewModels.ViewModels
         public string Name { get; set; } = default!;
         public int CountOfReviews { get; set; } = 0; // num of reviews
         public int AverageStars { get; set; } = 0; // avg of stars
-        public double Price { get; set; }
+        public decimal Price { get; set; }
         public string? Brief { get; set; }       
         public string? Description { get; set; }
         public string? ThumbnailUrl { get; set; }

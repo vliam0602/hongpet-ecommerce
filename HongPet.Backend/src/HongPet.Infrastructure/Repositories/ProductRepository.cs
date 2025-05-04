@@ -63,4 +63,20 @@ public class ProductRepository : GenericRepository<Product>, IProductRepository
 
         return await base.ToPaginationAsync(products, pageIndex, pageSize, keyword);
     }
+
+    public async Task<ProductAttributeValue?> GetAttributeValuePairAsync
+        (string attributeName, string attributeValue)
+    {
+        return await _context.ProductAttributeValues
+            .Include(x => x.Attribute)
+            .FirstOrDefaultAsync(x => 
+                x.Attribute.Name == attributeName 
+                && x.Value == attributeValue);
+    }
+
+    public async Task<ProductAttribute?> GetAttributeByNameAsync(string attributeName)
+    {
+        return await _context.ProductAttributes
+            .FirstOrDefaultAsync(x => x.Name == attributeName);
+    }
 }
