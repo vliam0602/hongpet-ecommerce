@@ -97,11 +97,18 @@ public class ProductsController(
     {
         try
         {
-            var productVM = await _productService.AddProductAsync(productModel);
-            return CreatedAtAction(nameof(AddProduct), new {Id = productVM.Id},new ApiResponse
+            var productCreatdId = await _productService.AddProductAsync(productModel);
+            return CreatedAtAction(nameof(AddProduct), new {Id = productCreatdId },new ApiResponse
             {
                 Message = "Product added successfully.",
-                Data = productVM
+                Data = new { Id = productCreatdId }
+            });
+        } catch (KeyNotFoundException ex)
+        {
+            return BadRequest(new ApiResponse
+            {
+                IsSuccess = false,
+                ErrorMessage = ex.Message
             });
         } catch (Exception ex)
         {
