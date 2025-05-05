@@ -334,7 +334,7 @@ function EditProduct() {
           stock: parseInt(variant.stock),
           thumbnailUrl: variant.thumbnailUrl,
           isActive: variant.isActive,
-          attributes: variant.attributes
+          attributeValues: variant.attributes
         })),
         images: productData.images.map(image => ({
           name: image.name,
