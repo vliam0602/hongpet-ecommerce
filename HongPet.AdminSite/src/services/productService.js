@@ -12,8 +12,7 @@ const productService = {
     try {
       const params = { pageIndex, pageSize, keyword };      
       
-      // Đường dẫn API đúng theo controller là '/api/Products' (chữ P viết hoa)
-      const response = await apiClient.get('/api/Products', { params });
+      const response = await apiClient.get('/api/products', { params });
       return response.data.data;
       
     } catch (error) {
@@ -83,7 +82,22 @@ const productService = {
       console.error(`Error deleting product with ID ${id}:`, error);
       throw error;
     }
+  },
+
+  /**
+   * Fetch all available product attributes
+   * @returns {Promise} - List of all attributes
+   */
+  getAllAttributes: async () => {
+    try {
+      const response = await apiClient.get('/api/products/attributes');
+      return response.data.data;
+    } catch (error) {
+      console.error('Error fetching attributes:', error);
+      throw error;
+    }
   }
+  
 };
 
 export default productService;

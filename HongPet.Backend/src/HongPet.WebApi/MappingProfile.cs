@@ -36,6 +36,7 @@ public class MappingProfile : Profile
         CreateMap<AttributeValuePairModel, ProductAttributeValue>()
             .ForMember(dest => dest.Attribute, opt => opt.Ignore());
         CreateMap<ProductImageModel, Image>();
+        CreateMap<ProductAttribute, AttributeVM>();
 
         // review mappings
         CreateMap<Review, ReviewVM>()

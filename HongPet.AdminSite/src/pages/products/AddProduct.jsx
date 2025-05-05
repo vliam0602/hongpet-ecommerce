@@ -1,42 +1,26 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { ArrowLeft, ArrowRight, Check, Upload, Plus, X, ChevronDown } from 'lucide-react'
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Image from '@tiptap/extension-image'
 import { Link as TiptapLink } from '@tiptap/extension-link'
-
-// Mock data for categories
-const mockCategories = [
-  { id: '1', name: 'Pet Food' },
-  { id: '2', name: 'Toys' },
-  { id: '3', name: 'Accessories' },
-  { id: '4', name: 'Grooming' },
-  { id: '5', name: 'Beds & Furniture' },
-  { id: '6', name: 'Cages & Carriers' },
-  { id: '7', name: 'Health & Wellness' },
-  { id: '8', name: 'Clothing' },
-  { id: '9', name: 'Training & Behavior' },
-  { id: '10', name: 'Books' },
-]
-
-// Mock data for attributes
-const mockAttributes = [
-  { id: '1', name: 'Size' },
-  { id: '2', name: 'Color' },
-  { id: '3', name: 'Material' },
-  { id: '4', name: 'Weight' },
-  { id: '5', name: 'Age Group' },
-]
+import categoryService from '../../services/categoryService'
+import productService from '../../services/productService'
+import { uploadSingleFile, uploadMultipleFiles, removeFileFromStorage } from '../../libs/supabaseStorage'
+import AppConstants from "../../constants/AppConstants"
 
 function AddProduct() {
   const navigate = useNavigate()
   const fileInputRef = useRef(null)
-  const variantFileInputRef = useRef(null)
   const imagesFileInputRef = useRef(null)
   
   const [currentStep, setCurrentStep] = useState(1)
   const [showAttributeDropdown, setShowAttributeDropdown] = useState(false)
+  const [categories, setCategories] = useState([])
+  const [attributes, setAttributes] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState(null)
   
   // General product information
   const [productData, setProductData] = useState({
@@ -48,7 +32,7 @@ function AddProduct() {
     categories: [],
     variants: [
       {
-        id: 1,
+        id: Date.now(),
         price: '',
         stock: '',
         thumbnailUrl: null,
@@ -58,6 +42,32 @@ function AddProduct() {
     ],
     images: []
   })
+  
+  // Fetch categories and attributes when component mounts
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true)
+        
+        // Fetch categories and attributes in parallel
+        const [categoriesResponse, attributesResponse] = await Promise.all([
+          categoryService.getAllCategories(),
+          productService.getAllAttributes()
+        ])
+        
+        setCategories(categoriesResponse || [])
+        setAttributes(attributesResponse || [])
+        
+      } catch (error) {
+        console.error('Error fetching data:', error)
+        setError('Failed to load categories or attributes. Please try again.')
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    
+    fetchData()
+  }, [])
   
   // TipTap editor for rich text description
   const editor = useEditor({
@@ -81,74 +91,75 @@ function AddProduct() {
     { id: 3, name: 'Variants' },
     { id: 4, name: 'Images' }
   ]
-  
-  const handleProductThumbnailUpload = (e) => {
+    
+  // image handling
+  const BUCKET = AppConstants.SUPABASE.BUCKET;
+  const handleProductThumbnailUpload = async (e) => {
     const file = e.target.files[0]
-    if (file) {
-      // In a real app, you would upload this to a server
-      // For now, we'll just create a local URL
-      const imageUrl = URL.createObjectURL(file)
+    if (!file) return
+  
+    try {
+      setIsLoading(true)
+  
+      const { publicUrl } = await uploadSingleFile(BUCKET, 'products/thumbnails', file)
+  
       setProductData(prev => ({
         ...prev,
-        thumbnailUrl: imageUrl
+        thumbnailUrl: publicUrl
       }))
+    } catch (error) {
+      console.error('Error uploading thumbnail:', error)
+      alert('Failed to upload thumbnail image')
+    } finally {
+      setIsLoading(false)
     }
   }
   
-  const handleVariantThumbnailUpload = (e, variantIndex) => {
-    const file = e.target.files[0]
-    if (file) {
-      const imageUrl = URL.createObjectURL(file)
-      setProductData(prev => {
-        const updatedVariants = [...prev.variants]
-        updatedVariants[variantIndex].thumbnailUrl = imageUrl
-        return {
-          ...prev,
-          variants: updatedVariants
-        }
-      })
-    }
-  }
-  
-  const handleProductImagesUpload = (e) => {
+  const handleProductImagesUpload = async (e) => {
     const files = Array.from(e.target.files)
-    if (files.length > 0) {
-      const newImages = files.map(file => ({
-        id: Date.now() + Math.random().toString(36).substr(2, 9),
-        name: file.name,
-        imageUrl: URL.createObjectURL(file)
-      }))
-      
+    if (files.length === 0) return
+  
+    try {
+      setIsLoading(true)
+  
+      const newImages = await uploadMultipleFiles(BUCKET, 'products/images', files)
+  
       setProductData(prev => ({
         ...prev,
         images: [...prev.images, ...newImages]
       }))
+    } catch (error) {
+      console.error('Error uploading images:', error)
+      alert('Failed to upload one or more images')
+    } finally {
+      setIsLoading(false)
     }
   }
   
-  const toggleCategory = (categoryId) => {
-    setProductData(prev => {
-      if (prev.categories.includes(categoryId)) {
-        return {
-          ...prev,
-          categories: prev.categories.filter(id => id !== categoryId)
-        }
-      } else {
-        return {
-          ...prev,
-          categories: [...prev.categories, categoryId]
-        }
-      }
-    })
-  }
+  const removeImage = async (imageId) => {
+    const imageToRemove = productData.images.find(img => img.id === imageId)
+    if (!imageToRemove) return
   
+    try {
+      await removeFileFromStorage(BUCKET, imageToRemove.storagePath)
+    } catch (error) {
+      console.error('Error removing image from storage:', error)
+    }
+  
+    setProductData(prev => ({
+      ...prev,
+      images: prev.images.filter(img => img.id !== imageId)
+    }))
+  }
+    
+  // variants handling
   const addVariant = () => {
     setProductData(prev => ({
       ...prev,
       variants: [
         ...prev.variants,
         {
-          id: prev.variants.length + 1,
+          id: Date.now(),
           price: '',
           stock: '',
           thumbnailUrl: null,
@@ -211,15 +222,25 @@ function AddProduct() {
         variants: updatedVariants
       }
     })
+  }    
+
+  // actions
+  const toggleCategory = (categoryId) => {
+    setProductData(prev => {
+      if (prev.categories.includes(categoryId)) {
+        return {
+          ...prev,
+          categories: prev.categories.filter(id => id !== categoryId)
+        }
+      } else {
+        return {
+          ...prev,
+          categories: [...prev.categories, categoryId]
+        }
+      }
+    })
   }
-  
-  const removeImage = (imageId) => {
-    setProductData(prev => ({
-      ...prev,
-      images: prev.images.filter(image => image.id !== imageId)
-    }))
-  }
-  
+
   const handleNext = () => {
     if (currentStep < steps.length) {
       setCurrentStep(currentStep + 1)
@@ -234,13 +255,92 @@ function AddProduct() {
     }
   }
   
-  const handleSubmit = () => {
-    // In a real app, you would send this data to your API
-    console.log('Submitting product data:', productData)
-    
-    // Navigate back to products page
-    alert('Product added successfully!')
-    navigate('/products')
+  const handleSubmit = async () => {
+    try {
+      // Basic validation
+      if (!productData.name.trim()) {
+        alert('Product name is required')
+        setCurrentStep(1)
+        return
+      }
+      
+      if (productData.categories.length === 0) {
+        alert('Please select at least one category')
+        setCurrentStep(2)
+        return
+      }
+      
+      if (productData.variants.some(variant => !variant.price || !variant.stock)) {
+        alert('Please fill in all price and stock fields for variants')
+        setCurrentStep(3)
+        return
+      }
+      
+      setIsLoading(true)
+      
+      // Format data for API
+      const formattedProductData = {
+        name: productData.name,
+        brief: productData.brief,
+        description: productData.description,
+        isActive: productData.isActive,
+        thumbnailUrl: productData.thumbnailUrl,
+        categoryIds: productData.categories,
+        variants: productData.variants.map(variant => ({
+          price: parseFloat(variant.price),
+          stock: parseInt(variant.stock),
+          thumbnailUrl: variant.thumbnailUrl,
+          isActive: variant.isActive,
+          attributes: variant.attributes
+        })),
+        images: productData.images.map(image => ({
+          name: image.name,
+          imageUrl: image.imageUrl
+        }))
+      }
+      
+      // Send data to API
+      await productService.addProduct(formattedProductData)
+      
+      // Navigate back to products page
+      alert('Product added successfully!')
+      navigate('/products')
+      
+    } catch (error) {
+      console.error('Error submitting product:', error)
+      alert(`Failed to add product: ${error.message || 'Unknown error'}`)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+  
+  // Show loading spinner when fetching initial data
+  if (isLoading && currentStep === 1 && (!categories.length || !attributes.length)) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+          <p>Loading...</p>
+        </div>
+      </div>
+    )
+  }
+  
+  // Show error message if data fetching failed
+  if (error && currentStep === 1 && (!categories.length || !attributes.length)) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="text-center text-red-500">
+          <p>{error}</p>
+          <button 
+            className="btn btn-primary mt-4" 
+            onClick={() => window.location.reload()}
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    )
   }
   
   return (
@@ -452,7 +552,7 @@ function AddProduct() {
             )}
             
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {mockCategories.map((category) => (
+              {categories.map((category) => (
                 <div key={category.id} className="flex items-center">
                   <input
                     type="checkbox"
@@ -494,10 +594,10 @@ function AddProduct() {
                       <X size={18} />
                     </button>
                   )}
-                </div>
-                
+                </div>                
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-4">
+                    {/* Variant input (price & stock) */}
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <label htmlFor={`price-${variant.id}`} className="block mb-1 font-medium">
@@ -541,7 +641,7 @@ function AddProduct() {
                     
                     <div>
                       <label className="block mb-1 font-medium">Attributes</label>
-                      
+                      {/* Input attribute value */}
                       {variant.attributes.map((attr, attrIndex) => (
                         <div key={attrIndex} className="flex items-center gap-2 mb-2">
                           <div className="bg-gray-100 px-2 py-1 rounded text-sm">
@@ -562,7 +662,7 @@ function AddProduct() {
                           </button>
                         </div>
                       ))}
-                      
+                      {/* Add new attribute input */}
                       <div className="relative">
                         <button
                           className="btn btn-dark flex items-center gap-2 mt-2"
@@ -575,7 +675,8 @@ function AddProduct() {
                         
                         {showAttributeDropdown && (
                           <div className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-lg">
-                            {mockAttributes.map((attr) => (
+                            {/* Load existed attributes for suggestion */}
+                            {attributes.map((attr) => (
                               <button
                                 key={attr.id}
                                 className="block w-full text-left px-4 py-2 hover:bg-gray-100"
@@ -584,6 +685,7 @@ function AddProduct() {
                                 {attr.name}
                               </button>
                             ))}
+                            {/* or create new attribute*/}
                             <div className="border-t border-gray-200 px-4 py-2">
                               <input
                                 type="text"
@@ -600,49 +702,6 @@ function AddProduct() {
                           </div>
                         )}
                       </div>
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <label className="block mb-1 font-medium">
-                      Variant Thumbnail
-                    </label>
-                    <div className="border border-dashed border-gray-300 rounded-lg p-4 text-center">
-                      {variant.thumbnailUrl ? (
-                        <div className="relative">
-                          <img 
-                            src={variant.thumbnailUrl || "/placeholder.svg"} 
-                            alt="Variant thumbnail" 
-                            className="mx-auto h-40 object-contain"
-                          />
-                          <button 
-                            className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1"
-                            onClick={() => {
-                              const updatedVariants = [...productData.variants]
-                              updatedVariants[variantIndex].thumbnailUrl = null
-                              setProductData({...productData, variants: updatedVariants})
-                            }}
-                          >
-                            <X size={16} />
-                          </button>
-                        </div>
-                      ) : (
-                        <div 
-                          className="flex flex-col items-center justify-center h-40 cursor-pointer"
-                          onClick={() => variantFileInputRef.current.click()}
-                        >
-                          <Upload className="text-gray-400 mb-2" size={24} />
-                          <p className="text-sm text-gray-500">Upload Thumbnail</p>
-                          <p className="text-xs text-gray-400 mt-1">Click to browse</p>
-                          <input
-                            type="file"
-                            ref={variantFileInputRef}
-                            className="hidden"
-                            accept="image/*"
-                            onChange={(e) => handleVariantThumbnailUpload(e, variantIndex)}
-                          />
-                        </div>
-                      )}
                     </div>
                   </div>
                 </div>
@@ -709,7 +768,8 @@ function AddProduct() {
         
         {/* Navigation Buttons */}
         <div className="flex justify-between mt-8">
-          <button 
+          {currentStep > 1 && (
+            <button 
             className="btn btn-dark flex items-center gap-2"
             onClick={handlePrevious}
             disabled={currentStep === 1}
@@ -717,13 +777,24 @@ function AddProduct() {
             <ArrowLeft size={18} />
             Previous
           </button>
+          )}          
           
           <button 
-            className="btn btn-primary flex items-center gap-2"
+            className={`btn btn-primary flex items-center gap-2 ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
             onClick={handleNext}
+            disabled={isLoading}
           >
-            {currentStep === steps.length ? 'Save Product' : 'Next'}
-            {currentStep !== steps.length && <ArrowRight size={18} />}
+            {isLoading ? (
+              <>
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                {currentStep === steps.length ? 'Saving...' : 'Processing...'}
+              </>
+            ) : (
+              <>
+                {currentStep === steps.length ? 'Save Product' : 'Next'}
+                {currentStep !== steps.length && <ArrowRight size={18} />}
+              </>
+            )}
           </button>
         </div>
       </div>
