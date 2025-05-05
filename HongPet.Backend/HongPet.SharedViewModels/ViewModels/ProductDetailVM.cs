@@ -20,6 +20,8 @@ namespace HongPet.SharedViewModels.ViewModels
             = new List<ImageVM>();
         public virtual IEnumerable<ReviewGeneralVM> Reviews { get; set; } 
             = new List<ReviewGeneralVM>();
+        public virtual IEnumerable<CategoryVM> Categories { get; set; }
+            = new List<CategoryVM>();
 
     }
 }

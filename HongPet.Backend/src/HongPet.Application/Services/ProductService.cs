@@ -12,6 +12,7 @@ namespace HongPet.Application.Services;
 public class ProductService : GenericService<Product>, IProductService
 {
     private readonly IProductRepository _productRepository;
+    private readonly IGenericRepository<ProductAttribute> _attributeRepository;
     private readonly IMapper _mapper;
 
     public ProductService(IUnitOfWork unitOfWork,
@@ -21,6 +22,7 @@ public class ProductService : GenericService<Product>, IProductService
         _productRepository = unitOfWork.ProductRepository;
         _repository = _productRepository; // for reuse the GenericService
         _mapper = mapper;
+        _attributeRepository = unitOfWork.Repository<ProductAttribute>();
     }
 
     public async Task<IPagedList<ProductGeneralVM>> GetPagedProductAsync
@@ -50,34 +52,7 @@ public class ProductService : GenericService<Product>, IProductService
         }
 
         await base.SoftDeleteAsync(id);
-    }
-
-    #region old add & update methods
-    //public async Task<ProductDetailVM> AddProductAsync(ProductModel productModel)
-    //{
-    //    var product = _mapper.Map<Product>(productModel);
-
-    //    await base.AddAsync(product);
-    //    return _mapper.Map<ProductDetailVM>(product);
-    //}
-
-    //public async Task<ProductDetailVM> UpdateProductAsync(Guid id, ProductModel productModel)
-    //{
-    //    var product = await _productRepository.GetByIdAsync(id);
-    //    if (product == null || product.DeletedDate != null)
-    //    {
-    //        throw new KeyNotFoundException(
-    //            $"Product with id {id} not found or has been deleted.");
-    //    }
-
-    //    _mapper.Map(productModel, product);
-    //    await base.UpdateAsync(product);
-    //    return _mapper.Map<ProductDetailVM>(product);
-    //}
-
-    #endregion
-
-    //********************************************************
+    }    
 
     public async Task<Guid> AddProductAsync(ProductModel productModel)
     {
@@ -130,6 +105,11 @@ public class ProductService : GenericService<Product>, IProductService
         return _mapper.Map<ProductDetailVM>(product);
     }
 
+    public async Task<List<AttributeVM>> GetAllAttributes()
+    {
+        var attributes = await _attributeRepository.GetAllAsync();
+        return _mapper.Map<List<AttributeVM>>(attributes);
+    }
 
     #region private methods
     private async Task<List<Category>> ProcessCategoriesAsync(IEnumerable<CategoryModel> categoryModels)

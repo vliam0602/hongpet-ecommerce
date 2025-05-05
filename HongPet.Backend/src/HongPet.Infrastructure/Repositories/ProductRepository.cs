@@ -26,6 +26,8 @@ public class ProductRepository : GenericRepository<Product>, IProductRepository
         
         var query = _dbSet
             .Include(x => x.Variants)
+            .Include(x => x.Categories)
+            .Where(x => x.DeletedDate == null)
             .AsQueryable();
         if (!string.IsNullOrEmpty(keyword))
         {
@@ -48,6 +50,7 @@ public class ProductRepository : GenericRepository<Product>, IProductRepository
     {
         return await _dbSet
             .Include(x => x.Reviews)
+            .Include(x => x.Categories)
             .Include(x => x.Variants)
                 .ThenInclude(x => x.AttributeValues)
                     .ThenInclude(x => x.Attribute)

@@ -180,4 +180,26 @@ public class ProductsController(
             });
         }
     }
+
+    [HttpGet("attributes")]
+    public async Task<ActionResult<List<AttributeVM>>> GetAllAttributes()
+    {
+        try
+        {
+            var attributes = await _productService.GetAllAttributes();
+            return Ok(new ApiResponse
+            {
+                IsSuccess = true,
+                Data = attributes
+            });
+        } catch (Exception ex)
+        {
+            _logger.LogError(ex, "**Unexpected error** Error occurred while getting all attributes.");
+            return StatusCode(500, new ApiResponse
+            {
+                IsSuccess = false,
+                ErrorMessage = $"Unexpected error: Error occurred while getting all attributes. Details: {ex.Message}"
+            });
+        }
+    }
 }

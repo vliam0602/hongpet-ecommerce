@@ -14,7 +14,7 @@ public class ProductConfig : IEntityTypeConfiguration<Product>
         builder.Property(x => x.LastModificatedDate).HasDefaultValueSql("getutcdate()");
 
         // add global query filter
-        builder.HasQueryFilter(x => x.DeletedDate == null);
+        //builder.HasQueryFilter(x => x.DeletedDate == null);
 
         // add index in name column
         builder.HasIndex(x => x.Name);        
