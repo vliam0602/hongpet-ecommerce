@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { Routes, useLocation, useNavigate, Navigate, Route } from "react-router-dom";
 import Layout from "./components/Layout";
 import Login from "./pages/Login";
@@ -11,7 +11,6 @@ import Categories from "./pages/categories/Categories";
 import Customers from "./pages/customers/Customers";
 import Orders from "./pages/orders/Orders";
 import OrderDetail from "./pages/orders/OrderDetail";
-import AppConstants from './constants/AppConstants';
 import authService from "./services/authService";
 
 function App() {
@@ -19,20 +18,29 @@ function App() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  useEffect(() => {
-    //check if user is logged in
-    const storedUser = localStorage.getItem(AppConstants.STORAGE_KEYS.USER);
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    } else if (location.pathname !== '/login') {
-      navigate('/login');
-    }
-  }, []);
+    // Define handleLogin as useCallback to use in dependency array
+    const handleLogin = useCallback((userData) => {
+      setUser(userData);    
+      navigate('/');
+    }, [navigate]);
 
-  const handleLogin = (userData) => {
-    setUser(userData);    
-    navigate('/');
-  }
+    // Authentication check when app loads
+    useEffect(() => {
+      if (authService.isAuthenticated()) {
+        const userData = authService.getCurrentUser();
+        if (userData) {
+          // User is logged in with a valid token
+          setUser(userData);
+          // Only redirect to dashboard if on login page
+          if (location.pathname === '/login') {
+            navigate('/');
+          }
+        }
+      } else if (location.pathname !== '/login') {
+        // Not authenticated and not on login page, redirect to login
+        navigate('/login');
+      }
+    }, [navigate, location.pathname]);
 
   const handleLogout = () => {
     setUser(null);

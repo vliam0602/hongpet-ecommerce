@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using HongPet.Application.Commons;
 using HongPet.Application.Services.Abstractions;
 using HongPet.Application.Services.Commons;
 using HongPet.Domain.Entities;
@@ -91,9 +92,9 @@ public class OrderService : GenericService<Order>, IOrderService
 
         var order = _mapper.Map<Order>(orderModel);
 
-        order.CustomerId = customerId.Value;       
+        order.CustomerId = customerId.Value;
 
-        // validate the variantId
+        // validate the variantId & update the stock quantity
         foreach (var item in order.OrderItems)
         {
             var variant = await _variantRepository.GetByIdAsync(item.VariantId);
@@ -105,11 +106,15 @@ public class OrderService : GenericService<Order>, IOrderService
             item.Variant = variant;
             item.OrderId = order.Id;
 
+            // update the variant in stock quantity
+            variant.Stock -= item.Quantity;
+            _variantRepository.Update(variant);
+            
             // calculate the order total amount
             order.TotalAmount += item.Price * item.Quantity;
         }
 
-        // add the order to the db
+        // add the order to the db & save changes
         await base.AddAsync(order);
 
         return order;

@@ -490,53 +490,13 @@ function AddProduct() {
               <label htmlFor="description" className="block mb-1 font-medium">
                 Full Description
               </label>
-              <div className="border border-gray-300 rounded-lg overflow-hidden">
-                <div className="bg-gray-50 border-b border-gray-300 p-2 flex gap-2">
-                  <button
-                    onClick={() => editor?.chain().focus().toggleBold().run()}
-                    className={`p-1 rounded ${editor?.isActive('bold') ? 'bg-gray-200' : ''}`}
-                  >
-                    <span className="font-bold">B</span>
-                  </button>
-                  <button
-                    onClick={() => editor?.chain().focus().toggleItalic().run()}
-                    className={`p-1 rounded ${editor?.isActive('italic') ? 'bg-gray-200' : ''}`}
-                  >
-                    <span className="italic">I</span>
-                  </button>
-                  <button
-                    onClick={() => editor?.chain().focus().toggleUnderline().run()}
-                    className={`p-1 rounded ${editor?.isActive('underline') ? 'bg-gray-200' : ''}`}
-                  >
-                    <span className="underline">U</span>
-                  </button>
-                  <button
-                    onClick={() => editor?.chain().focus().toggleHeading({ level: 1 }).run()}
-                    className={`p-1 rounded ${editor?.isActive('heading', { level: 1 }) ? 'bg-gray-200' : ''}`}
-                  >
-                    <span className="font-bold">H1</span>
-                  </button>
-                  <button
-                    onClick={() => editor?.chain().focus().toggleHeading({ level: 2 }).run()}
-                    className={`p-1 rounded ${editor?.isActive('heading', { level: 2 }) ? 'bg-gray-200' : ''}`}
-                  >
-                    <span className="font-bold">H2</span>
-                  </button>
-                  <button
-                    onClick={() => editor?.chain().focus().toggleBulletList().run()}
-                    className={`p-1 rounded ${editor?.isActive('bulletList') ? 'bg-gray-200' : ''}`}
-                  >
-                    <span>•</span>
-                  </button>
-                  <button
-                    onClick={() => editor?.chain().focus().toggleOrderedList().run()}
-                    className={`p-1 rounded ${editor?.isActive('orderedList') ? 'bg-gray-200' : ''}`}
-                  >
-                    <span>1.</span>
-                  </button>
-                </div>
-                <EditorContent editor={editor} className="p-4 min-h-[200px]" />
-              </div>
+              <textarea
+                id="description"
+                className="w-full min-h-[200px] p-4 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
+                placeholder="Enter product description"
+                value={productData.description}
+                onChange={(e) => setProductData({...productData, description: e.target.value})}
+              />
             </div>
           </div>
         )}

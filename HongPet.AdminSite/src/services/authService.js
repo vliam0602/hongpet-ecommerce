@@ -68,11 +68,30 @@ const authService = {
   },
   
   /**
-   * Check if user is authenticated
+   * Check if user is authenticated with a valid token
    * @returns {boolean}
    */
   isAuthenticated: () => {
-    return !!localStorage.getItem(AppConstants.STORAGE_KEYS.ACCESS_TOKEN);
+    const token = localStorage.getItem(AppConstants.STORAGE_KEYS.ACCESS_TOKEN);
+    if (!token) return false;
+    
+    try {
+      const decodedToken = jwtDecode(token);
+      
+      // Check if token has expired
+      const currentTime = Date.now() / 1000; // Convert to seconds
+      if (decodedToken.exp && decodedToken.exp < currentTime) {
+        // Token expired, clean up storage
+        authService.logout();
+        return false;
+      }
+      
+      return true;
+    } catch {
+      // If token can't be decoded, clean up and return false
+      authService.logout();
+      return false;
+    }
   }
 };
 

@@ -24,7 +24,7 @@
              id="description" 
              role="tabpanel" aria-labelledby="description-tab">
             <div class="product-description">
-                @Model.ProductDetail.Description
+                @Html.Raw(Model.ProductDetail.Description)
             </div>
         </div>
         <!-- specification tab -->
