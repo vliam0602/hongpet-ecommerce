@@ -41,7 +41,7 @@ public class CategoriesController(
     }
 
     [HttpGet("all")]
-    public async Task<ActionResult<CategoryVM>> GetAllCategories()
+    public async Task<ActionResult<List<Category>>> GetAllCategories()
     {
         try
         {

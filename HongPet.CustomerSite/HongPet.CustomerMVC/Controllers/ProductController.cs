@@ -8,24 +8,27 @@ public class ProductController(
     IProductApiService _productApiService) : Controller
 {
     public async Task<IActionResult> Index(int pageIndex = 1, int pageSize = 6, 
-        string searchString = "")
+        string searchString = "", List<string>? categories = null)
     {
         try
         {
             ViewData["searchString"] = searchString;
+            
+            var categoriesVM = await _productApiService.GetAllCategoriesAsync();
 
-            var products = (await _productApiService
+            var products = await _productApiService
                 .GetProductsAsync(new QueryListCriteria
                 {
                     PageIndex = pageIndex,
                     PageSize = pageSize,
                     Keyword = searchString
-                }));
+                }, categories);
 
             return View(new ProductListViewModel
             {
                 ProductPagedList = products,
-                SearchString = searchString
+                SearchString = searchString,
+                Categories = categoriesVM
             });
         } catch (Exception ex)
         {
@@ -54,5 +57,6 @@ public class ProductController(
             return RedirectToAction("Error", "Home", new { errMsg = ex.Message });
         }
     }
+
 
 }

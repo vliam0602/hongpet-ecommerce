@@ -12,12 +12,20 @@ public class ProductApiService(
     HttpClient _httpClient) : IProductApiService
 {
 
-    public async Task<PagedList<ProductGeneralVM>> GetProductsAsync(QueryListCriteria criteria)
+    public async Task<PagedList<ProductGeneralVM>> GetProductsAsync(
+        QueryListCriteria criteria,
+        List<string>? categories = null)
     {
         var url = $"api/products?" +
             $"pageIndex={criteria.PageIndex}" +
             $"&pageSize={criteria.PageSize}" +
             $"&keyword={criteria.Keyword}";
+
+        if (categories != null && categories.Any())
+        {
+            var categoryQuery = string.Join("&", categories.Select(c => $"category={c}"));
+            url += $"&{categoryQuery}";
+        }
 
         var (response, apiResponse) = 
             await HttpClientHelper.GetAsync(_httpClient, url);
@@ -100,4 +108,29 @@ public class ProductApiService(
         return reviews;
     }
 
+    public async Task<List<CategoryVM>> GetAllCategoriesAsync()
+    {
+        var url = $"api/categories/all";
+
+        var (response, apiResponse) =
+            await HttpClientHelper.GetAsync(_httpClient, url);
+
+        if (response.StatusCode == HttpStatusCode.InternalServerError ||
+                    !apiResponse.IsSuccess)
+        {
+            throw new Exception($"Server error: {apiResponse.ErrorMessage}");
+        }
+
+        var responseString = apiResponse?.Data?.ToString()!;
+
+        var categories = JsonConvert
+            .DeserializeObject<List<CategoryVM>>(responseString);
+
+        if (categories == null)
+        {
+            throw new HttpRequestException("Failed to parse response data.");
+        }
+
+        return categories;
+    }
 }

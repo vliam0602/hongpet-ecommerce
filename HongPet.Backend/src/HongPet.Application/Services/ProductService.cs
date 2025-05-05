@@ -26,9 +26,12 @@ public class ProductService : GenericService<Product>, IProductService
     }
 
     public async Task<IPagedList<ProductGeneralVM>> GetPagedProductAsync
-        (int pageIndex = 1, int pageSize = 10, string? keyword = "")
+        (int pageIndex = 1, int pageSize = 10, string? keyword = "",
+        List<string>? category = null)
     {
-        var pagedProducts = await base.GetPagedAsync(pageIndex, pageSize, keyword);
+        var pagedProducts = await _productRepository.GetPagedProductsAsync(
+            pageIndex, pageSize, keyword, category);
+
         return _mapper.Map<PagedList<ProductGeneralVM>>(pagedProducts);
     }
 

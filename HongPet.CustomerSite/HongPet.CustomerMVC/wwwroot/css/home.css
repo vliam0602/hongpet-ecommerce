@@ -1,0 +1,26 @@
+﻿/* shop by pet */
+.pet-category-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    transition: transform 0.3s ease;
+}
+
+    .pet-category-item:hover {
+        transform: translateY(-5px);
+    }
+
+/* for cart button */
+.wishlist-btn-simple {
+    background: transparent;
+    border: none;
+    color: var(--accent-orange);
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+    .wishlist-btn-simple:hover {
+        transform: scale(1.2);
+    }

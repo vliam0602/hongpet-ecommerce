@@ -7,8 +7,9 @@ namespace HongPet.CustomerMVC.Services.Abstraction;
 public interface IProductApiService
 {
     Task<PagedList<ProductGeneralVM>> GetProductsAsync(
-        QueryListCriteria criteria);
+        QueryListCriteria criteria, List<string>? categories = null);
     Task<ProductDetailVM?> GetProductByIdAsync(Guid id);
     Task<PagedList<ReviewVM>> GetProductReviewsAsync(
         Guid productId, int pageIndex, int pageSize);
+    Task<List<CategoryVM>> GetAllCategoriesAsync();
 }

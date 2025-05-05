@@ -20,8 +20,9 @@ public class ProductRepository : GenericRepository<Product>, IProductRepository
                         .ToListAsync();
     }
 
-    public override async Task<IPagedList<Product>> GetPagedAsync
-        (int pageIndex = 1, int pageSize = 10, string? keyword = "")
+    public async Task<IPagedList<Product>> GetPagedProductsAsync
+        (int pageIndex = 1, int pageSize = 10, string? keyword = "",
+        List<string>? category = null)
     {
         
         var query = _dbSet
@@ -29,6 +30,13 @@ public class ProductRepository : GenericRepository<Product>, IProductRepository
             .Include(x => x.Categories)
             .Where(x => x.DeletedDate == null)
             .AsQueryable();
+
+        if (category != null && category.Any())
+        {
+            query = query.Where(x => x.Categories
+                    .Any(c => category.Contains(c.Name)));
+        }
+
         if (!string.IsNullOrEmpty(keyword))
         {
             query = query.Where(x => x.Name.Contains(keyword)

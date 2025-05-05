@@ -18,138 +18,156 @@
     </div>
 </section>
 
-<!-- Cart Section -->
-<section class="cart-section py-5">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8 mb-4 mb-lg-0">
-                <div class="cart-container">
-                    <div class="cart-header">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h3 class="cart-title">Sản phẩm</h3>
-                            </div>
-                            <div class="col-md-2 text-center">
-                                <h3 class="cart-title">Giá</h3>
-                            </div>
-                            <div class="col-md-2 text-center">
-                                <h3 class="cart-title">Số lượng</h3>
-                            </div>
-                            <div class="col-md-2 text-end">
-                                <h3 class="cart-title">Thành tiền</h3>
+@if (!Model.Any())
+{
+    <div class="d-flex flex-column align-items-center justify-content-center py-5">
+        <div class="alert alert-warning text-center" role="alert">
+            Không có sản phẩm trong giỏ hàng.
+        </div>
+        <a asp-controller="Product" asp-action="Index" class="btn btn-primary mt-5">
+            <i class="bi bi-arrow-left"></i> Tiếp tục mua sắm
+        </a>
+    </div>
+
+} else
+{
+    <!-- Cart Section -->
+    <section class="cart-section py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mb-4 mb-lg-0">
+                    <div class="cart-container">
+                        <div class="cart-header">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h3 class="cart-title">Sản phẩm</h3>
+                                </div>
+                                <div class="col-md-2 text-center">
+                                    <h3 class="cart-title">Giá</h3>
+                                </div>
+                                <div class="col-md-2 text-center">
+                                    <h3 class="cart-title">Số lượng</h3>
+                                </div>
+                                <div class="col-md-2 text-end">
+                                    <h3 class="cart-title">Thành tiền</h3>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <!-- Cart Items -->
-                    <div class="cart-items">
-                        @foreach (var item in Model)
-                        {
-                            <div class="cart-item">
-                                <div class="row align-items-center">
-                                    <div class="col-md-6">
-                                        <div class="item-info">
-                                            <div class="item-image">
-                                                <img src="@item.ThumbnailImageUrl" alt="@item.ProductName">
+                        <!-- Cart Items -->
+                        <div class="cart-items">
+                            @foreach (var item in Model)
+                            {
+                                <div class="cart-item">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-6">
+                                            <div class="item-info">
+                                                <div class="item-image">
+                                                    <img src="@item.ThumbnailImageUrl" alt="@item.ProductName">
+                                                </div>
+                                                <div class="item-details">
+                                                    <h4 class="item-title">@item.ProductName</h4>
+                                                    <div class="item-variant">@item.VariantName</div>
+                                                    <a class="remove-item"
+                                                       asp-controller="Cart"
+                                                       asp-action="RemoveFromCart"
+                                                       asp-route-variantId="@item.VariantId">
+                                                        <i class="bi bi-trash"></i> Remove
+                                                    </a>
+                                                </div>
                                             </div>
-                                            <div class="item-details">
-                                                <h4 class="item-title">@item.ProductName</h4>
-                                                <div class="item-variant">@item.VariantName</div>
-                                                <a class="remove-item"
-                                                   asp-controller="Cart" 
-                                                    asp-action="RemoveFromCart"
-                                                    asp-route-variantId="@item.VariantId">
-                                                    <i class="bi bi-trash"></i> Remove
+                                        </div>
+                                        <div class="col-md-2 text-center">
+                                            <div class="item-price">
+                                                @item.Price.ToString("C",
+                                new System.Globalization.CultureInfo("vi-VN"))
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="quantity-selector">
+                                                <a class="quantity-btn minus btn"
+                                                   asp-controller="Cart"
+                                                   asp-action="DecreaseQuantity"
+                                                   asp-route-variantId="@item.VariantId">
+                                                    <i class="bi bi-dash"></i>
+                                                </a>
+                                                <input type="number" class="quantity-input"
+                                                       value="@item.Quantity" min="1" max="99" readonly>
+                                                <a class="quantity-btn plus btn"
+                                                   asp-controller="Cart"
+                                                   asp-action="IncreaseQuantity"
+                                                   asp-route-variantId="@item.VariantId">
+                                                    <i class="bi bi-plus"></i>
                                                 </a>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-2 text-center">
-                                        <div class="item-price">@item.Price.ToString("C",
-                                                    new System.Globalization.CultureInfo("vi-VN"))</div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="quantity-selector">
-                                            <a class="quantity-btn minus btn"
-                                                    asp-controller="Cart" 
-                                                    asp-action="DecreaseQuantity"
-                                                    asp-route-variantId="@item.VariantId">
-                                                <i class="bi bi-dash"></i>
-                                            </a>
-                                            <input type="number" class="quantity-input" 
-                                                   value="@item.Quantity" min="1" max="99" readonly>
-                                            <a class="quantity-btn plus btn"
-                                                    asp-controller="Cart" 
-                                                    asp-action="IncreaseQuantity"
-                                                    asp-route-variantId="@item.VariantId">
-                                                <i class="bi bi-plus"></i>
-                                            </a>
+                                        <div class="col-md-2 text-end">
+                                            <div class="item-subtotal">
+                                                @item.Subtotal.ToString("C",
+                             new System.Globalization.CultureInfo("vi-VN"))
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-2 text-end">
-                                        <div class="item-subtotal">@item.Subtotal.ToString("C",
-                                                    new System.Globalization.CultureInfo("vi-VN"))</div>
-                                    </div>
                                 </div>
-                            </div>
-                        }
-                    </div>
+                            }
+                        </div>
 
-                    <!-- Cart Actions -->
-                    <div class="cart-actions">
-                        <div class="row">
-                            <div class="col-md-4 text-md-start">
-                                <a asp-controller="Product" asp-action="Index"
-                                   class="btn btn-continue-shopping">
-                                    <i class="bi bi-arrow-left"></i> Tiếp tục mua sắm
-                                </a>
-                            </div>
-                            <div class="col-md-8 coupon-container text-md-end">
-                                <input type="text" class="form-control" placeholder="Coupon code">
-                                <button class="btn btn-apply-coupon">Xác nhận</button>
+                        <!-- Cart Actions -->
+                        <div class="cart-actions">
+                            <div class="row">
+                                <div class="col-md-4 text-md-start">
+                                    <a asp-controller="Product" asp-action="Index"
+                                       class="btn btn-continue-shopping">
+                                        <i class="bi bi-arrow-left"></i> Tiếp tục mua sắm
+                                    </a>
+                                </div>
+                                <div class="col-md-8 coupon-container text-md-end">
+                                    <input type="text" class="form-control" placeholder="Coupon code">
+                                    <button class="btn btn-apply-coupon">Xác nhận</button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Cart Summary -->
-            <div class="col-lg-4">
-                <div class="cart-summary">
-                    <h3 class="summary-title">Chi tiết đơn hàng</h3>
-                    <div class="summary-item">
-                        <span class="summary-label">Tổng tiền hàng: </span>
-                        <span class="summary-value">
-                            @Model.Sum(item => item.Subtotal).ToString("C", 
-                           new System.Globalization.CultureInfo("vi-VN"))
-                        </span>
-                    </div>
-                    <div class="summary-item">
-                        <span class="summary-label">Phí vận chuyển: </span>
-                        <span class="summary-value">Freeship</span>
-                    </div>
-                    <div class="summary-item">
-                        <span class="summary-label">Tổng cộng: </span>
-                        <span class="summary-value">
-                            @Model.Sum(item => item.Subtotal).ToString("C",
-                           new System.Globalization.CultureInfo("vi-VN"))
-                        </span>
-                    </div>
-                    <a asp-controller="Order" asp-action="Index"
-                       class="btn btn-checkout">
-                        Thanh toán <i class="bi bi-arrow-right"></i>
-                    </a>
+                <!-- Cart Summary -->
+                <div class="col-lg-4">
+                    <div class="cart-summary">
+                        <h3 class="summary-title">Chi tiết đơn hàng</h3>
+                        <div class="summary-item">
+                            <span class="summary-label">Tổng tiền hàng: </span>
+                            <span class="summary-value">
+                                @Model.Sum(item => item.Subtotal).ToString("C",
+                               new System.Globalization.CultureInfo("vi-VN"))
+                            </span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Phí vận chuyển: </span>
+                            <span class="summary-value">Freeship</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Tổng cộng: </span>
+                            <span class="summary-value">
+                                @Model.Sum(item => item.Subtotal).ToString("C",
+                               new System.Globalization.CultureInfo("vi-VN"))
+                            </span>
+                        </div>
+                        <a asp-controller="Order" asp-action="Index"
+                           class="btn btn-checkout">
+                            Thanh toán <i class="bi bi-arrow-right"></i>
+                        </a>
 
-                    <div class="secure-checkout">
-                        <i class="bi bi-shield-lock"></i> Thanh toán an toàn
+                        <div class="secure-checkout">
+                            <i class="bi bi-shield-lock"></i> Thanh toán an toàn
+                        </div>
+                        <div class="payment-methods">
+                            <span class="payment-icon"><i class="bi bi-credit-card"></i></span>
+                            <span class="payment-icon"><i class="bi bi-paypal"></i></span>
+                            <span class="payment-icon"><i class="bi bi-wallet2"></i></span>
+                            <span class="payment-icon"><i class="bi bi-bank"></i></span>
+                        </div>
                     </div>
-                    <div class="payment-methods">
-                        <span class="payment-icon"><i class="bi bi-credit-card"></i></span>
-                        <span class="payment-icon"><i class="bi bi-paypal"></i></span>
-                        <span class="payment-icon"><i class="bi bi-wallet2"></i></span>
-                        <span class="payment-icon"><i class="bi bi-bank"></i></span>
-                    </div>
-                </div>                
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
+}

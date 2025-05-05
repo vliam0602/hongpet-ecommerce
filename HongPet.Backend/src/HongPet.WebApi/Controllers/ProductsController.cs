@@ -15,12 +15,12 @@ public class ProductsController(
 {
     [HttpGet]
     public async Task<ActionResult<PagedList<ProductGeneralVM>>> GetProducts(
-        [FromQuery] QueryListCriteria criteria)
+        [FromQuery] QueryListCriteria criteria, [FromQuery] List<string>? category = null)
     {
         try
         {
             var products = await _productService.GetPagedProductAsync(
-                    criteria.PageIndex, criteria.PageSize, criteria.Keyword);
+                    criteria.PageIndex, criteria.PageSize, criteria.Keyword, category);
 
             return Ok(new ApiResponse
             {

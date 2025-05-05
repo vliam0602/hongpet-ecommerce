@@ -8,4 +8,5 @@ public class ProductListViewModel
     public PagedList<ProductGeneralVM> ProductPagedList { get; set; } 
         = new PagedList<ProductGeneralVM>();
     public string? SearchString { get; set; }
+    public List<CategoryVM> Categories { get; set; } = new List<CategoryVM>();
 }
