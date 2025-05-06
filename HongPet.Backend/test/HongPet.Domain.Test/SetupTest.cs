@@ -5,6 +5,7 @@ using HongPet.Application.Commons;
 using HongPet.Domain.Entities;
 using HongPet.Domain.Repositories.Abstractions;
 using HongPet.Infrastructure.Database;
+using HongPet.Infrastructure.DTOs;
 using HongPet.WebApi;
 using Microsoft.EntityFrameworkCore;
 using Moq;
@@ -38,6 +39,7 @@ public class SetupTest
         var mappingConfig = new MapperConfiguration(mc =>
         {
             mc.AddProfile(new MappingProfile());
+            mc.AddProfile(new MappingDto());
         });
         _mapper = mappingConfig.CreateMapper();
     }
@@ -47,6 +49,14 @@ public class SetupTest
                        .Without(u => u.Orders)   
                        .Without(u => u.Reviews)   
                        .CreateMany(count)                       
+                       .ToList();
+    }
+
+    protected List<OrderDto> OrderDtosMockData(int count)
+    {
+        return _fixture.Build<OrderDto>()
+                       .Without(x => x.OrderItems)
+                       .CreateMany(count)
                        .ToList();
     }
 }

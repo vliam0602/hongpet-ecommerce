@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\HongPet.SharedViewModels\HongPet.SharedViewModels.csproj" />
     <ProjectReference Include="..\..\src\HongPet.Application\HongPet.Application.csproj" />
     <ProjectReference Include="..\..\src\HongPet.Domain\HongPet.Domain.csproj" />
     <ProjectReference Include="..\..\src\HongPet.Infrastructure\HongPet.Infrastructure.csproj" />
