@@ -68,8 +68,14 @@ public class MappingProfile : Profile
         CreateMap<AttributeValueDto, AttributeValueVM>();        
 
         // user mappings
-        CreateMap<User, UserVM>();
+        CreateMap<User, UserVM>()
+            .ForMember(model => model.TotalOrders,
+                opt => opt.MapFrom(x => x.Orders.Count()))
+            .ForMember(model => model.TotalSpend,
+                opt => opt.MapFrom(x => x.Orders.Sum(o => o.TotalAmount)));
+
         CreateMap<UserDto, UserVM>();
+
         CreateMap<UserUpdateModel, User>();
 
         // category mappings

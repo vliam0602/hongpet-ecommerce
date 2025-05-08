@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using HongPet.Application.Commons;
 using HongPet.Application.Services.Abstractions;
 using HongPet.Application.Services.Commons;
 using HongPet.Domain.Entities;
@@ -87,7 +86,7 @@ public class OrderService : GenericService<Order>, IOrderService
         var customerId = _claimService.GetCurrentUserId;
         if (customerId == null)
         {
-            throw new ArgumentException("Customer id is not found.");
+            throw new ArgumentException("You must login to make order.");
         }
 
         var order = _mapper.Map<Order>(orderModel);
