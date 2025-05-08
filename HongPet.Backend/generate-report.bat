@@ -13,6 +13,7 @@ set REPORT_DIR=%BASE_DIR%TestResults\coverage-report
 REM Kiểm tra nếu file coverage.xml tồn tại
 if not exist "%COVERAGE_XML%" (
     echo File coverage.coveragexml not found!
+    pause
     exit /b 1
 )
 

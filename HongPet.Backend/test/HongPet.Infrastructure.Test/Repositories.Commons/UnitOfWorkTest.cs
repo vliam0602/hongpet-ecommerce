@@ -1,59 +1,79 @@
-﻿//// Comment this test because 
-//// The logic of UnitOfWork is on-going
-//using HongPet.Domain.Entities;
-//using HongPet.Domain.Test;
-//using HongPet.Infrastructure.Database;
-//using HongPet.Infrastructure.Repositories.Commons;
-//using Microsoft.EntityFrameworkCore;
+﻿using HongPet.Domain.Entities;
+using HongPet.Domain.Repositories.Abstractions;
+using HongPet.Domain.Test;
+using HongPet.Infrastructure.Database;
+using HongPet.Infrastructure.Repositories.Commons;
+using Microsoft.EntityFrameworkCore;
+using Moq;
+using System.Xml.Linq;
 
-//namespace HongPet.Infrastructure.Test.Repositories.Commons;
-//public class UnitOfWorkTest : SetupTest
-//{
-//    private readonly AppDbContext  _context;
-//    private readonly UnitOfWork _unitOfWork;
+namespace HongPet.Infrastructure.Test.Repositories.Commons;
+public class UnitOfWorkTest : SetupTest
+{
+    private readonly AppDbContext _context;
+    private readonly UnitOfWork _unitOfWork;
+    private readonly Mock<IProductRepository> productRepositoryMock;
+    private readonly Mock<IUserRepository> userRepositoryMock;
+    private readonly Mock<IReviewRepository> reviewRepositoryMock;
+    private readonly Mock<IOrderRepository> orderRepositoryMock;
+    private readonly Mock<ICategoryRepository> categoryRepositoryMock;
 
-//    public UnitOfWorkTest()
-//    {
-//        var options = new DbContextOptionsBuilder<AppDbContext>()
-//            .UseInMemoryDatabase(databaseName: "TestDatabase")
-//            .Options;
-//        _context = new AppDbContext(_dbContextOptions);
-//        _unitOfWork = new UnitOfWork(_context);
-//    }
+    public UnitOfWorkTest()
+    {
+        // mock the dependencies
+        var options = new DbContextOptionsBuilder<AppDbContext>()
+                    .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                    .Options;
+        _context = new AppDbContext(options);
+        productRepositoryMock = new Mock<IProductRepository>();
+        userRepositoryMock = new Mock<IUserRepository>();
+        reviewRepositoryMock = new Mock<IReviewRepository>();
+        orderRepositoryMock = new Mock<IOrderRepository>();
+        categoryRepositoryMock = new Mock<ICategoryRepository>();
 
-//    [Fact]
-//    public void Repository_ShouldReturnGenericRepository()
-//    {
-//        // Act
-//        var userRepository = _unitOfWork.Repository<User>();
+        // create the unit of work with mocked dependencies
+        _unitOfWork = new UnitOfWork(
+            _context,
+            productRepositoryMock.Object,
+            userRepositoryMock.Object,
+            reviewRepositoryMock.Object,
+            orderRepositoryMock.Object,
+            categoryRepositoryMock.Object);
+    }
 
-//        // Assert
-//        Assert.NotNull(userRepository);
-//        Assert.IsType<GenericRepository<User>>(userRepository);
-//    }
+    [Fact]
+    public void Repository_ShouldReturnGenericRepository()
+    {
+        // Act
+        var userRepository = _unitOfWork.Repository<User>();
 
-//    [Fact]
-//    public async Task SaveChangesAsync_ShouldSaveChanges()
-//    {
-//        // Arrange
-//        var userRepository = _unitOfWork.Repository<User>();
-//        var user = UsersMockData(1).First();
-//        await userRepository.AddAsync(user);
+        // Assert
+        Assert.NotNull(userRepository);
+        Assert.IsType<GenericRepository<User>>(userRepository);
+    }
 
-//        // Act
-//        var result = await _unitOfWork.SaveChangesAsync();
+    [Fact]
+    public async Task SaveChangesAsync_ShouldSaveChanges()
+    {
+        // Arrange
+        var userRepository = _unitOfWork.Repository<User>();
+        var user = MockUsers(1).First();
+        await userRepository.AddAsync(user);
 
-//        // Assert
-//        Assert.Equal(1, result);
-//    }
+        // Act
+        var result = await _unitOfWork.SaveChangesAsync();
 
-//    [Fact]
-//    public void Dispose_ShouldDisposeContext()
-//    {
-//        // Act
-//        _unitOfWork.Dispose();
+        // Assert
+        Assert.Equal(1, result);
+    }
 
-//        // Assert
-//        Assert.Throws<ObjectDisposedException>(() => _context.Users.ToList());
-//    }
-//}
+    [Fact]
+    public void Dispose_ShouldDisposeContext()
+    {
+        // Act
+        _unitOfWork.Dispose();
+
+        // Assert
+        Assert.Throws<ObjectDisposedException>(() => _context.Users.ToList());
+    }
+}

@@ -2,37 +2,34 @@
 using HongPet.Domain.Test;
 using HongPet.Infrastructure.Database;
 using HongPet.Infrastructure.Repositories.Commons;
+using Microsoft.EntityFrameworkCore;
 
 namespace HongPet.Infrastructure.Test.Repositories.Commons;
 
 public class GenericRepositoryTest : SetupTest
 {
+    private readonly AppDbContext _context;
     public GenericRepositoryTest()
     {
-        using var context = new AppDbContext(_dbContextOptions);
-        ClearDatabase(context).GetAwaiter().GetResult();
-    }
-
-    private async Task ClearDatabase(AppDbContext context)
-    {
-        context.Users.RemoveRange(context.Users);
-        await context.SaveChangesAsync();
+        var _dbContextOptions = new DbContextOptionsBuilder<AppDbContext>()
+                    .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                    .Options;
+        _context = new AppDbContext(_dbContextOptions);
     }
 
     [Fact]
     public async Task AddAsync_ShouldAddEntity()
     {
         // Arrange
-        using var context = new AppDbContext(_dbContextOptions);
-        var repository = new GenericRepository<User>(context);
-        var entity = UsersMockData(1).First();
+        var repository = new GenericRepository<User>(_context);
+        var entity = MockUsers(1).First();
 
         // Act
         await repository.AddAsync(entity);
-        await context.SaveChangesAsync();
+        await _context.SaveChangesAsync();
 
         // Assert
-        var addedEntity = await context.Set<User>().FindAsync(entity.Id);
+        var addedEntity = await _context.Set<User>().FindAsync(entity.Id);
         Assert.NotNull(addedEntity);
         Assert.Equal(entity.Fullname, addedEntity.Fullname);
     }
@@ -41,11 +38,10 @@ public class GenericRepositoryTest : SetupTest
     public async Task GetByIdAsync_ShouldReturnEntity()
     {
         // Arrange
-        using var context = new AppDbContext(_dbContextOptions);
-        var repository = new GenericRepository<User>(context);
-        var entity = UsersMockData(1).First();
-        await context.Set<User>().AddAsync(entity);
-        await context.SaveChangesAsync();
+        var repository = new GenericRepository<User>(_context);
+        var entity = MockUsers(1).First();
+        await _context.Set<User>().AddAsync(entity);
+        await _context.SaveChangesAsync();
 
         // Act
         var retrievedEntity = await repository.GetByIdAsync(entity.Id);
@@ -59,11 +55,10 @@ public class GenericRepositoryTest : SetupTest
     public async Task GetAllAsync_ShouldReturnAllEntities()
     {
         // Arrange
-        using var context = new AppDbContext(_dbContextOptions);
-        var repository = new GenericRepository<User>(context);
-        var entities = UsersMockData(2);
-        await context.Set<User>().AddRangeAsync(entities);
-        await context.SaveChangesAsync();
+        var repository = new GenericRepository<User>(_context);
+        var entities = MockUsers(2);
+        await _context.Set<User>().AddRangeAsync(entities);
+        await _context.SaveChangesAsync();
 
         // Act
         var retrievedEntities = await repository.GetAllAsync();
@@ -76,19 +71,18 @@ public class GenericRepositoryTest : SetupTest
     public async Task Update_ShouldUpdateEntity()
     {
         // Arrange
-        using var context = new AppDbContext(_dbContextOptions);
-        var repository = new GenericRepository<User>(context);
-        var entity = UsersMockData(1).First();
-        await context.Set<User>().AddAsync(entity);
-        await context.SaveChangesAsync();
+        var repository = new GenericRepository<User>(_context);
+        var entity = MockUsers(1).First();
+        await _context.Set<User>().AddAsync(entity);
+        await _context.SaveChangesAsync();
 
         // Act
         entity.Fullname = "Updated Entity";
         repository.Update(entity);
-        await context.SaveChangesAsync();
+        await _context.SaveChangesAsync();
 
         // Assert
-        var updatedEntity = await context.Set<User>().FindAsync(entity.Id);
+        var updatedEntity = await _context.Set<User>().FindAsync(entity.Id);
         Assert.NotNull(updatedEntity);
         Assert.Equal("Updated Entity", updatedEntity.Fullname);
     }
@@ -97,18 +91,17 @@ public class GenericRepositoryTest : SetupTest
     public async Task DeleteAsync_ShouldRemoveEntity()
     {
         // Arrange
-        using var context = new AppDbContext(_dbContextOptions);
-        var repository = new GenericRepository<User>(context);
-        var entity = UsersMockData(1).First();
-        await context.Set<User>().AddAsync(entity);
-        await context.SaveChangesAsync();
+        var repository = new GenericRepository<User>(_context);
+        var entity = MockUsers(1).First();
+        await _context.Set<User>().AddAsync(entity);
+        await _context.SaveChangesAsync();
 
         // Act
         await repository.DeleteAsync(entity.Id);
-        await context.SaveChangesAsync();
+        await _context.SaveChangesAsync();
 
         // Assert
-        var deletedEntity = await context.Set<User>().FindAsync(entity.Id);
+        var deletedEntity = await _context.Set<User>().FindAsync(entity.Id);
         Assert.Null(deletedEntity);
     }
 
@@ -116,11 +109,10 @@ public class GenericRepositoryTest : SetupTest
     public async Task GetAsync_ShouldReturnFilteredEntities()
     {
         // Arrange
-        using var context = new AppDbContext(_dbContextOptions);
-        var repository = new GenericRepository<User>(context);
-        var entities = UsersMockData(3);
-        await context.Set<User>().AddRangeAsync(entities);
-        await context.SaveChangesAsync();
+        var repository = new GenericRepository<User>(_context);
+        var entities = MockUsers(3);
+        await _context.Set<User>().AddRangeAsync(entities);
+        await _context.SaveChangesAsync();
 
         // Act
         var entity1 = entities[0];
@@ -140,11 +132,11 @@ public class GenericRepositoryTest : SetupTest
         int pageSize, int expected)
     {
         // Arrange
-        using var context = new AppDbContext(_dbContextOptions);
-        var repository = new GenericRepository<User>(context);
-        var entities = UsersMockData(5);
-        await context.Set<User>().AddRangeAsync(entities);
-        await context.SaveChangesAsync();
+        var repository = new GenericRepository<User>(_context);
+        var entities = MockUsers(5);
+        await _context.Set<User>().AddRangeAsync(entities);
+        await _context.SaveChangesAsync();
+
 
         // Act
         var pagedResult = await repository.GetPagedAsync(pageIndex, pageSize);
