@@ -76,7 +76,8 @@ public class ReviewService : GenericService<Review>, IReviewService
         await base.SoftDeleteAsync(reviewId);
     }
 
-    public async Task<IPagedList<ReviewVM>> GetReviewsByProductIdAsync(Guid productId, int pageIndex = 1, int pageSize = 10)
+    public async Task<IPagedList<ReviewVM>> GetReviewsByProductIdAsync(Guid productId, 
+        int pageIndex = 1, int pageSize = 10)
     {
         var pagedReviews = await _reviewRepository
             .GetReviewsByProductIdAsync(productId, pageIndex, pageSize);

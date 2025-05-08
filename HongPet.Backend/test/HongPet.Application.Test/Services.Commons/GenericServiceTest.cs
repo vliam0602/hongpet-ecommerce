@@ -10,14 +10,12 @@ namespace HongPet.Application.Test.Services.Commons;
 public class GenericServiceTest : SetupTest
 {
     private readonly Mock<IGenericRepository<User>> _repositoryMock;
-    private readonly Mock<IClaimService> _claimServiceMock;
     private readonly GenericService<User> _service;
 
     // set up test data for each test
     public GenericServiceTest()
     {
         _repositoryMock = new Mock<IGenericRepository<User>>();
-        _claimServiceMock = new Mock<IClaimService>();
         _unitOfWorkMock.Setup(u => u.Repository<User>())
                        .Returns(_repositoryMock.Object);
         _service = new GenericService<User>(

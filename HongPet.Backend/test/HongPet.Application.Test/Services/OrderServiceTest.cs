@@ -1,8 +1,7 @@
 ﻿using AutoFixture;
-using AutoMapper;
+using Castle.Core.Resource;
+using FluentAssertions;
 using HongPet.Application.Services;
-using HongPet.Application.Services.Abstractions;
-using HongPet.Application.Services.Commons;
 using HongPet.Domain.Entities;
 using HongPet.Domain.Enums;
 using HongPet.Domain.Repositories.Abstractions;
@@ -13,123 +12,221 @@ using HongPet.SharedViewModels.Models;
 using HongPet.SharedViewModels.ViewModels;
 using Moq;
 
-namespace HongPet.Application.Test.Services
+namespace HongPet.Application.Test.Services;
+
+public class OrderServiceTest : SetupTest
 {
-    public class OrderServiceTest : SetupTest
+    private readonly OrderService _orderService;
+    private readonly Mock<IOrderRepository> _orderRepoMock;
+    private readonly Mock<IGenericRepository<Variant>> _variantRepoMock;
+
+    public OrderServiceTest()
     {
-        private readonly Mock<IOrderRepository> _orderRepositoryMock;
-        private readonly Mock<IGenericRepository<Variant>> _variantRepositoryMock;
-        private readonly Mock<IClaimService> _claimServiceMock;
-        private readonly OrderService _orderService;
+        // Mock the OrderRepository & setup in the UnitOfWork
+        _orderRepoMock = new Mock<IOrderRepository>();
+        _variantRepoMock = new Mock<IGenericRepository<Variant>>();
 
-        public OrderServiceTest()
-        {
-            _orderRepositoryMock = new Mock<IOrderRepository>();
-            _variantRepositoryMock = new Mock<IGenericRepository<Variant>>();
-            _claimServiceMock = new Mock<IClaimService>();
+        _unitOfWorkMock.SetupGet(x => x.OrderRepository).Returns(_orderRepoMock.Object);
+        _unitOfWorkMock.Setup(x => x.Repository<Variant>()).Returns(_variantRepoMock.Object);
 
-            _unitOfWorkMock
-                .Setup(u => u.OrderRepository)
-                .Returns(_orderRepositoryMock.Object);
+        // Initialize the service with mocked dependencies
+        _orderService = new OrderService(
+            _unitOfWorkMock.Object,
+            _mapper,
+            _claimServiceMock.Object);
+    }
 
-            _unitOfWorkMock
-                .Setup(u => u.Repository<Variant>())
-                .Returns(_variantRepositoryMock.Object);
+    [Fact]
+    public async Task GetOrdersByCustomerIdAsync_ShouldReturnOrders_WhenAuthorized()
+    {
+        // Arrange
+        var customerId = Guid.NewGuid();
+        var mockOrders = _fixture.Build<OrderDto>()
+                                .With(x => x.CustomerId, customerId)
+                                .Without(x => x.OrderItems)
+                                .CreateMany(2);
+        var pagedOrders = new PagedList<OrderDto>(mockOrders, 2, 1, 10);
 
-            _orderService = new OrderService(
-                _unitOfWorkMock.Object, _mapper, _claimServiceMock.Object);
-        }
+        _claimServiceMock.Setup(x => x.GetCurrentUserId).Returns(customerId);
+        _claimServiceMock.Setup(x => x.IsAdmin).Returns(false);
 
-        [Fact]
-        public async Task CreateOrderAsync_ShouldCreateOrder_WhenValidInput()
-        {
-            // Arrange
-            var customerId = Guid.NewGuid();
-            var orderModel = new OrderCreationModel
-            {
-                CustomerName = "John Doe",
-                CustomerPhone = "123456789",
-                CustomerEmail = "john.doe@example.com",
-                ShippingAddress = "123 Main St",
-                PaymentMethod = PaymentMethodEnum.COD.ToString(),
-                OrderItems = new List<OrderItemCreationModel>
-                {
-                    new OrderItemCreationModel
-                    {
-                        VariantId = Guid.NewGuid(),
-                        Quantity = 2,
-                        Price = 100
-                    }
-                }
-            };
+        _orderRepoMock.Setup(x => x.GetOrderByCustomerIdAsync(customerId, 1, 10, ""))
+                      .ReturnsAsync(pagedOrders);
 
-            var variant = new Variant 
-            { Id = orderModel.OrderItems.First().VariantId, Stock = 10 };
+        // Act
+        var result = await _orderService.GetOrdersByCustomerIdAsync(customerId);
 
-            _claimServiceMock.Setup(c => c.GetCurrentUserId).Returns(customerId);
-            _variantRepositoryMock.Setup(v => v.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(variant);
+        // Assert
+        var expectedOutput = _mapper.Map<PagedList<OrderVM>>(pagedOrders);
 
-            // Act
-            var result = await _orderService.CreateOrderAsync(orderModel);
+        Assert.NotNull(result);
+        result.Should().BeEquivalentTo(expectedOutput);
+        _orderRepoMock.Verify(x => 
+            x.GetOrderByCustomerIdAsync(customerId, 1, 10, ""), Times.Once);
+    }
 
-            // Assert
-            Assert.NotNull(result);
-            Assert.Equal(customerId, result.CustomerId);
-            Assert.Equal(200, result.TotalAmount);
-            _variantRepositoryMock.Verify(v => v.Update(It.IsAny<Variant>()), Times.Once);
-            _unitOfWorkMock.Verify(u => u.SaveChangesAsync(), Times.Once);
-        }
-        
+    [Theory]
+    [InlineData("11111111-1111-1111-1111-111111111111")]
+    [InlineData(null)]
+    public async Task GetOrdersByCustomerIdAsync_ShouldThrowUnauthorizedAccessException_WhenNotAuthorized(
+        string? currentUserId)
+    {
+        // Arrange
+        var customerId = Guid.NewGuid();
 
-        [Fact]
-        public async Task GetOrderWithDetailsAsync_ShouldReturnOrder_WhenAuthorized()
-        {
-            // Arrange
-            var orderId = Guid.NewGuid();
-            var customerId = Guid.NewGuid();
-            var order = OrderDtosMockData(1).First();
-            order.CustomerId = customerId;
+        _claimServiceMock.Setup(x => x.GetCurrentUserId)
+            .Returns(currentUserId == null ? null : Guid.Parse(currentUserId));
 
-            _claimServiceMock.Setup(c => c.GetCurrentUserId).Returns(customerId);
-            _claimServiceMock.Setup(c => c.IsAdmin).Returns(false);
-            _orderRepositoryMock.Setup(o => o.GetOrderDetailAsync(orderId)).ReturnsAsync(order);
+        _claimServiceMock.Setup(x => x.IsAdmin).Returns(false);
 
-            // Act
-            var result = await _orderService.GetOrderWithDetailsAsync(orderId);
+        // Act & Assert
+        await Assert.ThrowsAsync<UnauthorizedAccessException>(() =>
+            _orderService.GetOrdersByCustomerIdAsync(customerId));
+    }
 
-            // Assert
-            Assert.NotNull(result);
-            Assert.Equal(order.CustomerId, result.CustomerId);
-        }
+    [Fact]
+    public async Task GetOrderWithDetailsAsync_ShouldReturnOrderDetails_WhenAuthorized()
+    {
+        // Arrange
+        var orderId = Guid.NewGuid();
+        var mockOrderItems = _fixture.Build<OrderItemDto>()                        
+                                    .CreateMany(2);
+        var mockOrder = _fixture.Build<OrderDto>()
+                                .With(o => o.Id, orderId)
+                                .Create();
 
-        [Fact]
-        public async Task CreateOrderAsync_ShouldThrowException_WhenVariantNotFound()
-        {
-            // Arrange
-            var customerId = Guid.NewGuid();
-            var orderModel = new OrderCreationModel
-            {
-                CustomerName = "John Doe",
-                CustomerPhone = "123456789",
-                CustomerEmail = "john.doe@example.com",
-                ShippingAddress = "123 Main St",
-                PaymentMethod = PaymentMethodEnum.COD.ToString(),
-                OrderItems = new List<OrderItemCreationModel>
-                {
-                    new OrderItemCreationModel
-                    {
-                        VariantId = Guid.NewGuid(),
-                        Quantity = 2,
-                        Price = 100
-                    }
-                }
-            };
+        _claimServiceMock.Setup(x => x.GetCurrentUserId).Returns(mockOrder.CustomerId);
+        _claimServiceMock.Setup(x => x.IsAdmin).Returns(false);
 
-            _claimServiceMock.Setup(c => c.GetCurrentUserId).Returns(customerId);
-            _variantRepositoryMock.Setup(v => v.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync((Variant?)null);
+        _orderRepoMock.Setup(x => x.GetOrderDetailAsync(orderId)).ReturnsAsync(mockOrder);
 
-            // Act & Assert
-            await Assert.ThrowsAsync<ArgumentException>(() => _orderService.CreateOrderAsync(orderModel));
-        }
+        // Act
+        var result = await _orderService.GetOrderWithDetailsAsync(orderId);
+
+        // Assert
+        var expectedOutput = _mapper.Map<OrderVM>(mockOrder);
+        Assert.NotNull(result);
+        Assert.Equal(orderId, result.Id);
+        result.Should().BeEquivalentTo(expectedOutput);
+        _orderRepoMock.Verify(x => x.GetOrderDetailAsync(orderId), Times.Once);
+    }
+
+    [Fact]
+    public async Task GetOrderWithDetailsAsync_ShouldThrowKeyNotFoundException_WhenOrderNotFound()
+    {
+        // Arrange
+        var orderId = Guid.NewGuid();
+
+        _claimServiceMock.Setup(x => x.GetCurrentUserId).Returns(Guid.NewGuid());
+        _claimServiceMock.Setup(x => x.IsAdmin).Returns(true);
+
+        _orderRepoMock.Setup(x => x.GetOrderDetailAsync(orderId)).ReturnsAsync((OrderDto?)null);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<KeyNotFoundException>(() =>
+            _orderService.GetOrderWithDetailsAsync(orderId));
+    }
+
+    [Theory]
+    [InlineData("11111111-1111-1111-1111-111111111111")]
+    [InlineData(null)]
+    public async Task GetOrderWithDetailsAsync__ShouldThrowUnauthorizedAccessException_WhenNotAuthorized(
+        string? currentUserId)
+    {
+        // Arrange
+        var orderId = Guid.NewGuid();
+        var order = _fixture.Build<OrderDto>()
+                                .With(o => o.Id, orderId)
+                                .Create();
+
+        _claimServiceMock.Setup(x => x.GetCurrentUserId)
+            .Returns(currentUserId == null ? null : Guid.Parse(currentUserId));
+
+        _claimServiceMock.Setup(x => x.IsAdmin).Returns(false);
+
+        _orderRepoMock.Setup(x => x.GetOrderDetailAsync(orderId))
+            .ReturnsAsync(order);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<UnauthorizedAccessException>(() =>
+            _orderService.GetOrderWithDetailsAsync(orderId));
+    }
+
+    [Fact]
+    public async Task CreateOrderAsync_ShouldCreateOrder_WhenValid()
+    {
+        // Arrange
+        var orderModel = _fixture.Build<OrderCreationModel>() 
+                                 .With(o => o.PaymentMethod, PaymentMethodEnum.COD.ToString())
+                                 .Create();
+
+        var mockVariant = _fixture.Build<Variant>().Create();
+        var customerId = Guid.NewGuid();
+
+        _claimServiceMock.Setup(x => x.GetCurrentUserId).Returns(customerId);
+
+        _variantRepoMock.Setup(x => x.GetByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(mockVariant);
+
+        // Act
+        var result = await _orderService.CreateOrderAsync(orderModel);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(customerId, result.CustomerId);
+        _variantRepoMock.Verify(x => x.GetByIdAsync(It.IsAny<Guid>()), 
+                                Times.Exactly(orderModel.OrderItems.Count()));
+        _unitOfWorkMock.Verify(x => x.SaveChangesAsync(), Times.Once);
+    }
+
+    [Fact]
+    public async Task CreateOrderAsync_ShouldThrowArgumentException_WhenPaymentMethodInvalid()
+    {
+        // Arrange
+        var orderModel = _fixture.Build<OrderCreationModel>()
+                                 .With(o => o.PaymentMethod, "MOMO")
+                                 .Create();
+
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<ArgumentException>(() =>
+            _orderService.CreateOrderAsync(orderModel));
+        exception.Message.Should().Contain("Invalid payment method.");
+    }
+
+    [Fact]
+    public async Task CreateOrderAsync_ShouldThrowArgumentException_WhenCustomerIdInvalid()
+    {
+        // Arrange
+        var orderModel = _fixture.Build<OrderCreationModel>()
+                                 .With(o => o.PaymentMethod, PaymentMethodEnum.COD.ToString())   
+                                 .Create();
+        _claimServiceMock.Setup(x => x.GetCurrentUserId).Returns(() => null);
+
+        // Act & Assert
+        var exception =  await Assert.ThrowsAsync<ArgumentException>(() =>
+            _orderService.CreateOrderAsync(orderModel));
+        exception.Message.Should().Be("You must login to make order.");
+    }
+
+    [Fact]
+    public async Task CreateOrderAsync_ShouldThrowArgumentException_WhenVariantIdNotFound()
+    {
+        // Arrange
+        var orderModel = _fixture.Build<OrderCreationModel>()
+                                 .With(o => o.PaymentMethod, PaymentMethodEnum.COD.ToString())
+                                 .Create();
+        var variantId = orderModel.OrderItems.First().VariantId;
+
+        var customerId = Guid.NewGuid();
+
+        _claimServiceMock.Setup(x => x.GetCurrentUserId).Returns(customerId);
+
+        _variantRepoMock.Setup(x => x.GetByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(() => null);
+
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<ArgumentException>(() =>
+            _orderService.CreateOrderAsync(orderModel));
+        exception.Message.Should().Be($"Variant product with id {variantId} not found.");
     }
 }

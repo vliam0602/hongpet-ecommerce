@@ -2,6 +2,7 @@
 using AutoFixture.AutoMoq;
 using AutoMapper;
 using HongPet.Application.Commons;
+using HongPet.Application.Services.Commons;
 using HongPet.Domain.Entities;
 using HongPet.Domain.Repositories.Abstractions;
 using HongPet.Infrastructure.Database;
@@ -15,6 +16,7 @@ public class SetupTest
 {
     protected readonly Mock<AppConfiguration> _appConfigMock;
     protected readonly Mock<IUnitOfWork> _unitOfWorkMock;
+    protected readonly Mock<IClaimService> _claimServiceMock;
     protected readonly IFixture _fixture;
     protected readonly DbContextOptions<AppDbContext> _dbContextOptions;
     protected readonly IMapper _mapper;
@@ -23,6 +25,8 @@ public class SetupTest
     {
         _appConfigMock = new Mock<AppConfiguration>();
         _unitOfWorkMock = new Mock<IUnitOfWork>();
+
+        _claimServiceMock = new Mock<IClaimService>();
 
         // Set up AutoFixture to mock data of the object
         _fixture = new Fixture().Customize(new AutoMoqCustomization());        

@@ -160,14 +160,9 @@ public class UserService : GenericService<User>, IUserService
                         && id != null 
                         && currentUserId.Value == id.Value;
 
-        var isAuthorized = true;
-
-        if ((checkOwner && !isOwner)
-            && (checkAdmin && !isAdmin)
-            && (checkOwner && checkAdmin && (!isAdmin || !isOwner)))
-        {
-            isAuthorized = false;
-        }
+        var isAuthorized = (checkOwner && checkAdmin && (isAdmin || isOwner)) ||
+                   (checkOwner && isOwner) ||
+                   (checkAdmin && isAdmin);
 
         if (!isAuthorized)
         {
