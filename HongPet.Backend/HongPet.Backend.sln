@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HongPet.SharedViewModels", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HongPet.CustomerMVC", "..\HongPet.CustomerSite\HongPet.CustomerMVC\HongPet.CustomerMVC.csproj", "{B2E684D9-91FC-4C42-B102-A2391C4CDE04}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HongPet.WebApi.Test", "test\HongPet.WebApi.Test\HongPet.WebApi.Test.csproj", "{7EA559F2-1165-46D0-8513-85CCEF3E3367}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,6 +75,10 @@ Global
 		{B2E684D9-91FC-4C42-B102-A2391C4CDE04}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B2E684D9-91FC-4C42-B102-A2391C4CDE04}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B2E684D9-91FC-4C42-B102-A2391C4CDE04}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7EA559F2-1165-46D0-8513-85CCEF3E3367}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7EA559F2-1165-46D0-8513-85CCEF3E3367}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7EA559F2-1165-46D0-8513-85CCEF3E3367}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7EA559F2-1165-46D0-8513-85CCEF3E3367}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -87,5 +93,6 @@ Global
 		{86C139B9-693C-45DA-8932-07ACC49576C2} = {AA019535-925F-4FBD-8423-5941C39A40AF}
 		{B1AC11E4-5A8D-496D-9EE7-18D6D8B9EAC2} = {AA019535-925F-4FBD-8423-5941C39A40AF}
 		{A81933AF-9629-4303-9F79-4D517FB6C2D9} = {432E0374-06EC-4D32-B9A9-247431DB3E3F}
+		{7EA559F2-1165-46D0-8513-85CCEF3E3367} = {AA019535-925F-4FBD-8423-5941C39A40AF}
 	EndGlobalSection
 EndGlobal

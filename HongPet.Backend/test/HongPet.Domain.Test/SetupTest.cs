@@ -5,10 +5,7 @@ using HongPet.Application.Commons;
 using HongPet.Application.Services.Commons;
 using HongPet.Domain.Entities;
 using HongPet.Domain.Repositories.Abstractions;
-using HongPet.Infrastructure.Database;
-using HongPet.Infrastructure.DTOs;
 using HongPet.WebApi;
-using Microsoft.EntityFrameworkCore;
 using Moq;
 
 namespace HongPet.Domain.Test;
@@ -18,7 +15,6 @@ public class SetupTest
     protected readonly Mock<IUnitOfWork> _unitOfWorkMock;
     protected readonly Mock<IClaimService> _claimServiceMock;
     protected readonly IFixture _fixture;
-    protected readonly DbContextOptions<AppDbContext> _dbContextOptions;
     protected readonly IMapper _mapper;
 
     public SetupTest()
@@ -35,10 +31,6 @@ public class SetupTest
                           .ForEach(b => _fixture.Behaviors.Remove(b));  // remove the exception for the recursion relation object
         _fixture.Behaviors.Add(new OmitOnRecursionBehavior()); // ignore the recursion relation object
 
-        // Set up InMemory database
-        _dbContextOptions = new DbContextOptionsBuilder<AppDbContext>()
-            .UseInMemoryDatabase(databaseName: "HongPetDbTest")
-            .Options;
         // set up auto mapper
         var mappingConfig = new MapperConfiguration(mc =>
         {
@@ -47,20 +39,25 @@ public class SetupTest
         });
         _mapper = mappingConfig.CreateMapper();
     }
-    protected List<User> UsersMockData(int count)
+    protected List<User> MockUsers(int count)
     {
         return _fixture.Build<User>()
                        .Without(u => u.Orders)   
                        .Without(u => u.Reviews)   
                        .CreateMany(count)                       
                        .ToList();
-    }
+    }    
 
-    protected List<OrderDto> OrderDtosMockData(int count)
+    protected List<Category> MockCategoriesNotDeleted(int count)
     {
-        return _fixture.Build<OrderDto>()
-                       .Without(x => x.OrderItems)
-                       .CreateMany(count)
-                       .ToList();
+        return _fixture.Build<Category>()
+                                 .Without(c => c.SubCategories)
+                                 .Without(c => c.Products)
+                                 .Without(c => c.DeletedDate)
+                                 .Without(c => c.DeletedBy)
+                                 .CreateMany(count)
+                                 .ToList();
     }
+    
+
 }

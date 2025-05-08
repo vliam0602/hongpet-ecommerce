@@ -27,7 +27,7 @@ public class GenericServiceTest : SetupTest
     public async Task GetByIdAsync_ShouldReturnEntity()
     {
         // Arrange
-        var entity = UsersMockData(1).First();
+        var entity = MockUsers(1).First();
         _repositoryMock.Setup(r => r.GetByIdAsync(entity.Id)).ReturnsAsync(entity);
 
         // Act
@@ -42,7 +42,7 @@ public class GenericServiceTest : SetupTest
     public async Task GetAllAsync_ShouldReturnAllEntities()
     {
         // Arrange
-        var entities = UsersMockData(2);
+        var entities = MockUsers(2);
         _repositoryMock.Setup(r => r.GetAllAsync()).ReturnsAsync(entities);
 
         // Act
@@ -56,7 +56,7 @@ public class GenericServiceTest : SetupTest
     public async Task AddAsync_ShouldAddEntity()
     {
         // Arrange
-        var entity = UsersMockData(1).First();
+        var entity = MockUsers(1).First();
 
         // Act
         await _service.AddAsync(entity);
@@ -70,7 +70,7 @@ public class GenericServiceTest : SetupTest
     public async Task UpdateAsync_ShouldUpdateEntity()
     {
         // Arrange
-        var entity = UsersMockData(1).First();
+        var entity = MockUsers(1).First();
 
         // Act
         await _service.UpdateAsync(entity);
@@ -84,7 +84,7 @@ public class GenericServiceTest : SetupTest
     public async Task DeleteAsync_ShouldRemoveEntity()
     {
         // Arrange
-        var entity = UsersMockData(1).First();
+        var entity = MockUsers(1).First();
 
         // Act
         await _service.DeleteAsync(entity.Id);
@@ -98,7 +98,7 @@ public class GenericServiceTest : SetupTest
     public async Task GetAsync_ShouldReturnFilteredEntities()
     {
         // Arrange
-        var entities = UsersMockData(3);
+        var entities = MockUsers(3);
         var entity1 = entities.First();
         Expression<Func<User, bool>> query = u => u.Fullname.Contains(entity1.Fullname);
         _repositoryMock.Setup(r => r.GetAsync(query))
@@ -118,7 +118,7 @@ public class GenericServiceTest : SetupTest
     public async Task GetPagedAsync_ShouldReturnPagedEntities(int pageIndex, int pageSize, int expectedCount)
     {
         // Arrange
-        var entities = UsersMockData(5);
+        var entities = MockUsers(5);
         var pagedList = new PagedList<User>(
             entities.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList(),
             entities.Count,
