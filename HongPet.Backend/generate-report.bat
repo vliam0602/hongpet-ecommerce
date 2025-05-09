@@ -8,7 +8,7 @@ REM Đường dẫn tương đối đến file coverage
 set COVERAGE_XML=%BASE_DIR%TestResults\coverage.coveragexml
 
 REM Đường dẫn thư mục lưu báo cáo HTML
-set REPORT_DIR=%BASE_DIR%TestResults\coverage-report
+set REPORT_DIR=%BASE_DIR%test-coverage-report
 
 REM Kiểm tra nếu file coverage.xml tồn tại
 if not exist "%COVERAGE_XML%" (
