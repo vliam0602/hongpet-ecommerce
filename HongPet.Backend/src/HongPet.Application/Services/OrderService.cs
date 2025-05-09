@@ -117,10 +117,5 @@ public class OrderService : GenericService<Order>, IOrderService
         await base.AddAsync(order);
 
         return order;
-    }
-
-    public Task<bool> UpdateOrderStatusAsync(Guid orderId, OrderStatusEnum status)
-    {
-        throw new NotImplementedException();
-    }
+    }    
 }

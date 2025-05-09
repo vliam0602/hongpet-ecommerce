@@ -1,5 +1,4 @@
-﻿using HongPet.Domain.DTOs;
-using HongPet.Domain.Entities.Commons;
+﻿using HongPet.Domain.Entities.Commons;
 using HongPet.Domain.Repositories.Abstractions;
 using HongPet.Infrastructure.Database;
 using HongPet.SharedViewModels.Generals;
@@ -104,12 +103,5 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity>
     public async Task<bool> IsExistAsync(Guid id)
     {
         return await _dbSet.AnyAsync(x => x.Id == id);
-    }
-
-    public async Task<TEntity?> GetByIdNoTrackingAsync(Guid id)
-    {
-        return await _dbSet
-            .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.Id == id);
-    }
+    }    
 }

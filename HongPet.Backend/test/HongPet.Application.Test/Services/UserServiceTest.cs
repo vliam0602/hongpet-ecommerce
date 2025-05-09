@@ -176,6 +176,49 @@ public class UserServiceTest : SetupTest
     }
 
     [Fact]
+    public async Task ChangePasswordAsync_ShouldThrowKeyNotFoundException_WhenUserNotFound()
+    {
+        // Arrange
+        var userId = Guid.NewGuid();        
+        _claimServiceMock.SetupGet(x => x.GetCurrentUserId).Returns(userId);
+        _userRepositoryMock.Setup(x => x.GetByIdAsync(userId)).ReturnsAsync((User?)null);
+
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<KeyNotFoundException>(() =>
+            _userService.ChangePasswordAsync(userId, "oldPassword123", "newPassword123")); 
+        
+        exception.Message.Should().BeEquivalentTo($"User with id {userId} not found.");   
+                
+        _userRepositoryMock.Verify(x => x.Update(It.IsAny<User>()), Times.Never);
+        _unitOfWorkMock.Verify(x => x.SaveChangesAsync(), Times.Never);
+    }
+
+    [Fact]
+    public async Task ChangePasswordAsync_ShouldThrowKeyNotFoundException_WhenUserBeenDeleted()
+    {
+        // Arrange
+        var userId = Guid.NewGuid();
+
+        _claimServiceMock.SetupGet(x => x.GetCurrentUserId).Returns(userId);
+        
+        var mockUser = _fixture.Build<User>()
+                               .With(u => u.Id, userId)
+                               .With(u => u.DeletedDate, DateTime.UtcNow)
+                               .Create();
+
+        _userRepositoryMock.Setup(x => x.GetByIdAsync(userId)).ReturnsAsync(mockUser);
+
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<KeyNotFoundException>(() =>
+            _userService.ChangePasswordAsync(userId, "oldPassword123", "newPassword123"));
+        Assert.Equal($"User with id {userId} not found.", exception.Message);
+        
+        _userRepositoryMock.Verify(x => x.Update(It.IsAny<User>()), Times.Never);
+        _unitOfWorkMock.Verify(x => x.SaveChangesAsync(), Times.Never);
+    }
+
+
+    [Fact]
     public async Task GetUserDetailAsync_ShouldReturnUserDetail_WhenUserExists()
     {
         // Arrange
@@ -211,6 +254,21 @@ public class UserServiceTest : SetupTest
         // Act & Assert
         await Assert.ThrowsAsync<KeyNotFoundException>(() =>
             _userService.GetUserDetailAsync(userId));
+    }
+
+    [Fact]
+    public async Task GetUserDetailAsync_ShouldUnauthorizedAccessException_WhenUnauthorized()
+    {
+        // Arrange
+        var userId = Guid.NewGuid();
+
+        _claimServiceMock.SetupGet(x => x.GetCurrentUserId).Returns(() => null);
+        _claimServiceMock.SetupGet(x => x.IsAdmin).Returns(false);        
+
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<UnauthorizedAccessException>(() =>
+            _userService.GetUserDetailAsync(userId));
+        exception.Message.Should().BeEquivalentTo("You are not authorized to access this feature.");
     }
 
     [Fact]
@@ -258,6 +316,46 @@ public class UserServiceTest : SetupTest
     }
 
     [Fact]
+    public async Task InactiveUserAsync_ThrowKeyNotFoundException_WhenUserDoesnotExist()
+    {
+        // Arrange
+        var userId = Guid.NewGuid();
+        _claimServiceMock.SetupGet(x => x.IsAdmin).Returns(true);
+        _userRepositoryMock.Setup(x => x.GetByIdAsync(userId)).ReturnsAsync(() => null);
+
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<KeyNotFoundException>(() =>
+            _userService.InactiveUserAsync(userId));
+
+        // Assert
+        _userRepositoryMock.Verify(x => x.Update(It.IsAny<User>()), Times.Never);
+        _unitOfWorkMock.Verify(x => x.SaveChangesAsync(), Times.Never);
+        exception.Message.Should().BeEquivalentTo($"User with id {userId} not found or been inactive already.");
+    }
+
+    [Fact]
+    public async Task InactiveUserAsync_ThrowKeyNotFoundException_WhenUserBeenDeleted()
+    {
+        // Arrange
+        var userId = Guid.NewGuid();
+        _claimServiceMock.SetupGet(x => x.IsAdmin).Returns(true);
+        var mockUser = _fixture.Build<User>()
+                               .With(u => u.Id, userId)
+                               .With(u => u.DeletedDate, DateTime.UtcNow)
+                               .Create();
+        _userRepositoryMock.Setup(x => x.GetByIdAsync(userId)).ReturnsAsync(mockUser);
+
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<KeyNotFoundException>(() =>
+            _userService.InactiveUserAsync(userId));
+
+        // Assert
+        _userRepositoryMock.Verify(x => x.Update(It.IsAny<User>()), Times.Never);
+        _unitOfWorkMock.Verify(x => x.SaveChangesAsync(), Times.Never);
+        exception.Message.Should().BeEquivalentTo($"User with id {userId} not found or been inactive already.");
+    }
+
+    [Fact]
     public async Task UpdateAvatarAsync_ShouldUpdateAvatar_WhenUserExists()
     {
         // Arrange
@@ -280,6 +378,46 @@ public class UserServiceTest : SetupTest
         Assert.Equal(avatarUrl, mockUser.AvatarUrl);
         _userRepositoryMock.Verify(x => x.Update(It.IsAny<User>()), Times.Once);
         _unitOfWorkMock.Verify(x => x.SaveChangesAsync(), Times.Once);
+    }
+
+    [Fact]
+    public async Task UpdateAvatarAsync_ThrowKeyNotFoundException_WhenUserDoesnotExist()
+    {
+        // Arrange
+        var userId = Guid.NewGuid();
+        _claimServiceMock.SetupGet(x => x.GetCurrentUserId).Returns(userId);
+        _userRepositoryMock.Setup(x => x.GetByIdAsync(userId)).ReturnsAsync(() => null);
+
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<KeyNotFoundException>(() =>
+            _userService.UpdateAvatarAsync(userId, "avatar-url"));
+
+        // Assert
+        _userRepositoryMock.Verify(x => x.Update(It.IsAny<User>()), Times.Never);
+        _unitOfWorkMock.Verify(x => x.SaveChangesAsync(), Times.Never);
+        exception.Message.Should().BeEquivalentTo($"User with id {userId} not found.");
+    }
+
+    [Fact]
+    public async Task UpdateAvatarAsync_ThrowKeyNotFoundException_WhenUserBeenDeleted()
+    {
+        // Arrange
+        var userId = Guid.NewGuid();
+        _claimServiceMock.SetupGet(x => x.GetCurrentUserId).Returns(userId);
+        var mockUser = _fixture.Build<User>()
+                               .With(u => u.Id, userId)
+                               .With(u => u.DeletedDate, DateTime.UtcNow)
+                               .Create();
+        _userRepositoryMock.Setup(x => x.GetByIdAsync(userId)).ReturnsAsync(mockUser);
+
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<KeyNotFoundException>(() =>
+            _userService.UpdateAvatarAsync(userId, "avatar-url"));
+
+        // Assert
+        _userRepositoryMock.Verify(x => x.Update(It.IsAny<User>()), Times.Never);
+        _unitOfWorkMock.Verify(x => x.SaveChangesAsync(), Times.Never);
+        exception.Message.Should().BeEquivalentTo($"User with id {userId} not found.");
     }
 
     [Fact]
@@ -307,5 +445,47 @@ public class UserServiceTest : SetupTest
         Assert.Equal(userId, result.Id);
         _userRepositoryMock.Verify(x => x.Update(It.IsAny<User>()), Times.Once);
         _unitOfWorkMock.Verify(x => x.SaveChangesAsync(), Times.Once);
+    }
+
+    [Fact]
+    public async Task UpdateUserInfoAsync_ThrowKeyNotFoundException_WhenUserDoesnotExist()
+    {
+        // Arrange
+        var userId = Guid.NewGuid();
+        _claimServiceMock.SetupGet(x => x.GetCurrentUserId).Returns(userId);
+        _userRepositoryMock.Setup(x => x.GetByIdAsync(userId)).ReturnsAsync(() => null);
+        var userModel = _fixture.Build<UserUpdateModel>().Create();
+
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<KeyNotFoundException>(() =>
+            _userService.UpdateUserInfoAsync(userId, userModel));
+
+        // Assert
+        _userRepositoryMock.Verify(x => x.Update(It.IsAny<User>()), Times.Never);
+        _unitOfWorkMock.Verify(x => x.SaveChangesAsync(), Times.Never);
+        exception.Message.Should().BeEquivalentTo($"User with id {userId} not found.");
+    }
+
+    [Fact]
+    public async Task UpdateUserInfoAsync_ThrowKeyNotFoundException_WhenUserBeenDeleted()
+    {
+        // Arrange
+        var userId = Guid.NewGuid();
+        _claimServiceMock.SetupGet(x => x.GetCurrentUserId).Returns(userId);
+        var userModel = _fixture.Build<UserUpdateModel>().Create();
+        var mockUser = _fixture.Build<User>()
+                               .With(u => u.Id, userId)
+                               .With(u => u.DeletedDate, DateTime.UtcNow)
+                               .Create();
+        _userRepositoryMock.Setup(x => x.GetByIdAsync(userId)).ReturnsAsync(mockUser);
+
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<KeyNotFoundException>(() =>
+            _userService.UpdateUserInfoAsync(userId, userModel));
+
+        // Assert
+        _userRepositoryMock.Verify(x => x.Update(It.IsAny<User>()), Times.Never);
+        _unitOfWorkMock.Verify(x => x.SaveChangesAsync(), Times.Never);
+        exception.Message.Should().BeEquivalentTo($"User with id {userId} not found.");
     }
 }

@@ -255,4 +255,321 @@ public class UsersControllerTest : SetupTest
         response!.IsSuccess.Should().BeFalse();
         response.ErrorMessage.Should().Contain("Unexpected error");
     }
+
+    [Fact]
+    public async Task UpdateAvatar_ShouldReturnOk_WhenAvatarIsUpdated()
+    {
+        // Arrange
+        var userId = Guid.NewGuid();
+        var avatarUrl = "https://example.com/avatar.jpg";
+        var model = new UserUpdateAvatarModel { AvatarUrl = avatarUrl };
+
+        _userServiceMock.Setup(s => s.UpdateAvatarAsync(userId, avatarUrl)).ReturnsAsync(true);
+
+        // Act
+        var result = await _usersController.UpdateAvatar(userId, model);
+
+        // Assert
+        result.Should().BeOfType<OkObjectResult>();
+        var okResult = result as OkObjectResult;
+        okResult.Should().NotBeNull();
+        okResult!.StatusCode.Should().Be(200); // Status code 200
+        var response = okResult.Value as ApiResponse;
+        response.Should().NotBeNull();
+        response!.IsSuccess.Should().BeTrue();
+        response.Message.Should().Contain($"Avatar for user {userId} updated successfully.");
+        response.Data.Should().Be(true);
+    }
+
+    [Fact]
+    public async Task UpdateAvatar_ShouldReturnNotFound_WhenUserDoesNotExist()
+    {
+        // Arrange
+        var userId = Guid.NewGuid();
+        var avatarUrl = "https://example.com/avatar.jpg";
+        var model = new UserUpdateAvatarModel { AvatarUrl = avatarUrl };
+
+        _userServiceMock.Setup(s => s.UpdateAvatarAsync(userId, avatarUrl))
+                        .ThrowsAsync(new KeyNotFoundException("User not found"));
+
+        // Act
+        var result = await _usersController.UpdateAvatar(userId, model);
+
+        // Assert
+        result.Should().BeOfType<NotFoundObjectResult>();
+        var notFoundResult = result as NotFoundObjectResult;
+        notFoundResult.Should().NotBeNull();
+        notFoundResult!.StatusCode.Should().Be(404); // Status code 404
+        var response = notFoundResult.Value as ApiResponse;
+        response.Should().NotBeNull();
+        response!.IsSuccess.Should().BeFalse();
+        response.ErrorMessage.Should().Contain("User not found");
+    }
+
+    [Fact]
+    public async Task UpdateAvatar_ShouldReturnUnauthorized_WhenUnauthorizedAccessExceptionIsThrown()
+    {
+        // Arrange
+        var userId = Guid.NewGuid();
+        var avatarUrl = "https://example.com/avatar.jpg";
+        var model = new UserUpdateAvatarModel { AvatarUrl = avatarUrl };
+
+        _userServiceMock.Setup(s => s.UpdateAvatarAsync(userId, avatarUrl))
+                        .ThrowsAsync(new UnauthorizedAccessException("Unauthorized access"));
+
+        // Act
+        var result = await _usersController.UpdateAvatar(userId, model);
+
+        // Assert
+        result.Should().BeOfType<UnauthorizedObjectResult>();
+        var unauthorizedResult = result as UnauthorizedObjectResult;
+        unauthorizedResult.Should().NotBeNull();
+        unauthorizedResult!.StatusCode.Should().Be(401); // Status code 401
+        var response = unauthorizedResult.Value as ApiResponse;
+        response.Should().NotBeNull();
+        response!.IsSuccess.Should().BeFalse();
+        response.ErrorMessage.Should().Be("Unauthorized access");
+    }
+
+    [Fact]
+    public async Task UpdateAvatar_ShouldReturnInternalServerError_WhenExceptionIsThrown()
+    {
+        // Arrange
+        var userId = Guid.NewGuid();
+        var avatarUrl = "https://example.com/avatar.jpg";
+        var model = new UserUpdateAvatarModel { AvatarUrl = avatarUrl };
+
+        _userServiceMock.Setup(s => s.UpdateAvatarAsync(userId, avatarUrl))
+                        .ThrowsAsync(new Exception("Unexpected error"));
+
+        // Act
+        var result = await _usersController.UpdateAvatar(userId, model);
+
+        // Assert
+        result.Should().BeOfType<ObjectResult>();
+        var objectResult = result as ObjectResult;
+        objectResult.Should().NotBeNull();
+        objectResult!.StatusCode.Should().Be(500); // Status code 500
+        var response = objectResult.Value as ApiResponse;
+        response.Should().NotBeNull();
+        response!.IsSuccess.Should().BeFalse();
+        response.ErrorMessage.Should().Contain("Unexpected error");
+    }
+
+    [Fact]
+    public async Task ChangePassword_ShouldReturnOk_WhenPasswordIsChanged()
+    {
+        // Arrange
+        var userId = Guid.NewGuid();
+        var model = _fixture.Create<ChangePasswordModel>();
+
+        _userServiceMock.Setup(s => s.ChangePasswordAsync(
+                                userId, model.OldPassword, model.NewPassword))
+                        .ReturnsAsync(true);
+
+        // Act
+        var result = await _usersController.ChangePassword(userId, model);
+
+        // Assert
+        result.Should().BeOfType<OkObjectResult>();
+        var okResult = result as OkObjectResult;
+        okResult.Should().NotBeNull();
+        okResult!.StatusCode.Should().Be(200); // Status code 200
+        var response = okResult.Value as ApiResponse;
+        response.Should().NotBeNull();
+        response!.IsSuccess.Should().BeTrue();
+        response.Message.Should().Contain($"Password for user {userId} changed successfully.");
+        response.Data.Should().Be(true);
+    }
+
+    [Fact]
+    public async Task ChangePassword_ShouldReturnNotFound_WhenUserDoesNotExist()
+    {
+        // Arrange
+        var userId = Guid.NewGuid();
+        var model = _fixture.Create<ChangePasswordModel>();
+
+        _userServiceMock.Setup(s => s.ChangePasswordAsync(userId, model.OldPassword, model.NewPassword))
+                        .ThrowsAsync(new KeyNotFoundException("User not found"));
+
+        // Act
+        var result = await _usersController.ChangePassword(userId, model);
+
+        // Assert
+        result.Should().BeOfType<NotFoundObjectResult>();
+        var notFoundResult = result as NotFoundObjectResult;
+        notFoundResult.Should().NotBeNull();
+        notFoundResult!.StatusCode.Should().Be(404); // Status code 404
+        var response = notFoundResult.Value as ApiResponse;
+        response.Should().NotBeNull();
+        response!.IsSuccess.Should().BeFalse();
+        response.ErrorMessage.Should().Contain("User not found");
+    }
+
+    [Fact]
+    public async Task ChangePassword_ShouldReturnUnauthorized_WhenUnauthorizedAccessExceptionIsThrown()
+    {
+        // Arrange
+        var userId = Guid.NewGuid();
+        var model = _fixture.Create<ChangePasswordModel>();
+
+        _userServiceMock.Setup(s => s.ChangePasswordAsync(
+                                userId, model.OldPassword, model.NewPassword))
+                        .ThrowsAsync(new UnauthorizedAccessException("Unauthorized access"));
+
+        // Act
+        var result = await _usersController.ChangePassword(userId, model);
+
+        // Assert
+        result.Should().BeOfType<UnauthorizedObjectResult>();
+        var unauthorizedResult = result as UnauthorizedObjectResult;
+        unauthorizedResult.Should().NotBeNull();
+        unauthorizedResult!.StatusCode.Should().Be(401); // Status code 401
+        var response = unauthorizedResult.Value as ApiResponse;
+        response.Should().NotBeNull();
+        response!.IsSuccess.Should().BeFalse();
+        response.ErrorMessage.Should().Be("Unauthorized access");
+    }
+
+    [Fact]
+    public async Task ChangePassword_ShouldReturnBadRequest_WhenArgumentExceptionIsThrown()
+    {
+        // Arrange
+        var userId = Guid.NewGuid();
+        var model = _fixture.Create<ChangePasswordModel>();
+
+        _userServiceMock.Setup(s => s.ChangePasswordAsync(
+                                userId, model.OldPassword, model.NewPassword))
+                        .ThrowsAsync(new ArgumentException("Old password is incorrect"));
+
+        // Act
+        var result = await _usersController.ChangePassword(userId, model);
+
+        // Assert
+        result.Should().BeOfType<BadRequestObjectResult>();
+        var badRequestResult = result as BadRequestObjectResult;
+        badRequestResult.Should().NotBeNull();
+        badRequestResult!.StatusCode.Should().Be(400); // Status code 400
+        var response = badRequestResult.Value as ApiResponse;
+        response.Should().NotBeNull();
+        response!.IsSuccess.Should().BeFalse();
+        response.ErrorMessage.Should().Contain("Old password is incorrect");
+    }
+
+    [Fact]
+    public async Task ChangePassword_ShouldReturnInternalServerError_WhenExceptionIsThrown()
+    {
+        // Arrange
+        var userId = Guid.NewGuid();
+        var model = _fixture.Create<ChangePasswordModel>();
+
+        _userServiceMock.Setup(s => s.ChangePasswordAsync(
+                            userId, model.OldPassword, model.NewPassword))
+                        .ThrowsAsync(new Exception("Unexpected error"));
+
+        // Act
+        var result = await _usersController.ChangePassword(userId, model);
+
+        // Assert
+        result.Should().BeOfType<ObjectResult>();
+        var objectResult = result as ObjectResult;
+        objectResult.Should().NotBeNull();
+        objectResult!.StatusCode.Should().Be(500); // Status code 500
+        var response = objectResult.Value as ApiResponse;
+        response.Should().NotBeNull();
+        response!.IsSuccess.Should().BeFalse();
+        response.ErrorMessage.Should().Contain("Unexpected error");
+    }
+
+    [Fact]
+    public async Task InactiveUser_ShouldReturnOk_WhenUserIsDeactivated()
+    {
+        // Arrange
+        var userId = Guid.NewGuid();
+
+        _userServiceMock.Setup(s => s.InactiveUserAsync(userId)).Returns(Task.CompletedTask);
+
+        // Act
+        var result = await _usersController.InactiveUser(userId);
+
+        // Assert
+        result.Should().BeOfType<OkObjectResult>();
+        var okResult = result as OkObjectResult;
+        okResult.Should().NotBeNull();
+        okResult!.StatusCode.Should().Be(200); // Status code 200
+        var response = okResult.Value as ApiResponse;
+        response.Should().NotBeNull();
+        response!.IsSuccess.Should().BeTrue();
+        response.Message.Should().Contain($"User {userId} deactivated successfully.");
+    }
+
+    [Fact]
+    public async Task InactiveUser_ShouldReturnNotFound_WhenUserDoesNotExist()
+    {
+        // Arrange
+        var userId = Guid.NewGuid();
+
+        _userServiceMock.Setup(s => s.InactiveUserAsync(userId))
+                        .ThrowsAsync(new KeyNotFoundException("User not found"));
+
+        // Act
+        var result = await _usersController.InactiveUser(userId);
+
+        // Assert
+        result.Should().BeOfType<NotFoundObjectResult>();
+        var notFoundResult = result as NotFoundObjectResult;
+        notFoundResult.Should().NotBeNull();
+        notFoundResult!.StatusCode.Should().Be(404); // Status code 404
+        var response = notFoundResult.Value as ApiResponse;
+        response.Should().NotBeNull();
+        response!.IsSuccess.Should().BeFalse();
+        response.ErrorMessage.Should().Contain("User not found");
+    }
+
+    [Fact]
+    public async Task InactiveUser_ShouldReturnUnauthorized_WhenUnauthorizedAccessExceptionIsThrown()
+    {
+        // Arrange
+        var userId = Guid.NewGuid();
+
+        _userServiceMock.Setup(s => s.InactiveUserAsync(userId))
+                        .ThrowsAsync(new UnauthorizedAccessException("Unauthorized access"));
+
+        // Act
+        var result = await _usersController.InactiveUser(userId);
+
+        // Assert
+        result.Should().BeOfType<UnauthorizedObjectResult>();
+        var unauthorizedResult = result as UnauthorizedObjectResult;
+        unauthorizedResult.Should().NotBeNull();
+        unauthorizedResult!.StatusCode.Should().Be(401); // Status code 401
+        var response = unauthorizedResult.Value as ApiResponse;
+        response.Should().NotBeNull();
+        response!.IsSuccess.Should().BeFalse();
+        response.ErrorMessage.Should().Be("Unauthorized access");
+    }
+
+    [Fact]
+    public async Task InactiveUser_ShouldReturnInternalServerError_WhenExceptionIsThrown()
+    {
+        // Arrange
+        var userId = Guid.NewGuid();
+
+        _userServiceMock.Setup(s => s.InactiveUserAsync(userId))
+                        .ThrowsAsync(new Exception("Unexpected error"));
+
+        // Act
+        var result = await _usersController.InactiveUser(userId);
+
+        // Assert
+        result.Should().BeOfType<ObjectResult>();
+        var objectResult = result as ObjectResult;
+        objectResult.Should().NotBeNull();
+        objectResult!.StatusCode.Should().Be(500); // Status code 500
+        var response = objectResult.Value as ApiResponse;
+        response.Should().NotBeNull();
+        response!.IsSuccess.Should().BeFalse();
+        response.ErrorMessage.Should().Contain("Unexpected error");
+    }
+
 }

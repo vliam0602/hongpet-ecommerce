@@ -1,214 +1,208 @@
-﻿//using FluentAssertions;
-//using HongPet.Domain.Entities;
-//using HongPet.Domain.Test;
-//using HongPet.Infrastructure.Database;
-//using HongPet.Infrastructure.Repositories;
-//using Microsoft.EntityFrameworkCore;
+﻿using AutoFixture;
+using FluentAssertions;
+using HongPet.Domain.Entities;
+using HongPet.Infrastructure.Database;
+using HongPet.Infrastructure.Repositories;
+using Microsoft.EntityFrameworkCore;
 
-//namespace HongPet.Infrastructure.Test.Repositories;
+namespace HongPet.Domain.Test.Repositories;
 
-//public class ProductRepositoryTest : SetupTest
-//{
-//    private readonly ProductRepository _productRepository;
-//    private readonly AppDbContext _context;
+public class ProductRepositoryTest : SetupTest
+{
+    private readonly ProductRepository _productRepository;
+    private readonly AppDbContext _dbContext;
 
-//    public ProductRepositoryTest()
-//    {
-//        _context = new AppDbContext(new DbContextOptionsBuilder<AppDbContext>()
-//                    .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-//                    .Options);
+    public ProductRepositoryTest()
+    {
+        // Set up in-memory database
+        var options = new DbContextOptionsBuilder<AppDbContext>()
+            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+            .Options;
 
-//        // Reset the database
-//        _context.Products.RemoveRange(_context.Products);
-//        _context.SaveChanges();
+        _dbContext = new AppDbContext(options);
+        
+        // reset the database
+        _dbContext.Products.RemoveRange(_dbContext.Products);
+        _dbContext.Categories.RemoveRange(_dbContext.Categories);
+        _dbContext.SaveChanges();
 
-//        // Initialize the product repository
-//        _productRepository = new ProductRepository(_context);
-//    }
+        // init the repository
+        _productRepository = new ProductRepository(_dbContext);
+    }
 
-//    [Fact]
-//    public async Task GetAllAsync_ShouldReturnAllProducts_WhenDataExists()
-//    {
-//        // Arrange
-//        var products = _fixture.Build<Product>()
-//                               .Without(p => p.Variants)
-//                               .CreateMany(10)
-//                               .ToList();
+    [Fact]
+    public async Task GetAllAsync_ShouldReturnAllProducts()
+    {
+        // Arrange
+        var products = _fixture.Build<Product>()
+                               .Without(p => p.Variants)
+                               .CreateMany(3)
+                               .ToList();
+        await _dbContext.Products.AddRangeAsync(products);
+        await _dbContext.SaveChangesAsync();
 
-//        _context.Products.AddRange(products);
-//        await _context.SaveChangesAsync();
+        // Act
+        var result = await _productRepository.GetAllAsync();
 
-//        // Act
-//        var result = await _productRepository.GetAllAsync();
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().HaveCount(3);
+    }
 
-//        // Assert
-//        result.Should().NotBeNull();
-//        result.Should().HaveCount(10);
-//    }
+    [Theory]
+    [InlineData(1, 2, 2)]
+    [InlineData(3, 2, 1)]
+    public async Task GetPagedProductsAsync_ShouldReturnPagedProducts(
+        int pageIndex, int pageSize, int expectedItemsCount)
+    {
+        // Arrange
+        var products = _fixture.Build<Product>()
+                               .Without(p => p.DeletedDate)
+                               .Without(p => p.DeletedBy)
+                               .CreateMany(5)
+                               .ToList();
+        await _dbContext.Products.AddRangeAsync(products);
+        await _dbContext.SaveChangesAsync();
 
-//    [Fact]
-//    public async Task GetPagedProductsAsync_ShouldReturnPagedProducts_WhenDataExists()
-//    {
-//        // Arrange
-//        var products = _fixture.Build<Product>()
-//                               .Without(p => p.Variants)
-//                               .Without(p => p.Categories)
-//                               .CreateMany(15)
-//                               .ToList();
+        // Act
+        var result = await _productRepository.GetPagedProductsAsync(pageIndex, pageSize);
 
-//        _context.Products.AddRange(products);
-//        await _context.SaveChangesAsync();
+        // Assert
+        result.Should().NotBeNull();
+        result.Items.Should().HaveCount(expectedItemsCount);
+        result.TotalCount.Should().Be(5);
+    }
 
-//        // Act
-//        var result = await _productRepository.GetPagedProductsAsync(pageIndex: 1, pageSize: 10);
+    [Fact]
+    public async Task GetPagedProductsAsync_ShouldFilterByCategoryAndKeyword()
+    {
+        #region Arrange
+        var categories = _fixture.Build<Category>()
+                                    .With(c => c.Name, "Dog")
+                                    .Without(c => c.Products)
+                                    .Without(c => c.DeletedDate)
+                                    .Without(c => c.DeletedBy)
+                                    .CreateMany(5)
+                                    .ToList();
+        for (int i = 0; i < 3; i++) // set fisrt 3 categories to "Cat"        
+        {
+            categories[i].Name = "Cat";
+        }
 
-//        // Assert
-//        result.Should().NotBeNull();
-//        result.Items.Should().HaveCount(10);
-//        result.TotalCount.Should().Be(15);
-//        result.CurrentPage.Should().Be(1);
-//        result.TotalPages.Should().Be(2);
-//    }
+        foreach (var category in categories)
+        {
+            var product = _fixture.Build<Product>()
+                .With(p => p.Name, category.Name) // set product name to category name
+                .With(p => p.Categories, new List<Category> { category })
+                .With(p => p.CreatedDate, DateTime.Now)
+                .Without(p => p.Variants)
+                .Without(p => p.Images)
+                .Without(p => p.Reviews)
+                .Without(p => p.DeletedDate)
+                .Without(p => p.DeletedBy)
+                .Create();
+            category.Products.Add(product);
+        }
 
-//    [Fact]
-//    public async Task GetPagedProductsAsync_ShouldFilterByKeyword_WhenKeywordIsProvided()
-//    {
-//        // Arrange
-//        var products = _fixture.Build<Product>()
-//                               .Without(p => p.Variants)
-//                               .Without(p => p.Categories)
-//                               .CreateMany(10)
-//                               .ToList();
 
-//        products[0].Name = "TestProduct";
+        await _dbContext.Categories.AddRangeAsync(categories);
+        await _dbContext.SaveChangesAsync();
 
-//        _context.Products.AddRange(products);
-//        await _context.SaveChangesAsync();
+        var categoriesFilter = new List<string> { "Cat" };
+        var keyword = "Cat";
+        #endregion
 
-//        // Act
-//        var result = await _productRepository.GetPagedProductsAsync(pageIndex: 1, pageSize: 10, keyword: "Test");
+        // Act
+        var result = await _productRepository.GetPagedProductsAsync(1, 10, keyword, categoriesFilter);
 
-//        // Assert
-//        result.Should().NotBeNull();
-//        result.Items.Should().HaveCount(1);
-//        result.Items.First().Name.Should().Be("TestProduct");
-//    }
+        // Assert
+        result.Should().NotBeNull();
+        result.Items.Should().HaveCount(3);
+        result.Items[2].Id.Should().Be(categories[0].Products.First().Id); //because of the OrderByDescending of CreatedDate
+        result.TotalCount.Should().Be(3);
+    }
 
-//    [Fact]
-//    public async Task GetProductDetailAsync_ShouldReturnProductDetail_WhenProductExists()
-//    {
-//        // Arrange
-//        var product = _fixture.Build<Product>()
-//                              .Without(p => p.Variants)
-//                              .Without(p => p.Categories)
-//                              .Without(p => p.Reviews)
-//                              .Without(p => p.Images)
-//                              .Create();
+    [Fact]
+    public async Task GetProductDetailAsync_ShouldReturnProductWithDetails()
+    {
+        // Arrange
+        var product = _fixture.Create<Product>();
+        await _dbContext.Products.AddAsync(product);
+        await _dbContext.SaveChangesAsync();
 
-//        _context.Products.Add(product);
-//        await _context.SaveChangesAsync();
+        // Act
+        var result = await _productRepository.GetProductDetailAsync(product.Id);
 
-//        // Act
-//        var result = await _productRepository.GetProductDetailAsync(product.Id);
+        // Assert
+        result.Should().NotBeNull();
+        result!.Id.Should().Be(product.Id);
+    }
 
-//        // Assert
-//        result.Should().NotBeNull();
-//        result.Id.Should().Be(product.Id);
-//    }
+    [Fact]
+    public async Task GetProductsByCategoryAsync_ShouldReturnProductsInCategory()
+    {
+        // Arrange        
+        var product = _fixture.Build<Product>()
+                              .Without(p => p.Categories)
+                              .Create();
 
-//    [Fact]
-//    public async Task GetProductDetailAsync_ShouldReturnNull_WhenProductDoesNotExist()
-//    {
-//        // Arrange
-//        var nonExistentProductId = Guid.NewGuid();
+        var category = _fixture.Build<Category>()
+                               .With(c => c.Products, new List<Product> { product})
+                               .Without(c => c.DeletedDate)
+                               .Without(c => c.DeletedBy)
+                               .Create();
 
-//        // Act
-//        var result = await _productRepository.GetProductDetailAsync(nonExistentProductId);
+        product.Categories.Add(category);
 
-//        // Assert
-//        result.Should().BeNull();
-//    }
+        await _dbContext.Categories.AddAsync(category);
+        await _dbContext.Products.AddAsync(product);
+        await _dbContext.SaveChangesAsync();
 
-//    [Fact]
-//    public async Task GetProductsByCategoryAsync_ShouldReturnProducts_WhenCategoryExists()
-//    {
-//        // Arrange
-//        var category = _fixture.Build<Category>().Create();
-//        var products = _fixture.Build<Product>()
-//                               .With(p => p.Categories, new List<Category> { category })
-//                               .CreateMany(5)
-//                               .ToList();
+        // Act
+        var result = await _productRepository.GetProductsByCategoryAsync(category.Name, 1, 10);
 
-//        _context.Products.AddRange(products);
-//        await _context.SaveChangesAsync();
+        // Assert
+        result.Should().NotBeNull();
+        result.Items.Should().HaveCount(1);
+        result.Items.First().Id.Should().Be(product.Id);
+    }
 
-//        // Act
-//        var result = await _productRepository.GetProductsByCategoryAsync(category.Name, pageIndex: 1, pageSize: 10);
+    [Fact]
+    public async Task GetAttributeValuePairAsync_ShouldReturnAttributeValuePair()
+    {
+        // Arrange
+        var attribute = _fixture.Create<ProductAttribute>();
 
-//        // Assert
-//        result.Should().NotBeNull();
-//        result.Items.Should().HaveCount(5);
-//    }
+        var attributeValue = _fixture.Build<ProductAttributeValue>()
+                                     .With(av => av.Attribute, attribute)
+                                     .Create();
+        await _dbContext.ProductAttributes.AddAsync(attribute);
+        await _dbContext.ProductAttributeValues.AddAsync(attributeValue);
+        await _dbContext.SaveChangesAsync();
 
-//    [Fact]
-//    public async Task GetAttributeValuePairAsync_ShouldReturnAttributeValue_WhenExists()
-//    {
-//        // Arrange
-//        var attribute = _fixture.Build<ProductAttribute>().Create();
-//        var attributeValue = _fixture.Build<ProductAttributeValue>()
-//                                     .With(av => av.Attribute, attribute)
-//                                     .With(av => av.Value, "TestValue")
-//                                     .Create();
+        // Act
+        var result = await _productRepository.GetAttributeValuePairAsync(attribute.Name, attributeValue.Value);
 
-//        _context.ProductAttributes.Add(attribute);
-//        _context.ProductAttributeValues.Add(attributeValue);
-//        await _context.SaveChangesAsync();
+        // Assert
+        result.Should().NotBeNull();
+        result!.Id.Should().Be(attributeValue.Id);
+    }
 
-//        // Act
-//        var result = await _productRepository.GetAttributeValuePairAsync(attribute.Name, "TestValue");
+    [Fact]
+    public async Task GetAttributeByNameAsync_ShouldReturnAttribute()
+    {
+        // Arrange
+        var attribute = _fixture.Create<ProductAttribute>();
+        await _dbContext.ProductAttributes.AddAsync(attribute);
+        await _dbContext.SaveChangesAsync();
 
-//        // Assert
-//        result.Should().NotBeNull();
-//        result.Value.Should().Be("TestValue");
-//        result.Attribute.Name.Should().Be(attribute.Name);
-//    }
+        // Act
+        var result = await _productRepository.GetAttributeByNameAsync(attribute.Name);
 
-//    [Fact]
-//    public async Task GetAttributeValuePairAsync_ShouldReturnNull_WhenAttributeValueDoesNotExist()
-//    {
-//        // Act
-//        var result = await _productRepository.GetAttributeValuePairAsync("NonExistentAttribute", "NonExistentValue");
+        // Assert
+        result.Should().NotBeNull();
+        result!.Id.Should().Be(attribute.Id);
+    }
 
-//        // Assert
-//        result.Should().BeNull();
-//    }
 
-//    [Fact]
-//    public async Task GetAttributeByNameAsync_ShouldReturnAttribute_WhenExists()
-//    {
-//        // Arrange
-//        var attribute = _fixture.Build<ProductAttribute>()
-//                                .With(a => a.Name, "TestAttribute")
-//                                .Create();
-
-//        _context.ProductAttributes.Add(attribute);
-//        await _context.SaveChangesAsync();
-
-//        // Act
-//        var result = await _productRepository.GetAttributeByNameAsync("TestAttribute");
-
-//        // Assert
-//        result.Should().NotBeNull();
-//        result.Name.Should().Be("TestAttribute");
-//    }
-
-//    [Fact]
-//    public async Task GetAttributeByNameAsync_ShouldReturnNull_WhenAttributeDoesNotExist()
-//    {
-//        // Act
-//        var result = await _productRepository.GetAttributeByNameAsync("NonExistentAttribute");
-
-//        // Assert
-//        result.Should().BeNull();
-//    }
-//}
+}

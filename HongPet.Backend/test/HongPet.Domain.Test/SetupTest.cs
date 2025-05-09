@@ -52,6 +52,8 @@ public class SetupTest
         return _fixture.Build<User>()
                        .Without(u => u.Orders)   
                        .Without(u => u.Reviews)   
+                       .Without(u => u.DeletedDate)
+                       .Without(u => u.DeletedBy)
                        .CreateMany(count)                       
                        .ToList();
     }    
