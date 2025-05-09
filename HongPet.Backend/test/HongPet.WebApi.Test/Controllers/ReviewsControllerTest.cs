@@ -228,6 +228,53 @@ public class ReviewsControllerTest : SetupTest
     }
 
     [Fact]
+    public async Task SoftDeleteReview_ShouldReturnBadRequest_WhenArgumentExceptionIsThrown()
+    {
+        // Arrange
+        var reviewId = Guid.NewGuid();
+        var exceptionMessage = "Invalid review ID";
+        _reviewServiceMock.Setup(s => s.DeleteReviewAsync(reviewId))
+                          .ThrowsAsync(new ArgumentException(exceptionMessage));
+
+        // Act
+        var result = await _reviewsController.SoftDeleteReview(reviewId);
+
+        // Assert
+        result.Should().BeOfType<BadRequestObjectResult>();
+        var badRequestResult = result as BadRequestObjectResult;
+        badRequestResult.Should().NotBeNull();
+        badRequestResult!.StatusCode.Should().Be(400); // Status code 400
+        var response = badRequestResult.Value as ApiResponse;
+        response.Should().NotBeNull();
+        response!.IsSuccess.Should().BeFalse();
+        response.ErrorMessage.Should().Be(exceptionMessage);
+    }
+
+    [Fact]
+    public async Task SoftDeleteReview_ShouldReturnUnauthorized_WhenUnauthorizedAccessExceptionIsThrown()
+    {
+        // Arrange
+        var reviewId = Guid.NewGuid();
+        var exceptionMessage = "You are not authorized to delete this review";
+        _reviewServiceMock.Setup(s => s.DeleteReviewAsync(reviewId))
+                          .ThrowsAsync(new UnauthorizedAccessException(exceptionMessage));
+
+        // Act
+        var result = await _reviewsController.SoftDeleteReview(reviewId);
+
+        // Assert
+        result.Should().BeOfType<UnauthorizedObjectResult>();
+        var unauthorizedResult = result as UnauthorizedObjectResult;
+        unauthorizedResult.Should().NotBeNull();
+        unauthorizedResult!.StatusCode.Should().Be(401); // Status code 401
+        var response = unauthorizedResult.Value as ApiResponse;
+        response.Should().NotBeNull();
+        response!.IsSuccess.Should().BeFalse();
+        response.ErrorMessage.Should().Be(exceptionMessage);
+    }
+
+
+    [Fact]
     public async Task SoftDeleteReview_ShouldReturnInternalServerError_WhenExceptionIsThrown()
     {
         // Arrange

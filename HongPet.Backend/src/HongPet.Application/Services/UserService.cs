@@ -111,7 +111,7 @@ public class UserService : GenericService<User>, IUserService
         if (user == null || user.DeletedDate != null)
         {
             throw new KeyNotFoundException($"User with id {id} not found " +
-                $"or been inactive already..");
+                $"or been inactive already.");
         }
 
         await base.SoftDeleteAsync(id);

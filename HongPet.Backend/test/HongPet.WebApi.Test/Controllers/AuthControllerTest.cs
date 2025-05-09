@@ -121,6 +121,31 @@ public class AuthControllerTest : SetupTest
     }
 
     [Fact]
+    public async Task AdminLogin_ShouldReturnOk_WhenLoginIsSuccessful()
+    {
+        // Arrange
+        var loginModel = _fixture.Create<LoginModel>();
+        var user = _fixture.Build<User>().With(u => u.Role, RoleEnum.Admin).Create();
+        _userServiceMock.Setup(s => s.GetByEmailAndPasswordAsync(
+                                    loginModel.Email, loginModel.Password))
+                        .ReturnsAsync(user);
+
+        // Act
+        var result = await _authController.AdminLogin(loginModel);
+
+        // Assert
+        result.Should().BeOfType<OkObjectResult>();
+        var okResult = result as OkObjectResult;
+        okResult.Should().NotBeNull();
+        okResult!.StatusCode.Should().Be(200); // Status code 200
+        var response = okResult.Value as ApiResponse;
+        response.Should().NotBeNull();
+        response!.IsSuccess.Should().BeTrue();
+        response.Message.Should().Be("Logged in successfully.");
+        response.Data.Should().NotBeNull();
+    }
+
+    [Fact]
     public async Task AdminLogin_ShouldReturnUnauthorized_WhenAccountIsNull()
     {
         // Arrange
@@ -168,28 +193,27 @@ public class AuthControllerTest : SetupTest
     }
 
     [Fact]
-    public async Task AdminLogin_ShouldReturnOk_WhenLoginIsSuccessful()
+    public async Task AdminLogin_ShouldReturnUnauthorized_WhenThrownedUnauthorizedAccessException()
     {
         // Arrange
         var loginModel = _fixture.Create<LoginModel>();
-        var user = _fixture.Build<User>().With(u => u.Role, RoleEnum.Admin).Create();
+        var errorMessage = "Unauthorized access";
         _userServiceMock.Setup(s => s.GetByEmailAndPasswordAsync(
                                     loginModel.Email, loginModel.Password))
-                        .ReturnsAsync(user);
+                        .ThrowsAsync(new UnauthorizedAccessException(errorMessage));
 
         // Act
         var result = await _authController.AdminLogin(loginModel);
 
         // Assert
-        result.Should().BeOfType<OkObjectResult>();
-        var okResult = result as OkObjectResult;
-        okResult.Should().NotBeNull();
-        okResult!.StatusCode.Should().Be(200); // Status code 200
-        var response = okResult.Value as ApiResponse;
+        result.Should().BeOfType<UnauthorizedObjectResult>();
+        var unauthorizedResult = result as UnauthorizedObjectResult;
+        unauthorizedResult.Should().NotBeNull();
+        unauthorizedResult!.StatusCode.Should().Be(401); // Status code 401
+        var response = unauthorizedResult.Value as ApiResponse;
         response.Should().NotBeNull();
-        response!.IsSuccess.Should().BeTrue();
-        response.Message.Should().Be("Logged in successfully.");
-        response.Data.Should().NotBeNull();
+        response!.IsSuccess.Should().BeFalse();
+        response.ErrorMessage.Should().Be(errorMessage);
     }
 
     [Fact]

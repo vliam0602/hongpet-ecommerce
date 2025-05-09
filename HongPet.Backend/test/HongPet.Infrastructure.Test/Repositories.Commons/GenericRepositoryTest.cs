@@ -1,4 +1,6 @@
-﻿using HongPet.Domain.Entities;
+﻿using AutoFixture;
+using FluentAssertions;
+using HongPet.Domain.Entities;
 using HongPet.Domain.Test;
 using HongPet.Infrastructure.Database;
 using HongPet.Infrastructure.Repositories.Commons;
@@ -106,6 +108,21 @@ public class GenericRepositoryTest : SetupTest
     }
 
     [Fact]
+    public async Task DeleteAsync_ShouldThrowKeyNotFoundException_WhenEntityNotExist()
+    {
+        // Arrange
+        var entityId = Guid.NewGuid();
+        var repository = new GenericRepository<User>(_context);
+
+        // Act
+        var exception = await Assert.ThrowsAsync<KeyNotFoundException>(
+            () => repository.DeleteAsync(entityId));
+
+        // Assert
+        exception.Message.Should().Be("Entity with id " + entityId + " not found.");
+    }
+
+    [Fact]
     public async Task GetAsync_ShouldReturnFilteredEntities()
     {
         // Arrange
@@ -147,5 +164,38 @@ public class GenericRepositoryTest : SetupTest
         Assert.Equal(expected, pagedResult.Items.Count);
         Assert.Equal(pageIndex, pagedResult.CurrentPage);
         Assert.Equal((int)Math.Ceiling((double)entities.Count / pageSize), pagedResult.TotalPages);
+    }
+
+    [Fact]
+    public async Task IsExistAsync_ShouldReturnTrue_WhenEntityExist()
+    {
+        // Arrange
+        var userId = Guid.NewGuid();
+        var repository = new GenericRepository<User>(_context);
+        var entity = _fixture.Build<User>()
+                             .With(u => u.Id, userId)
+                             .Create();
+        await _context.Set<User>().AddAsync(entity);
+        await _context.SaveChangesAsync();
+
+        // Act
+        var result = await repository.IsExistAsync(userId);
+
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task IsExistAsync_ShouldReturnFalse_WhenEntityNotExist()
+    {
+        // Arrange
+        var userId = Guid.NewGuid();
+        var repository = new GenericRepository<User>(_context);
+
+        // Act
+        var result = await repository.IsExistAsync(userId);
+
+        // Assert
+        result.Should().BeFalse();
     }
 }

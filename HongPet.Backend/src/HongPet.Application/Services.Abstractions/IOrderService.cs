@@ -11,6 +11,5 @@ public interface IOrderService : IGenericService<Order>
     Task<Order> CreateOrderAsync(OrderCreationModel orderModel);
     Task<IPagedList<OrderVM>> GetOrdersByCustomerIdAsync(
         Guid customerId, int? pageIndex = 1, int? pageSize = 10, string? seachKey = "");
-    Task<OrderVM?> GetOrderWithDetailsAsync(Guid orderId);
-    Task<bool> UpdateOrderStatusAsync(Guid orderId, OrderStatusEnum status);    
+    Task<OrderVM?> GetOrderWithDetailsAsync(Guid orderId);     
 }

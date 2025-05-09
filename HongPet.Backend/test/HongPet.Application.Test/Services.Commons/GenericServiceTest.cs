@@ -139,4 +139,60 @@ public class GenericServiceTest : SetupTest
         Assert.Equal(pageIndex, result.CurrentPage);
         Assert.Equal((int)Math.Ceiling((double)entities.Count / pageSize), result.TotalPages);
     }
+
+    [Fact]
+    public async Task SoftDeleteAsync_ShouldMarkEntityAsDeleted()
+    {
+        // Arrange
+        var entity = MockUsers(1).First();
+        _repositoryMock.Setup(r => r.GetByIdAsync(entity.Id)).ReturnsAsync(entity);
+        _claimServiceMock.Setup(c => c.GetCurrentUserId).Returns(Guid.NewGuid());
+
+        // Act
+        await _service.SoftDeleteAsync(entity.Id);
+
+        // Assert
+        _repositoryMock.Verify(r => r.GetByIdAsync(entity.Id), Times.Once);
+        _repositoryMock.Verify(r => r.Update(It.Is<User>(e =>
+            e.Id == entity.Id &&
+            e.DeletedBy == _claimServiceMock.Object.GetCurrentUserId &&
+            e.DeletedDate != null)), Times.Once);
+        _unitOfWorkMock.Verify(u => u.SaveChangesAsync(), Times.Once);
+    }
+
+    [Fact]
+    public async Task SoftDeleteAsync_ShouldThrowKeyNotFoundException_WhenEntityDoesNotExist()
+    {
+        // Arrange
+        var nonExistentId = Guid.NewGuid();
+        _repositoryMock.Setup(r => r.GetByIdAsync(nonExistentId)).ReturnsAsync((User?)null);
+
+        // Act
+        var act = async () => await _service.SoftDeleteAsync(nonExistentId);
+
+        // Assert
+        await Assert.ThrowsAsync<KeyNotFoundException>(act);
+        _repositoryMock.Verify(r => r.GetByIdAsync(nonExistentId), Times.Once);
+        _repositoryMock.Verify(r => r.Update(It.IsAny<User>()), Times.Never);
+        _unitOfWorkMock.Verify(u => u.SaveChangesAsync(), Times.Never);
+    }
+
+    [Fact]
+    public async Task SoftDeleteAsync_ShouldThrowArgumentException_WhenEntityAlreadyDeleted()
+    {
+        // Arrange
+        var entity = MockUsers(1).First();
+        entity.DeletedDate = DateTime.UtcNow; // Mark as already deleted
+        _repositoryMock.Setup(r => r.GetByIdAsync(entity.Id)).ReturnsAsync(entity);
+
+        // Act
+        var act = async () => await _service.SoftDeleteAsync(entity.Id);
+
+        // Assert
+        await Assert.ThrowsAsync<ArgumentException>(act);
+        _repositoryMock.Verify(r => r.GetByIdAsync(entity.Id), Times.Once);
+        _repositoryMock.Verify(r => r.Update(It.IsAny<User>()), Times.Never);
+        _unitOfWorkMock.Verify(u => u.SaveChangesAsync(), Times.Never);
+    }
+
 }

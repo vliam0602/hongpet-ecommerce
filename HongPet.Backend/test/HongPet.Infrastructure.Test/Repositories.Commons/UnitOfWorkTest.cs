@@ -1,4 +1,5 @@
-﻿using HongPet.Domain.Entities;
+﻿using FluentAssertions;
+using HongPet.Domain.Entities;
 using HongPet.Domain.Repositories.Abstractions;
 using HongPet.Domain.Test;
 using HongPet.Infrastructure.Database;
@@ -75,5 +76,31 @@ public class UnitOfWorkTest : SetupTest
 
         // Assert
         Assert.Throws<ObjectDisposedException>(() => _context.Users.ToList());
+    }    
+
+    [Fact]
+    public void Repository_ShouldCreateAndReturnNewRepository_WhenRepositoryDoesNotExist()
+    {
+        // Act
+        var productRepository = _unitOfWork.Repository<Product>();
+
+        // Assert
+        productRepository.Should().NotBeNull();
+        productRepository.Should().BeOfType<GenericRepository<Product>>(); // Ensure the correct type is created
     }
+
+    [Fact]
+    public void Repository_ShouldReturnExistingRepository_WhenRepositoryAlreadyExists()
+    {
+        // Arrange
+        var userRepository = _unitOfWork.Repository<User>();
+
+        // Act
+        var retrievedRepository = _unitOfWork.Repository<User>();
+
+        // Assert
+        retrievedRepository.Should().NotBeNull();
+        retrievedRepository.Should().BeSameAs(userRepository); // Ensure the same instance is returned
+    }
+
 }

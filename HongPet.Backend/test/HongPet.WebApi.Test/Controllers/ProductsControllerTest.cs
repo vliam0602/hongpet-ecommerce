@@ -170,6 +170,30 @@ public class ProductsControllerTest : SetupTest
     }
 
     [Fact]
+    public async Task AddProduct_ShouldReturnBadRequest_WhenKeyNotFoundExceptionIsThrown()
+    {
+        // Arrange
+        var productModel = _fixture.Create<ProductModel>();
+        var exceptionMessage = "Category not found";
+        _productServiceMock.Setup(s => s.AddProductAsync(productModel))
+                           .ThrowsAsync(new KeyNotFoundException(exceptionMessage));
+
+        // Act
+        var result = await _productsController.AddProduct(productModel);
+
+        // Assert
+        result.Should().BeOfType<BadRequestObjectResult>();
+        var badRequestResult = result as BadRequestObjectResult;
+        badRequestResult.Should().NotBeNull();
+        badRequestResult!.StatusCode.Should().Be(400); // Status code 400
+        var response = badRequestResult.Value as ApiResponse;
+        response.Should().NotBeNull();
+        response!.IsSuccess.Should().BeFalse();
+        response.ErrorMessage.Should().Be(exceptionMessage);
+    }
+
+
+    [Fact]
     public async Task AddProduct_ShouldReturnInternalServerError_WhenExceptionIsThrown()
     {
         // Arrange
@@ -326,4 +350,96 @@ public class ProductsControllerTest : SetupTest
         response!.IsSuccess.Should().BeFalse();
         response.ErrorMessage.Should().Contain("Unexpected error");
     }
+
+    [Fact]
+    public async Task GetAllAttributes_ShouldReturnOk_WhenAttributesExist()
+    {
+        // Arrange
+        var attributes = _fixture.Create<List<AttributeVM>>();
+        _productServiceMock.Setup(s => s.GetAllAttributes()).ReturnsAsync(attributes);
+
+        // Act
+        var result = await _productsController.GetAllAttributes();
+
+        // Assert
+        result.Result.Should().BeOfType<OkObjectResult>();
+        var okResult = result.Result as OkObjectResult;
+        okResult.Should().NotBeNull();
+        okResult!.StatusCode.Should().Be(200); // Status code 200
+        var response = okResult.Value as ApiResponse;
+        response.Should().NotBeNull();
+        response!.IsSuccess.Should().BeTrue();
+        response.Data.Should().Be(attributes);
+    }
+
+    [Fact]
+    public async Task GetAllAttributes_ShouldReturnInternalServerError_WhenExceptionIsThrown()
+    {
+        // Arrange
+        _productServiceMock.Setup(s => s.GetAllAttributes())
+                           .ThrowsAsync(new Exception("Unexpected error"));
+
+        // Act
+        var result = await _productsController.GetAllAttributes();
+
+        // Assert
+        result.Result.Should().BeOfType<ObjectResult>();
+        var objectResult = result.Result as ObjectResult;
+        objectResult.Should().NotBeNull();
+        objectResult!.StatusCode.Should().Be(500); // Status code 500
+        var response = objectResult.Value as ApiResponse;
+        response.Should().NotBeNull();
+        response!.IsSuccess.Should().BeFalse();
+        response.ErrorMessage.Should().Contain("Unexpected error");
+    }
+
+    [Fact]
+    public async Task GetProductReviews_ShouldReturnOk_WhenReviewsExist()
+    {
+        // Arrange
+        var productId = Guid.NewGuid();
+        var pagedReviews = _fixture.Create<PagedList<ReviewVM>>();
+        var criteria = _fixture.Create<QueryListCriteria>();
+        _reviewServiceMock.Setup(s => s.GetReviewsByProductIdAsync(
+                                        productId, criteria.PageIndex, criteria.PageSize))
+                          .ReturnsAsync(pagedReviews);
+
+        // Act
+        var result = await _productsController.GetProductReviews(productId, criteria);
+
+        // Assert
+        result.Result.Should().BeOfType<OkObjectResult>();
+        var okResult = result.Result as OkObjectResult;
+        okResult.Should().NotBeNull();
+        okResult!.StatusCode.Should().Be(200); // Status code 200
+        var response = okResult.Value as ApiResponse;
+        response.Should().NotBeNull();
+        response!.IsSuccess.Should().BeTrue();
+        response.Data.Should().Be(pagedReviews);
+    }
+
+    [Fact]
+    public async Task GetProductReviews_ShouldReturnInternalServerError_WhenExceptionIsThrown()
+    {
+        // Arrange
+        var productId = Guid.NewGuid();
+        var criteria = _fixture.Create<QueryListCriteria>();
+        _reviewServiceMock.Setup(s => s.GetReviewsByProductIdAsync(
+                                        productId, criteria.PageIndex, criteria.PageSize))
+                          .ThrowsAsync(new Exception("Unexpected error"));
+
+        // Act
+        var result = await _productsController.GetProductReviews(productId, criteria);
+
+        // Assert
+        result.Result.Should().BeOfType<ObjectResult>();
+        var objectResult = result.Result as ObjectResult;
+        objectResult.Should().NotBeNull();
+        objectResult!.StatusCode.Should().Be(500); // Status code 500
+        var response = objectResult.Value as ApiResponse;
+        response.Should().NotBeNull();
+        response!.IsSuccess.Should().BeFalse();
+        response.ErrorMessage.Should().Contain("Unexpected error");
+    }
+
 }

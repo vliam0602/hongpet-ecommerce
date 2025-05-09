@@ -104,9 +104,39 @@ public class ReviewServiceTest : SetupTest
         _orderRepositoryMock.Setup(x => x.GetByIdAsync(reviewModel.OrderId)).ReturnsAsync((Order?)null);
 
         // Act & Assert
-        await Assert.ThrowsAsync<KeyNotFoundException>(() =>
+        var exception = await Assert.ThrowsAsync<KeyNotFoundException>(() =>
             _reviewService.CreateReviewAsync(reviewModel));
+        exception.Message.Should().BeEquivalentTo($"Order with the id {reviewModel.OrderId} not found.");
+        _orderRepositoryMock.Verify(x => x.GetByIdAsync(reviewModel.OrderId), Times.Once);        
+        _reviewRepositoryMock.Verify(x => x.AddAsync(It.IsAny<Review>()), Times.Never);
+        _unitOfWorkMock.Verify(x => x.SaveChangesAsync(), Times.Never);
     }
+
+    [Fact]
+    public async Task CreateReviewAsync_ShouldThrowKeyNotFoundException_WhenProductNotFound()
+    {
+        // Arrange
+        var reviewModel = _fixture.Build<ReviewCreateModel>().Create();
+        var currentUserId = Guid.NewGuid();
+        var mockOrder = _fixture.Build<Order>()
+                                .With(o => o.Id, reviewModel.OrderId)
+                                .With(o => o.CustomerId, currentUserId)
+                                .Create();
+
+        _claimServiceMock.Setup(x => x.GetCurrentUserId).Returns(currentUserId);
+        _orderRepositoryMock.Setup(x => x.GetByIdAsync(reviewModel.OrderId)).ReturnsAsync(mockOrder);
+        _productRepositoryMock.Setup(x => x.IsExistAsync(reviewModel.ProductId)).ReturnsAsync(false);
+
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<KeyNotFoundException>(() =>
+            _reviewService.CreateReviewAsync(reviewModel));        
+        exception.Message.Should().BeEquivalentTo($"Product with the id {reviewModel.ProductId} not found.");
+        _orderRepositoryMock.Verify(x => x.GetByIdAsync(reviewModel.OrderId), Times.Once);
+        _productRepositoryMock.Verify(x => x.IsExistAsync(reviewModel.ProductId), Times.Once);
+        _reviewRepositoryMock.Verify(x => x.AddAsync(It.IsAny<Review>()), Times.Never);
+        _unitOfWorkMock.Verify(x => x.SaveChangesAsync(), Times.Never);
+    }
+
 
     [Fact]
     public async Task DeleteReviewAsync_ShouldSoftDeleteReview_WhenAuthorized()
