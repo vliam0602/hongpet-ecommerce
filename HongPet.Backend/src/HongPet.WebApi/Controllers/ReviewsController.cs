@@ -1,9 +1,6 @@
-﻿using AutoMapper;
-using HongPet.Application.Services.Abstractions;
-using HongPet.Domain.Entities;
+﻿using HongPet.Application.Services.Abstractions;
 using HongPet.SharedViewModels.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HongPet.WebApi.Controllers;

@@ -4,7 +4,6 @@ using HongPet.SharedViewModels.Generals;
 using HongPet.SharedViewModels.Models;
 using HongPet.SharedViewModels.ViewModels;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HongPet.WebApi.Controllers;
