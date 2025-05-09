@@ -15,6 +15,6 @@ public class Order : BaseEntity
     public PaymentMethodEnum PaymentMethod { get; set; } = PaymentMethodEnum.COD;
 
     public virtual User Customer { get; set; } = default!;
-    public virtual IEnumerable<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
-    public virtual IEnumerable<Review> Reviews { get; set; } = new List<Review>();
+    public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+    public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
 }

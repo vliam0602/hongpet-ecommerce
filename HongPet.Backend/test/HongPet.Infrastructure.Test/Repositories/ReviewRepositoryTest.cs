@@ -39,7 +39,8 @@ public class ReviewRepositoryTest : SetupTest
 
         var reviews = _fixture.Build<Review>()
                               .With(r => r.ProductId, productId)
-                              .Without(r => r.Customer)
+                              .With(r => r.Customer, customer)
+                              .With(r => r.CustomerId, customer.Id)
                               .Without(r => r.Order)
                               .Without(r => r.Product)
                               .With(r => r.DeletedDate, () => null)
@@ -82,28 +83,34 @@ public class ReviewRepositoryTest : SetupTest
     {
         // Arrange
         var productId = Guid.NewGuid();
+
+        var customer = _fixture.Build<User>()
+                               .Without(u => u.Orders)
+                               .Without(u => u.Reviews)
+                               .Create();
         var reviews = _fixture.Build<Review>()
                               .With(r => r.ProductId, productId)
-                              .Without(r => r.DeletedDate)
-                              .CreateMany(10)
+                              .With(r => r.CustomerId, customer.Id)
+                              .With(r => r.Customer, customer)
+                              .Without(r => r.DeletedDate)                              
+                              .Without(r => r.DeletedBy)                           
+                              .Without(r => r.Order)
+                              .Without(r => r.Product)
+                              .CreateMany(6)
                               .ToList();
 
-        var deletedReview = _fixture.Build<Review>()
-                                    .With(r => r.ProductId, productId)
-                                    .With(r => r.DeletedDate, DateTime.UtcNow)
-                                    .Create();
-
-        reviews.Add(deletedReview);
+        reviews[0].DeletedDate = DateTime.UtcNow;
 
         _context.Reviews.AddRange(reviews);
         await _context.SaveChangesAsync();
 
         // Act
-        var result = await _reviewRepository.GetReviewsByProductIdAsync(productId, pageIndex: 1, pageSize: 10);
+        var result = await _reviewRepository.GetReviewsByProductIdAsync(
+            productId, pageIndex: 1, pageSize: 10);
 
         // Assert
         result.Should().NotBeNull();
-        result.Items.Should().HaveCount(10);
+        result.Items.Should().HaveCount(5);
         result.Items.Should().NotContain(r => r.DeletedDate != null);
     }
 }

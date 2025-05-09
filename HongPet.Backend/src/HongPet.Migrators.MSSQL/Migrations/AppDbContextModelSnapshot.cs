@@ -34,7 +34,7 @@ namespace HongPet.Migrators.MSSQL.Migrations
 
                     b.HasIndex("ProductsId");
 
-                    b.ToTable("CategoryProduct");
+                    b.ToTable("CategoryProduct", (string)null);
                 });
 
             modelBuilder.Entity("HongPet.Domain.Entities.Category", b =>
@@ -79,7 +79,7 @@ namespace HongPet.Migrators.MSSQL.Migrations
 
                     b.HasIndex("ParentCategoryId");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
 
                     b.HasData(
                         new
@@ -263,7 +263,7 @@ namespace HongPet.Migrators.MSSQL.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Images");
+                    b.ToTable("Images", (string)null);
                 });
 
             modelBuilder.Entity("HongPet.Domain.Entities.Order", b =>
@@ -327,7 +327,7 @@ namespace HongPet.Migrators.MSSQL.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("HongPet.Domain.Entities.OrderItem", b =>
@@ -348,7 +348,7 @@ namespace HongPet.Migrators.MSSQL.Migrations
 
                     b.HasIndex("VariantId");
 
-                    b.ToTable("OrderItems");
+                    b.ToTable("OrderItems", (string)null);
                 });
 
             modelBuilder.Entity("HongPet.Domain.Entities.Product", b =>
@@ -403,7 +403,7 @@ namespace HongPet.Migrators.MSSQL.Migrations
 
                     b.HasIndex("Name");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("HongPet.Domain.Entities.ProductAttribute", b =>
@@ -443,7 +443,7 @@ namespace HongPet.Migrators.MSSQL.Migrations
 
                     b.HasIndex("Name");
 
-                    b.ToTable("ProductAttributes");
+                    b.ToTable("ProductAttributes", (string)null);
                 });
 
             modelBuilder.Entity("HongPet.Domain.Entities.ProductAttributeValue", b =>
@@ -486,7 +486,7 @@ namespace HongPet.Migrators.MSSQL.Migrations
 
                     b.HasIndex("AttributeId", "Value");
 
-                    b.ToTable("ProductAttributeValues");
+                    b.ToTable("ProductAttributeValues", (string)null);
                 });
 
             modelBuilder.Entity("HongPet.Domain.Entities.Review", b =>
@@ -541,7 +541,7 @@ namespace HongPet.Migrators.MSSQL.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Reviews");
+                    b.ToTable("Reviews", (string)null);
                 });
 
             modelBuilder.Entity("HongPet.Domain.Entities.User", b =>
@@ -606,7 +606,7 @@ namespace HongPet.Migrators.MSSQL.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
 
                     b.HasData(
                         new
@@ -678,7 +678,7 @@ namespace HongPet.Migrators.MSSQL.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Variants");
+                    b.ToTable("Variants", (string)null);
                 });
 
             modelBuilder.Entity("ProductAttributeValueVariant", b =>
@@ -693,7 +693,7 @@ namespace HongPet.Migrators.MSSQL.Migrations
 
                     b.HasIndex("VariantsId");
 
-                    b.ToTable("ProductAttributeValueVariant");
+                    b.ToTable("ProductAttributeValueVariant", (string)null);
                 });
 
             modelBuilder.Entity("CategoryProduct", b =>

@@ -25,11 +25,28 @@ public class UserRepository : GenericRepository<User>, IUserRepository
     public async Task<IPagedList<UserDto>> GetCustomersPagedAsync(
         int pageIndex = 1, int pageSize = 10, string? keyword = "")
     {
-        var totalCount = await _dbSet.CountAsync();
-
-        var items = await _dbSet
+        if (pageIndex < 1) pageIndex = 1;
+        if (pageSize < 1) pageSize = 1;
+        
+        var query = _dbSet
             .Where(x => x.Role != Domain.Enums.RoleEnum.Admin)
-            .ProjectTo<UserDto>(_mapper.ConfigurationProvider)   
+            .ProjectTo<UserDto>(_mapper.ConfigurationProvider)
+            .AsQueryable();
+
+        if (!string.IsNullOrEmpty(keyword))
+        {
+            query = query
+                .Where(x => x.Fullname.Contains(keyword))
+                .AsQueryable();
+        }
+
+        var totalCount = await query.CountAsync();
+
+        var totalPage = (int)Math.Ceiling((double)totalCount / pageSize);
+        
+        if (pageIndex > totalPage) pageIndex = totalPage;
+
+        var items = await query  
             .Skip((pageIndex - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();

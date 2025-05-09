@@ -8,5 +8,5 @@ public class ProductAttributeValue : BaseEntity
     public string Value { get; set; } = default!;    
 
     public virtual ProductAttribute Attribute { get; set; } = default!;
-    public virtual IEnumerable<Variant> Variants { get; set; } = new List<Variant>();
+    public virtual ICollection<Variant> Variants { get; set; } = new List<Variant>();
 }

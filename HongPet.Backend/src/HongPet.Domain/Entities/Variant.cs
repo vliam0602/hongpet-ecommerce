@@ -11,6 +11,6 @@ public class Variant : BaseEntity
     public bool IsActive { get; set; } = true;       
 
     public virtual Product Product { get; set; } = default!;
-    public virtual IEnumerable<ProductAttributeValue> AttributeValues { get; set; } = new List<ProductAttributeValue>();
-    public virtual IEnumerable<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+    public virtual ICollection<ProductAttributeValue> AttributeValues { get; set; } = new List<ProductAttributeValue>();
+    public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
 }

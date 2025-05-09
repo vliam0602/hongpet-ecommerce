@@ -1,4 +1,5 @@
-﻿using HongPet.Domain.Entities.Commons;
+﻿using HongPet.Domain.DTOs;
+using HongPet.Domain.Entities.Commons;
 using HongPet.Domain.Repositories.Abstractions;
 using HongPet.Infrastructure.Database;
 using HongPet.SharedViewModels.Generals;
@@ -60,10 +61,20 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity>
     public virtual async Task<IPagedList<TEntity>> GetPagedAsync
         (int pageIndex = 1, int pageSize = 10, string? keyword = "")
     {
-        var totalCount = await _dbSet.CountAsync();
+        if (pageIndex < 1) pageIndex = 1;
+        if (pageSize < 1) pageSize = 1;
 
-        var items = await _dbSet
+        var query = _dbSet
             .OrderByDescending(x => x.CreatedDate)
+            .AsQueryable();
+
+        var totalCount = await query.CountAsync();
+
+        var totalPage = (int)Math.Ceiling((double)totalCount / pageSize);
+
+        if (pageIndex > totalPage) pageIndex = totalPage;
+
+        var items = await query
             .Skip((pageIndex - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();
@@ -73,7 +84,15 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity>
 
     public async Task<IPagedList<TEntity>> ToPaginationAsync(IQueryable<TEntity> entities, int pageIndex = 1, int pageSize = 10, string? keyword = "")
     {
+        if (pageIndex < 1) pageIndex = 1;
+        if (pageSize < 1) pageSize = 1;
+
         var totalCount = entities.Count();
+
+        var totalPage = (int)Math.Ceiling((double)totalCount / pageSize);
+
+        if (pageIndex > totalPage) pageIndex = totalPage;
+        
 
         var items = await entities.Skip((pageIndex - 1) * pageSize)
                             .Take(pageSize)

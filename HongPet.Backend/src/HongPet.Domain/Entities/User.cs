@@ -14,6 +14,6 @@ public class User : BaseEntity
     public string? AvatarUrl { get; set; }
     public RoleEnum Role { get; set; } = RoleEnum.Customer;
 
-    public virtual IEnumerable<Order> Orders { get; set; } = new List<Order>();
-    public virtual IEnumerable<Review> Reviews { get; set; } = new List<Review>();
+    public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
+    public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
 }
