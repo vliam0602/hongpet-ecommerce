@@ -8,6 +8,6 @@ public class Category : BaseEntity
     public Guid? ParentCategoryId { get; set; }
 
     public virtual Category? ParentCategory { get; set; }
-    public virtual IEnumerable<Category> SubCategories { get; set; } = new List<Category>();
-    public virtual IEnumerable<Product> Products { get; set; } = new List<Product>();
+    public virtual ICollection<Category> SubCategories { get; set; } = new List<Category>();
+    public virtual ICollection<Product> Products { get; set; } = new List<Product>();
 }

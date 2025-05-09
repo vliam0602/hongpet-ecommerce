@@ -6,5 +6,5 @@ public class ProductAttribute : BaseEntity
 {
     public string Name { get; set; } = default!;
 
-    public virtual IEnumerable<ProductAttributeValue> AttributeValues { get; set; } = new List<ProductAttributeValue>();
+    public virtual ICollection<ProductAttributeValue> AttributeValues { get; set; } = new List<ProductAttributeValue>();
 }
