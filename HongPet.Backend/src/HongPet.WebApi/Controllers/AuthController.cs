@@ -56,6 +56,7 @@ public class AuthController(
         {
             return StatusCode(500, new ApiResponse
             {
+                IsSuccess = false,
                 ErrorMessage = $"Unexpected error: {ex.Message}"
             });
         }
@@ -104,6 +105,7 @@ public class AuthController(
         {
             return StatusCode(500, new ApiResponse
             {
+                IsSuccess = false,
                 ErrorMessage = $"Unexpected error: {ex.Message}"
             });
         }
@@ -150,6 +152,7 @@ public class AuthController(
         {
             return StatusCode(500, new ApiResponse
             {
+                IsSuccess = false,
                 ErrorMessage = $"Unexpected error: {ex.Message}"
             });
         }
@@ -166,7 +169,7 @@ public class AuthController(
             return CreatedAtAction("Register", new { Email = registerModel.Email}, 
                 new ApiResponse
                 {
-                    Message = "Đăng ký tài khoản thành công",
+                    Message = "Register successfully!",
                     Data = registerModel
                 });            
         } 
@@ -174,6 +177,7 @@ public class AuthController(
         {
             return BadRequest(new ApiResponse
             {
+                IsSuccess = false,
                 ErrorMessage = ex.Message
             });
         }
@@ -181,6 +185,7 @@ public class AuthController(
         {
             return StatusCode(500, new ApiResponse
             {
+                IsSuccess = false,
                 ErrorMessage = $"Unexpected error: {ex.Message}"
             });
         }
